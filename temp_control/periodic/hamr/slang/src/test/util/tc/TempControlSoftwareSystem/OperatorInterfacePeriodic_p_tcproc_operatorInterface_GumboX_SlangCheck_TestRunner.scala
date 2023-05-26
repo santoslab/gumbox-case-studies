@@ -37,7 +37,9 @@ import org.sireum.Random.Impl.Xoshiro256
   override def test(o: OperatorInterfacePeriodic_p_tcproc_operatorInterface_SlangCheckContainer): B = {
     BeforeEntrypoint()
     val r: B = testComputeCB(o.api_currentTemp) match {
-      case GumboXResult.Pre_Condition_Unsat => T
+      case GumboXResult.Pre_Condition_Unsat =>
+        tc.RecordUnsatPre.report(tc.JSON.fromTempControlSoftwareSystemOperatorInterfacePeriodic_p_tcproc_operatorInterface_SlangCheckContainer(o, T))
+        T
       case GumboXResult.Post_Condition_Fail => F
       case GumboXResult.Post_Condition_Pass => T
     }

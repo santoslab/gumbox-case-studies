@@ -39,7 +39,9 @@ import org.sireum.Random.Impl.Xoshiro256
   override def test(o: OrLogic_i_actuationSubsystem_tempPressureActuatorUnit_actuateTempPressureActuator_orLogic_SlangCheckContainer): B = {
     BeforeEntrypoint()
     val r: B = testComputeCB(o.api_channel1, o.api_channel2) match {
-      case GumboXResult.Pre_Condition_Unsat => T
+      case GumboXResult.Pre_Condition_Unsat =>
+        RTS.RecordUnsatPre.report(RTS.JSON.fromActuationOrLogic_i_actuationSubsystem_tempPressureActuatorUnit_actuateTempPressureActuator_orLogic_SlangCheckContainer(o, T))
+        T
       case GumboXResult.Post_Condition_Fail => F
       case GumboXResult.Post_Condition_Pass => T
     }

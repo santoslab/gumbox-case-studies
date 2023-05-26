@@ -43,7 +43,9 @@ import org.sireum.Random.Impl.Xoshiro256
   override def test(o: CoincidenceLogic_i_actuationSubsystem_actuationUnit2_saturationLogic_coincidenceLogic_SlangCheckContainer): B = {
     BeforeEntrypoint()
     val r: B = testComputeCB(o.api_channel1, o.api_channel2, o.api_channel3, o.api_channel4) match {
-      case GumboXResult.Pre_Condition_Unsat => T
+      case GumboXResult.Pre_Condition_Unsat =>
+        RTS.RecordUnsatPre.report(RTS.JSON.fromActuationCoincidenceLogic_i_actuationSubsystem_actuationUnit2_saturationLogic_coincidenceLogic_SlangCheckContainer(o, T))
+        T
       case GumboXResult.Post_Condition_Fail => F
       case GumboXResult.Post_Condition_Pass => T
     }

@@ -39,7 +39,9 @@ import org.sireum.Random.Impl.Xoshiro256
   override def test(o: Actuator_i_actuationSubsystem_saturationActuatorUnit_saturationActuator_actuator_SlangCheckContainer): B = {
     BeforeEntrypoint()
     val r: B = testComputeCB(o.api_input, o.api_manualActuatorInput) match {
-      case GumboXResult.Pre_Condition_Unsat => T
+      case GumboXResult.Pre_Condition_Unsat =>
+        RTS.RecordUnsatPre.report(RTS.JSON.fromActuationActuator_i_actuationSubsystem_saturationActuatorUnit_saturationActuator_actuator_SlangCheckContainer(o, T))
+        T
       case GumboXResult.Post_Condition_Fail => F
       case GumboXResult.Post_Condition_Pass => T
     }

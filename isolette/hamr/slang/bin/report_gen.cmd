@@ -25,35 +25,93 @@ val sireumBin = Os.path(Os.env("SIREUM_HOME").get) / "bin"
 val sireum = sireumBin / (if(Os.isWin) "sireum.bat" else "sireum")
 
 
-@datatype class Container(
-                          val project: String,
-                          val componentName: String,
-                          val componentShortName: String,
+@datatype class Container(val project: String,
                           val packageName: String,
-                          val fullName: String,
-                          val node: String,
-                         )
+                          val objectName: String,
 
-val projects: Map[String, ISZ[Container]] = Map.empty ++ ISZ(
-  "isolette" ~> ISZ(
-    Container("isolette", "Manage Alarm", "ma", "Monitor", "Manage_Alarm_impl_thermostat_monitor_temperature_manage_alarm", "linux64-santos16-minion"),
-    Container("isolette", "Manage Monitor Interface", "mmi", "Monitor", "Manage_Monitor_Interface_impl_thermostat_monitor_temperature_manage_monitor_interface", "linux64-santos16-minion"),
-    Container("isolette", "Manage Monitor Mode", "mmm", "Monitor", "Manage_Monitor_Mode_impl_thermostat_monitor_temperature_manage_monitor_mode", "linux64-santos16-minion"),
-    Container("isolette", "Manage Heat Source", "mhs", "Regulate", "Manage_Heat_Source_impl_thermostat_regulate_temperature_manage_heat_source", "linux64-santos16-minion"),
-    Container("isolette", "Manage Regulator Interface", "mri", "Regulate", "Manage_Regulator_Interface_impl_thermostat_regulate_temperature_manage_regulator_interface", "linux64-santos16-minion"),
-    Container("isolette", "Manage Regulator Mode", "mrm", "Regulate", "Manage_Regulator_Mode_impl_thermostat_regulate_temperature_manage_regulator_mode", "linux64-santos16-minion"),
-))
+                          val prettyName: String,
+                          val tag: String,
 
-var components: ISZ[ST] = ISZ()
+                          val node: String
+                         ) {
+  def dscPrefix: String = {
+    return s"$project-$tag"
+  }
+}
+
+@datatype class TContainer(val timeouts: ISZ[Z],
+                           val containers: ISZ[Container])
+
+val isolette = "isolette" ~> TContainer(
+  ISZ(1, 3, 30, 360),
+  ISZ(
+    Container("isolette", "isolette.Monitor", "Manage_Alarm_impl_thermostat_monitor_temperature_manage_alarm",
+      "Manage Alarm", "ma", "linux64-santos16-minion"),
+    Container("isolette", "isolette.Monitor", "Manage_Monitor_Interface_impl_thermostat_monitor_temperature_manage_monitor_interface",
+      "Manage Monitor Interface", "mmi", "linux64-santos16-minion"),
+    Container("isolette", "isolette.Monitor", "Manage_Monitor_Mode_impl_thermostat_monitor_temperature_manage_monitor_mode",
+      "Manage Monitor Mode", "mmm", "linux64-santos16-minion"),
+
+    Container("isolette", "isolette.Regulate", "Manage_Heat_Source_impl_thermostat_regulate_temperature_manage_heat_source",
+      "Manage Heat Source", "mhs", "linux64-santos16-minion"),
+    Container("isolette", "isolette.Regulate", "Manage_Heat_Source_impl_thermostat_regulate_temperature_manage_heat_source",
+      "Manage Regulator Interface", "mri", "linux64-santos16-minion"),
+    Container("isolette", "isolette.Regulate", "Manage_Regulator_Mode_impl_thermostat_regulate_temperature_manage_regulator_mode",
+      "Manage Regulator Mode", "mrm", "linux64-santos16-minion")
+  )
+)
+
+val rts = "rts" ~> TContainer(
+  ISZ(1, 5, 30),
+  ISZ(
+    Container("rts", "RTS.Actuation", "Actuator_i_actuationSubsystem_saturationActuatorUnit_saturationActuator_actuator",
+      "Saturation Actuator", "saturationActuator", "mac-mini-intel"),
+
+    Container("rts", "RTS.Actuation", "Actuator_i_actuationSubsystem_tempPressureActuatorUnit_tempPressureActuator_actuator",
+      "TempPressure Actuator Unit", "tempPressureActuator", "mac-mini-intel"),
+
+    Container("rts", "RTS.Actuation", "CoincidenceLogic_i_actuationSubsystem_actuationUnit1_pressureLogic_coincidenceLogic",
+      "Actuation Unit 1 Pressure Logic", "au1-pressureLogic", "mac-mini-intel"),
+    Container("rts", "RTS.Actuation", "CoincidenceLogic_i_actuationSubsystem_actuationUnit1_saturationLogic_coincidenceLogic",
+      "Actuation Unit 1 Saturation Logic", "au1-saturationLogic", "mac-mini-intel"),
+    Container("rts", "RTS.Actuation", "CoincidenceLogic_i_actuationSubsystem_actuationUnit1_temperatureLogic_coincidenceLogic",
+      "Actuation Unit 1 Temperature Logic", "au1-temperatureLogic", "mac-mini-intel"),
+
+
+    Container("rts", "RTS.Actuation", "CoincidenceLogic_i_actuationSubsystem_actuationUnit2_pressureLogic_coincidenceLogic",
+      "Actuation Unit 2 Pressure Logic", "au2-pressureLogic", "mac-mini-intel"),
+    Container("rts", "RTS.Actuation", "CoincidenceLogic_i_actuationSubsystem_actuationUnit2_saturationLogic_coincidenceLogic",
+      "Actuation Unit 2 Saturation Logic", "au2-saturationLogic", "mac-mini-intel"),
+    Container("rts", "RTS.Actuation", "CoincidenceLogic_i_actuationSubsystem_actuationUnit2_temperatureLogic_coincidenceLogic",
+      "Actuation Unit 2 Temperature Logic", "au2-temperatureLogic", "mac-mini-intel"),
+
+
+    Container("rts", "RTS.Actuation", "OrLogic_i_actuationSubsystem_actuationUnit1_tempPressureTripOut_orLogic",
+      "Actuation Unit 1 TempPressureTripOut or Logic", "au1-tempPressureTripOut", "mac-mini-intel"),
+    Container("rts", "RTS.Actuation", "OrLogic_i_actuationSubsystem_actuationUnit2_tempPressureTripOut_orLogic",
+      "Actuation Unit 2 TempPressureTripOut or Logic", "au2-tempPressureTripOut", "mac-mini-intel"),
+
+    Container("rts", "RTS.Actuation", "OrLogic_i_actuationSubsystem_saturationActuatorUnit_actuateSaturationActuator_orLogic",
+      "Actuate Saturation Actuator", "actuateSaturationActuator", "mac-mini-intel"),
+
+    Container("rts", "RTS.Actuation", "OrLogic_i_actuationSubsystem_tempPressureActuatorUnit_actuateTempPressureActuator_orLogic",
+      "Actuate TempPressure Actuator", "actuateTempPressureActuator", "mac-mini-intel"),
+  )
+)
+
+val projects: Map[String, TContainer] = Map.empty[String, TContainer] ++ ISZ(isolette, rts)
+
+
 for (e <- projects.entries) {
-  for (p <- e._2) {
+  var components: ISZ[ST] = ISZ()
+  for (p <- e._2.containers) {
     var rows: ISZ[ST] = ISZ()
-    for (t <- ISZ(1, 3, 30, 360)) {
+    for (t <- e._2.timeouts) {
       val timeoutPrefix = s"${p.project}_timeout_${t}"
 
       val directoryPrefix = s"results/${timeoutPrefix}/"
 
-      val prefix = s"${p.project}-${p.componentShortName}-${p.node}"
+      val prefix = s"${p.dscPrefix}-${p.node}"
 
       val jPrefix = s"${prefix}-jacoco.coverage"
 
@@ -67,9 +125,9 @@ for (e <- projects.entries) {
       val total = passing + failing + unsat
 
       val csv = s"${directoryPrefix}/${jPrefix}.csv"
-      val metrics = s"${directoryPrefix}/${jPrefix}/${p.project}.${p.packageName}/index.source.html"
-      val ccov = s"${directoryPrefix}/${jPrefix}/${p.project}.${p.packageName}/${p.fullName}.scala.html"
-      val gcov = s"${directoryPrefix}/${jPrefix}/${p.project}.${p.packageName}/${p.fullName}_GumboX.scala.html"
+      val metrics = s"${directoryPrefix}/${jPrefix}/${p.packageName}/index.source.html"
+      val ccov = s"${directoryPrefix}/${jPrefix}/${p.packageName}/${p.objectName}.scala.html"
+      val gcov = s"${directoryPrefix}/${jPrefix}/${p.packageName}/${p.objectName}_GumboX.scala.html"
 
       rows = rows :+
         st"""<tr>
@@ -87,7 +145,7 @@ for (e <- projects.entries) {
     }
 
     components = components :+
-      st"""<h2>${p.componentName}</h2>
+      st"""<h2>${p.prettyName}</h2>
           |<table border=1>
           |  <tr>
           |    <th>Timeout (s)</th>

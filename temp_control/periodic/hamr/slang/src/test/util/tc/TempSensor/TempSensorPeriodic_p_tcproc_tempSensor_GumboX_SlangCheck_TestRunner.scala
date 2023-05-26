@@ -34,7 +34,9 @@ import org.sireum.Random.Impl.Xoshiro256
   override def test(o: TempSensorPeriodic_p_tcproc_tempSensor_SlangCheckContainer): B = {
     BeforeEntrypoint()
     val r: B = testComputeCB() match {
-      case GumboXResult.Pre_Condition_Unsat => T
+      case GumboXResult.Pre_Condition_Unsat =>
+        tc.RecordUnsatPre.report(tc.JSON.fromTempSensorTempSensorPeriodic_p_tcproc_tempSensor_SlangCheckContainer(o, T))
+        T
       case GumboXResult.Post_Condition_Fail => F
       case GumboXResult.Post_Condition_Pass => T
     }
