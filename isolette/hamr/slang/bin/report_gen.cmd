@@ -77,7 +77,6 @@ for (e <- projects.entries) {
             |  <td>$total</td>
             |  <td>$passing</td>
             |  <td>$failing</td>
-            |  <td>0</td>
             |  <td>$unsat</td>
             |  <td><a href="$metrics">link</a></td>
             |  <td><a href="$ccov">link</a></td>
@@ -95,7 +94,6 @@ for (e <- projects.entries) {
           |    <th>Total<br>Tests</th>
           |    <th>Passing<br>Tests</th>
           |    <th>Failing<br>Tests</th>
-          |    <th>Unsat Data<br>Invariants</th>
           |    <th>Unsat<br>Requires</th>
           |    <th>Package<br>Coverage</th>
           |    <th>Component<br>Coverage</th>
