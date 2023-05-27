@@ -46,6 +46,9 @@ likely would be excluded in a release build
  |--------|--------|
  |SUM:|103|
 
+### DSC Coverage
+[https://people.cs.ksu.edu/~santos_jenkins/dsc_results/tc/tc.html](https://people.cs.ksu.edu/~santos_jenkins/dsc_results/tc/tc.html)
+
 ## Run Instructions
 *NOTE:* actual output may differ due to issues related to thread interleaving
 ### JVM
