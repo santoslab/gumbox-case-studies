@@ -1,10 +1,10 @@
-# HAMR Examples
+# GUMBOX 2023 Case Studies
 
-<table>
-<tr><td>Master</td>
-<td> 
-  <a href="https://github.com/santoslab/hamr-examples/actions/workflows/CI-macOS.yml"><img src="https://github.com/santoslab/hamr-examples/actions/workflows/CI-macOS.yml/badge.svg" alt="macOS"> </a>
-  <a href="https://github.com/santoslab/hamr-examples/actions/workflows/CI_linux.yml"><img src="https://github.com/santoslab/hamr-examples/actions/workflows/CI_linux.yml/badge.svg" alt="Linux"></a>
-  <a href="https://github.com/santoslab/hamr-examples/actions/workflows/CI-windows.yml"><img src="https://github.com/santoslab/hamr-examples/actions/workflows/CI-windows.yml/badge.svg" alt="Windows"></a>
-</td>
-</table>
+## [Periodic Temperature Control](/Users/belt/devel/gumbox-case-studies/temp_control/periodic/readme.md)
+
+
+## [Isolette](/Users/belt/devel/gumbox-case-studies/isolette/readme.md)
+
+
+## [RTS](/Users/belt/devel/gumbox-case-studies/rts/readme.md)
+

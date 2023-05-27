@@ -1,52 +1,65 @@
 # Isolette
 
-## Tool Setup
+ Table of Contents
+  * [Diagrams](#diagrams)
+    * [AADL Arch](#aadl-arch)
+  * [Metrics](#metrics)
+    * [AADL Metrics](#aadl-metrics)
+    * [JVM Metrics](#jvm-metrics)
+  * [Run Instructions](#run-instructions)
+    * [JVM](#jvm)
 
-Install Kekinian, FMIDE, and IVE by following the instructions: [Installing and Updating FMIDE (customization of AADL OSATE IDE) and HAMR](https://hamr.sireum.org/hamr-doc/ch0X-hamr-installation.html#installing-and-updating-fmide-customization-of-aadl-osate-ide-and-hamr) 
+## Diagrams
+### AADL Arch
+![AADL Arch](aadl/diagrams/aadl-arch.svg)
 
-It's recommended that you set the environment variable ``SIREUM_HOME`` so that it points to the directory where you cloned/installed Kekinian
+## Metrics
+### AADL Metrics
+| | |
+|--|--|
+|Threads|11|
+|Ports|49|
+|Connections|27|
+
+### JVM Metrics
+Directories Scanned Using [https://github.com/AlDanial/cloc](https://github.com/AlDanial/cloc) v1.94:
+- [hamr/slang/src/main](hamr/slang/src/main)
+
+<u><b>Total LOC</b></u>
+
+Total number of HAMR-generated and developer-written lines of code
+Language|files|blank|comment|code
+:-------|-------:|-------:|-------:|-------:
+Scala|87|2936|2160|10796
+--------|--------|--------|--------|--------
+SUM:|87|2936|2160|10796
+
+<u><b>User LOC</b></u>
+
+The number of lines of code written by the developer.
+"Log" are lines of code used for logging that
+likely would be excluded in a release build
+ |Type|code |
+ |--|--:|
+ |Behavior|184|
+ |Log|16|
+ |--------|--------|
+ |SUM:|200|
+
+## Run Instructions
+*NOTE:* actual output may differ due to issues related to thread interleaving
+### JVM
+
+  |HAMR Codegen Configuration| |
+  |--|--|
+  | package-name | isolette |
+  | exclude-component-impl | false |
+  | bit-width | 32 |
+  | max-string-size | 256 |
+  | max-array-size | 1 |
 
 
-## Regenerating the Slang Project
-
-To regenerate from within FMIDE, 
-
-- Select ``File >> Import ...``, then choose ``Existing Project into Workspace``.
-
-- Point the select ``Select root directory:`` option at the [./aadl](./aadl) directory
-  and import the ``isolette`` project
-
-- Open [./aadl/aadl/packages/Isolette.aadl](./aadl/aadl/packages/Isolette.aadl)
-
-- In the Outline view, select this system implementation: [thermostat_single_sensor.impl](./aadl/aadl/packages/Isolette.aadl#L171)
-
-- Click the HAMR icon in the menu bar (or choose ``OSATE >> Sireum HAMR >> Code Generation``)
-
-- Select the ``JVM`` platform, point the output directory to [./hamr/slang](./hamr/slang/), set the ``Base Package Name`` to be ``isolette`` and click ``Run``.
-
-
-Or, you can regenerate from the command line by invoking the following script: [./aadl/bin/run-hamr.cmd](./aadl/bin/run-hamr.cmd)
-
-```
-./aadl/bin/run-hamr.cmd
-```
-
-## Running the Demo
-
-Follow the directions contained in [./hamr/slang/bin/project.cmd](./hamr/slang/bin/project.cmd#L19-L50) to either run the demo from the command line or from within IVE.
-
-## Running Proyek Logika
-
-From the command line:
-
-```
-sireum proyek logika --par --all ./hamr/slang
-```
-
-or, invoke the script [./hamr/slang/bin/run-logika.cmd](./hamr/slang/bin/run-logika.cmd)
-
-```
-./hamr/slang/bin/run-logika.cmd
-```
-
-From within IVE, if the file is in Logika (ie. its first line looks like [this](./hamr/slang/src/main/component/isolette/Monitor/Manage_Alarm_impl_thermostat_monitor_temperature_manage_alarm.scala#L1)) then you can right click the editor and in the context menu choose ``Logika Check (All in File)`` or ``Logika Check (Line)``.
+  **How To Run**
+  ```
+  sireum proyek run isolette/hamr/slang isolette.Demo
+  ```

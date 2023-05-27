@@ -32,25 +32,15 @@ object Manage_Regulator_Interface_impl_thermostat_regulate_temperature_manage_re
     )
 
     // set initial lower desired temp
-    api.put_lower_desired_temp(
-      Isolette_Data_Model.Temp_impl.example())
+    api.put_lower_desired_temp(Isolette_Data_Model.Temp_impl.example())
     // set initial upper desired temp
-    api.put_upper_desired_temp(
-      Isolette_Data_Model.Temp_impl.example())
+    api.put_upper_desired_temp(Isolette_Data_Model.Temp_impl.example())
     // set initial displayed temp
-    api.put_displayed_temp(
-      Isolette_Data_Model.Temp_impl.example())
+    api.put_displayed_temp(Isolette_Data_Model.Temp_impl.example())
     // set initial regulator status
     api.put_regulator_status(Isolette_Data_Model.Status.Init_Status)
     // set initial regulator failure
-    api.put_interface_failure(
-      Isolette_Data_Model.Failure_Flag_impl.example())
-
-    api.logInfo(s"Sent on lower_desired_temp: ${Isolette_Data_Model.Temp_impl.example()}")
-    api.logInfo(s"Sent on upper_desired_temp: ${Isolette_Data_Model.Temp_impl.example()}")
-    api.logInfo(s"Sent on displayed_temp: ${Isolette_Data_Model.Temp_impl.example()}")
-    api.logInfo(s"Sent on regulator_status: ${Isolette_Data_Model.Status.Init_Status}")
-    api.logInfo(s"Sent on interface_failure: ${Isolette_Data_Model.Failure_Flag_impl.example()}")
+    api.put_interface_failure(Isolette_Data_Model.Failure_Flag_impl.example())
   }
 
   def timeTriggered(api: Manage_Regulator_Interface_impl_Operational_Api): Unit = {
@@ -115,17 +105,13 @@ object Manage_Regulator_Interface_impl_thermostat_regulate_temperature_manage_re
 
     // -------------- Get values of input ports ------------------
 
-    val lower: Isolette_Data_Model.TempWstatus_impl =
-      api.get_lower_desired_tempWstatus().get
+    val lower: Isolette_Data_Model.TempWstatus_impl = api.get_lower_desired_tempWstatus().get
 
-    val upper: Isolette_Data_Model.TempWstatus_impl =
-      api.get_upper_desired_tempWstatus().get
+    val upper: Isolette_Data_Model.TempWstatus_impl = api.get_upper_desired_tempWstatus().get
 
-    val regulator_mode: Isolette_Data_Model.Regulator_Mode.Type =
-      api.get_regulator_mode().get
+    val regulator_mode: Isolette_Data_Model.Regulator_Mode.Type = api.get_regulator_mode().get
 
-    val currentTemp: Isolette_Data_Model.TempWstatus_impl =
-      api.get_current_tempWstatus().get
+    val currentTemp: Isolette_Data_Model.TempWstatus_impl = api.get_current_tempWstatus().get
 
     // =============================================
     //  Set values for Regulator Status (Table A-6)
@@ -175,8 +161,7 @@ object Manage_Regulator_Interface_impl_thermostat_regulate_temperature_manage_re
 
     // FIXME: Develop better way to assigning final value to display temperature that
     //        doesn't involve selecting an arbitrary default temperature.
-    var display_temperature =
-    Isolette_Data_Model.Temp_impl.example()
+    var display_temperature = Isolette_Data_Model.Temp_impl.example()
 
     regulator_mode match {
       // NORMAL Mode
@@ -274,10 +259,8 @@ object Manage_Regulator_Interface_impl_thermostat_regulate_temperature_manage_re
       // Avoid using the Float.NaN because that value is in Scala but not Slang
       // api.put_lower_desired_temp(Isolette_Data_Model.Temp_impl(Float.NaN))
       // api.put_upper_desired_temp(Isolette_Data_Model.Temp_impl(Float.NaN))
-      api.put_lower_desired_temp(
-        Isolette_Data_Model.Temp_impl.example())
-      api.put_upper_desired_temp(
-        Isolette_Data_Model.Temp_impl.example())
+      api.put_lower_desired_temp(Isolette_Data_Model.Temp_impl.example())
+      api.put_upper_desired_temp(Isolette_Data_Model.Temp_impl.example())
 
       api.logInfo(s"Sent on lower_desired_temp: ${Isolette_Data_Model.Temp_impl.example()}")
       api.logInfo(s"Sent on upper_desired_temp: ${Isolette_Data_Model.Temp_impl.example()}")

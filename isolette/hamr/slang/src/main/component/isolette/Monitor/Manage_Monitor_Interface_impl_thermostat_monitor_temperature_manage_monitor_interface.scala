@@ -34,11 +34,6 @@ object Manage_Monitor_Interface_impl_thermostat_monitor_temperature_manage_monit
     api.put_interface_failure(Isolette_Data_Model.Failure_Flag_impl.example())
 
     api.put_monitor_status(Isolette_Data_Model.Status.Init_Status)
-
-    api.logInfo(s"Sent on upper_alarm_temp: ${Isolette_Data_Model.Temp_impl.example()}")
-    api.logInfo(s"Sent on lower_alarm_temp: ${Isolette_Data_Model.Temp_impl.example()}")
-    api.logInfo(s"Sent on interface_failure: ${Isolette_Data_Model.Failure_Flag_impl.example()}")
-    api.logInfo(s"Sent on monitor_status: ${Isolette_Data_Model.Status.Init_Status}")
   }
 
   def timeTriggered(api: Manage_Monitor_Interface_impl_Operational_Api): Unit = {
@@ -93,8 +88,6 @@ object Manage_Monitor_Interface_impl_thermostat_monitor_temperature_manage_monit
     val upper: Isolette_Data_Model.TempWstatus_impl = api.get_upper_alarm_tempWstatus().get
 
     val monitor_mode: Isolette_Data_Model.Monitor_Mode.Type = api.get_monitor_mode().get
-
-    val currentTemp: Isolette_Data_Model.TempWstatus_impl = api.get_current_tempWstatus().get
 
     // =============================================
     //  Set values for Monitor Status (Table A-6)
