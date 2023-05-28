@@ -131,7 +131,28 @@ val tc = "tc" ~> TContainer(
   )
 )
 
-val projects: Map[String, TContainer] = Map.empty[String, TContainer] ++ ISZ(isolette, rts, tc)
+val tc_f32_bw = "tc_f32_bw" ~> TContainer(
+  "mac-mini-m1",
+  "e2206hm02.cs.ksu.edu",
+  "tc",
+  home / "temp_control" / "periodic-f32-bw" / "hamr" / "slang",
+  ISZ(1, 5, 30, 360),
+  ISZ(
+    Container("tc_f32_bw", "tc.CoolingFan", "FanPeriodic_p_tcproc_fan",
+      "Cooling Fan", "fan"),
+
+    Container("tc_f32_bw", "tc.TempControlSoftwareSystem", "OperatorInterfacePeriodic_p_tcproc_operatorInterface",
+      "Operator Interface", "operator-interface"),
+
+    Container("tc_f32_bw", "tc.TempControlSoftwareSystem", "TempControlPeriodic_p_tcproc_tempControl",
+      "Temperature Controller", "temp-control"),
+
+    Container("tc_f32_bw", "tc.TempSensor", "TempSensorPeriodic_p_tcproc_tempSensor",
+      "Temperature Sensor", "temp-sensor")
+  )
+)
+
+val projects: Map[String, TContainer] = Map.empty[String, TContainer] ++ ISZ(isolette, rts, tc, tc_f32_bw)
 
 
 def getProj(): (String, TContainer) = {
@@ -275,6 +296,10 @@ def report(): Unit = {
         val unsat = Z(trl(2)).get
         val total = passing + failing + unsat
 
+        val passingLink = s"${directoryPrefix}/${prefix}-dsc-tested.passing"
+        val failingLink = s"${directoryPrefix}/${prefix}-dsc-tested.failing"
+        val unsatLink = s"${directoryPrefix}/${prefix}-dsc-tested.unsat"
+
         val csv = s"${directoryPrefix}/${jPrefix}.csv"
         val metrics = s"${directoryPrefix}/${jPrefix}/${p.packageName}/index.source.html"
         val ccov = s"${directoryPrefix}/${jPrefix}/${p.packageName}/${p.objectName}.scala.html"
@@ -284,9 +309,9 @@ def report(): Unit = {
           st"""<tr>
               |  <td>${t}</td>
               |  <td>$total</td>
-              |  <td>$passing</td>
-              |  <td>$failing</td>
-              |  <td>$unsat</td>
+              |  <td><a href="$passingLink">$passing</a></td>
+              |  <td><a href="$failingLink">$failing</a></td>
+              |  <td><a href="$unsatLink">$unsat</a></td>
               |  <td><a href="$metrics">link</a></td>
               |  <td><a href="$ccov">link</a></td>
               |  <td><a href="$gcov">link</a></td>
