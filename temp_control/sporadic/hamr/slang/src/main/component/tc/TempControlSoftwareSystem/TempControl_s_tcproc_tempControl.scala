@@ -23,7 +23,7 @@ object TempControl_s_tcproc_tempControl {
       Requires(
         // BEGIN INITIALIZES REQUIRES
         // assume AADL_Requirement
-        //   All outgoing event data ports must be empty
+        //   All outgoing event ports must be empty
         api.fanCmd.isEmpty
         // END INITIALIZES REQUIRES
       ),
@@ -81,13 +81,14 @@ object TempControl_s_tcproc_tempControl {
         (latestTemp.degrees > currentSetPoint.high.degrees) ->: (currentFanState == CoolingFan.FanCmd.On),
 
         // BEGIN COMPUTE REQUIRES fanAck
+        // assume HAMR-Guarantee built-in
+        //   The spec var corresponding to the handled event must be non-empty and
+        //   the passed in payload must be the same as the spec var's value
+        api.fanAck.nonEmpty &&
+        api.fanAck.get == value,
         // assume AADL_Requirement
-        //   All outgoing event data ports must be empty
-        api.fanCmd.isEmpty,
-        // assume HAMR-Guarantee
-        //   passed in payload must be the same as the spec var's value
-        //   NOTE: this assumes the user never changes the param name
-        api.fanAck == value
+        //   All outgoing event ports must be empty
+        api.fanCmd.isEmpty
         // END COMPUTE REQUIRES fanAck
       ),
       Modifies(
@@ -113,7 +114,7 @@ object TempControl_s_tcproc_tempControl {
         (latestTemp.degrees >= currentSetPoint.low.degrees &
            latestTemp.degrees <= currentSetPoint.high.degrees) ->: (currentFanState == In(currentFanState)),
         // guarantee mustSendFanCmd
-        //   If the local record of the fan state was updated,
+        //   If the local record of the fan state was updated, 
         //   then send a fan command event with this updated value.
         (In(currentFanState) != currentFanState) -->:
           (api.fanCmd.nonEmpty &&
@@ -148,13 +149,14 @@ object TempControl_s_tcproc_tempControl {
     Contract(
       Requires(
         // BEGIN COMPUTE REQUIRES setPoint
+        // assume HAMR-Guarantee built-in
+        //   The spec var corresponding to the handled event must be non-empty and
+        //   the passed in payload must be the same as the spec var's value
+        api.setPoint.nonEmpty &&
+        api.setPoint.get == value,
         // assume AADL_Requirement
-        //   All outgoing event data ports must be empty
-        api.fanCmd.isEmpty,
-        // assume HAMR-Guarantee
-        //   passed in payload must be the same as the spec var's value
-        //   NOTE: this assumes the user never changes the param name
-        api.setPoint == value
+        //   All outgoing event ports must be empty
+        api.fanCmd.isEmpty
         // END COMPUTE REQUIRES setPoint
       ),
       Modifies(
@@ -181,7 +183,7 @@ object TempControl_s_tcproc_tempControl {
         (latestTemp.degrees >= currentSetPoint.low.degrees &
            latestTemp.degrees <= currentSetPoint.high.degrees) ->: (currentFanState == In(currentFanState)),
         // guarantee mustSendFanCmd
-        //   If the local record of the fan state was updated,
+        //   If the local record of the fan state was updated, 
         //   then send a fan command event with this updated value.
         (In(currentFanState) != currentFanState) -->:
           (api.fanCmd.nonEmpty &&
@@ -189,7 +191,7 @@ object TempControl_s_tcproc_tempControl {
           (currentFanState == In(currentFanState)) -->:
             api.fanCmd.isEmpty,
         // guarantees setPointChanged
-        currentSetPoint == api.setPoint,
+        currentSetPoint == value,
         // guarantees latestTempNotModified
         latestTemp == In(latestTemp)
         // END COMPUTE ENSURES setPoint
@@ -211,8 +213,11 @@ object TempControl_s_tcproc_tempControl {
     Contract(
       Requires(
         // BEGIN COMPUTE REQUIRES tempChanged
+        // assume HAMR-Guarantee built-in
+        //   The spec var corresponding to the handled event must be non-empty
+        api.tempChanged.nonEmpty,
         // assume AADL_Requirement
-        //   All outgoing event data ports must be empty
+        //   All outgoing event ports must be empty
         api.fanCmd.isEmpty
         // END COMPUTE REQUIRES tempChanged
       ),
@@ -240,7 +245,7 @@ object TempControl_s_tcproc_tempControl {
         (latestTemp.degrees >= currentSetPoint.low.degrees &
            latestTemp.degrees <= currentSetPoint.high.degrees) ->: (currentFanState == In(currentFanState)),
         // guarantee mustSendFanCmd
-        //   If the local record of the fan state was updated,
+        //   If the local record of the fan state was updated, 
         //   then send a fan command event with this updated value.
         (In(currentFanState) != currentFanState) -->:
           (api.fanCmd.nonEmpty &&
@@ -287,8 +292,6 @@ object TempControl_s_tcproc_tempControl {
       Ensures(// current have to "manually" give frame-condition for all input data-like port states
         api.currentTemp == In(api).currentTemp,
 
-        // adding the following helps smt2 prove the next line (i.e that setPoint has not been modified)
-        (api.setPoint.low == In(api).setPoint.low) && (api.setPoint.high == In(api).setPoint.high),
         api.setPoint == In(api).setPoint,
 
         api.fanAck == In(api).fanAck,

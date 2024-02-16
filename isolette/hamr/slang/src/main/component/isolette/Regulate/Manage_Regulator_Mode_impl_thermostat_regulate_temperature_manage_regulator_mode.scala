@@ -76,7 +76,7 @@ object Manage_Regulator_Mode_impl_thermostat_regulate_temperature_manage_regulat
           (api.regulator_mode == Isolette_Data_Model.Regulator_Mode.Failed_Regulator_Mode &&
             lastRegulatorMode == Isolette_Data_Model.Regulator_Mode.Failed_Regulator_Mode)),
         // case REQ_MRM_4
-        //   'transition from INIT to FAILED'
+        //   'transition from INIT to FAILED' 
         //   If the current regulator mode is Init, then
         //   the regulator mode and lastRegulatorMode state value is set to Failed iff
         //   the regulator status is false, i.e.,

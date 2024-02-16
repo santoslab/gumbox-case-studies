@@ -1,4 +1,4 @@
-::#! 2> /dev/null                                   #
+::/*#! 2> /dev/null                                 #
 @ 2>/dev/null # 2>nul & echo off & goto BOF         #
 if [ -z ${SIREUM_HOME} ]; then                      #
   echo "Please set SIREUM_HOME env var"             #
@@ -13,34 +13,45 @@ if not defined SIREUM_HOME (
 )
 %SIREUM_HOME%\\bin\\sireum.bat slang run "%0" %*
 exit /B %errorlevel%
-::!#
+::!#*/
 // #Sireum
 
 import org.sireum._
 
 val aadlDir = Os.slashDir.up
 
-
 val sireumBin = Os.path(Os.env("SIREUM_HOME").get) / "bin" 
 val sireum = sireumBin / (if(Os.isWin) "sireum.bat" else "sireum")
 
-val fmide : Os.Path = 
-  if(Os.isWin) sireumBin / "win" / "fmide" / "fmide.exe"
-  else if(Os.isLinux) sireumBin / "linux" / "fmide" / "fmide"
-  else if(Os.isMac) sireumBin / "mac" / "fmide.app" / "Contents" / "MacOS" / "osate"
-  else sireum / "unsupported-OS"
-
-if(!fmide.exists) {
-  println(s"Please install FMIDE by running ${ (sireumBin / "install" / "fmide.cmd").canon.string }");
-  Os.exit(-1);
+val osate: Os.Path = Os.env("OSATE_HOME") match {
+  case Some(s) => Os.path(s) / (if (Os.isWin) "osate.exe" else if (Os.isLinux) "osate" else "Contents/MacOS/osate")
+  case _ if (Os.isWin) => sireumBin / "win" / "fmide" / "fmide.exe"
+  case _ if (Os.isMac) => sireumBin / "mac" / "fmide.app" / "Contents" / "MacOS" / "osate"
+  case _ if (Os.isLinux) => sireumBin / "linux" / "fmide" / "fmide"
+  case _ =>
+    println("Unsupported operating system")
+    Os.exit(1)
+    halt("")
 }
 
-val osireum = ISZ(fmide.string, "-nosplash", "--launcher.suppressErrors", "-data", "@user.home/.sireum", "-application", "org.sireum.aadl.osate.cli")
+if (!osate.exists) {
+  eprintln("Please install FMIDE (e.g. '$SIREUM_HOME/bin/install/fmide.cmd') or OSATE (e.g. 'sireum hamr phantom -u')")
+  Os.exit(1)
+  halt("")
+}
+
+val osireum = ISZ(osate.string, "-nosplash", "--launcher.suppressErrors", "-data", "@user.home/.sireum", "-application", "org.sireum.aadl.osate.cli")
 
 if(Os.cliArgs.size > 1) {
   eprintln("Only expecting a single argument")
   Os.exit(1)
 }
+
+val slangOutputDir =  aadlDir.up / "hamr" / "slang"
+
+val packageName = "tc"
+
+assert (!slangOutputDir.exists || (slangOutputDir / "src" / "main" / "component" / packageName).exists, s"Slang output dir exists but the package name is not $packageName")
 
 val platform: String =
   if(Os.cliArgs.nonEmpty) Os.cliArgs(0)
@@ -48,7 +59,7 @@ val platform: String =
 
 val codegenArgs = ISZ("hamr", "codegen",
   "--platform", platform,
-  "--package-name", "tc",
+  "--package-name", packageName,
   "--output-dir", (aadlDir.up / "hamr" / "slang").string,
   "--output-c-dir", (aadlDir.up / "hamr" / "c").string,
   "--camkes-output-dir", (aadlDir.up / "hamr" / "camkes").string,  

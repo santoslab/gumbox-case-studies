@@ -25,15 +25,15 @@ val toKeep = ops.ISZOps(ISZ(
   (slangDir / "bin" / "run-logika.cmd"), // customized transpiler script
   (slangDir / ".idea"),
   (slangDir / "src" / "main" / "component"), // contains user code
-  (slangDir / "src" / "test" / "bridge") // contains user code
-  (slangDir / "src" / "test" / "util" / "tc" / "RecordUnsatPre.scala")
+  (slangDir / "src" / "test" / "bridge"), // contains user code
+  (slangDir / "src" / "test" / "util" / "tc" / "RecordUnsatPre.scala"),
   (slangDir / "src" / "test" / "util" / "tc" / "Reporter_Ext.scala"),
 ))
 
 
 def rec(p: Os.Path, onlyDelAutoGen: B): Unit = {
   if(p.isFile) {
-    if ((!toKeep.contains(p) && !onlyDelAutoGen) || ops.StringOps(p.read).contains("do not edit")) {
+    if ((!toKeep.contains(p) && !onlyDelAutoGen) || ops.StringOps(p.read).contains("Do not edit")) {
       p.remove()
       println(s"Removed file: $p")
     }

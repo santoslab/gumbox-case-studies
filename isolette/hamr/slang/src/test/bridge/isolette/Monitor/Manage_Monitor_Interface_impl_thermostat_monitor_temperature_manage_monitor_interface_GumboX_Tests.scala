@@ -2,76 +2,35 @@ package isolette.Monitor
 
 import org.sireum._
 import isolette.Monitor._
-import isolette.GumboXUtil
-import isolette.GumboXUtil.GumboXResult
-import isolette.RandomLib
-import org.sireum.Random.Gen64
+import isolette._
 import org.sireum.Random.Impl.Xoshiro256
 
-// This file was auto-generated.  Do not edit
-class Manage_Monitor_Interface_impl_thermostat_monitor_temperature_manage_monitor_interface_GumboX_Tests extends Manage_Monitor_Interface_impl_thermostat_monitor_temperature_manage_monitor_interface_GumboX_TestHarness_ScalaTest {
+// This file will not be overwritten so is safe to edit
 
-  val failOnUnsatPreconditions: B = F
+class Manage_Monitor_Interface_impl_thermostat_monitor_temperature_manage_monitor_interface_GumboX_Tests extends Manage_Monitor_Interface_impl_thermostat_monitor_temperature_manage_monitor_interface_GumboX_TestHarness_ScalaTest_Generator {
 
-  {
-    val seedGen: Gen64 = Random.Gen64Impl(Xoshiro256.create)
-    val ranLibcurrent_tempWstatus: RandomLib = RandomLib(Random.Gen64Impl(Xoshiro256.createSeed(seedGen.genU64())))
-    val ranLiblower_alarm_tempWstatus: RandomLib = RandomLib(Random.Gen64Impl(Xoshiro256.createSeed(seedGen.genU64())))
-    val ranLibmonitor_mode: RandomLib = RandomLib(Random.Gen64Impl(Xoshiro256.createSeed(seedGen.genU64())))
-    val ranLibupper_alarm_tempWstatus: RandomLib = RandomLib(Random.Gen64Impl(Xoshiro256.createSeed(seedGen.genU64())))
+  // set verbose to T to see pre/post state values and generated unit tests
+  // that can be copied/pasted to replay a test
+  override val verbose: B = F
 
-    // getInputs - needed
-    def getInputs(): Option[Manage_Monitor_Interface_impl_thermostat_monitor_temperature_manage_monitor_interface_SlangCheckContainer] = {
-      try {
-        val api_current_tempWstatus = ranLibcurrent_tempWstatus.next_Isolette_Data_ModelTempWstatus_impl()
-        val api_lower_alarm_tempWstatus = ranLiblower_alarm_tempWstatus.next_Isolette_Data_ModelTempWstatus_impl()
-        val api_monitor_mode = ranLibmonitor_mode.next_Isolette_Data_ModelMonitor_ModeType()
-        val api_upper_alarm_tempWstatus = ranLibupper_alarm_tempWstatus.next_Isolette_Data_ModelTempWstatus_impl()
+  // set failOnUnsatPreconditions to T if the unit tests should fail when either
+  // SlangCheck is never able to satisfy a datatype's filter or the generated
+  // test vectors are never able to satisfy an entry point's assume pre-condition
+  override val failOnUnsatPreconditions: B = F
 
-        return Some(Manage_Monitor_Interface_impl_thermostat_monitor_temperature_manage_monitor_interface_SlangCheckContainer(api_current_tempWstatus,api_lower_alarm_tempWstatus,api_monitor_mode,api_upper_alarm_tempWstatus))
-      } catch {
-        case e: AssertionError => return None()
-      }
-    }
+  // profiles that will be used for the initialise tests
+  override def getInitialiseProfiles: MSZ[Manage_Monitor_Interface_impl_thermostat_monitor_temperature_manage_monitor_interface_Profile] = {
+    return MSZ(getDefaultInitialiseProfile)
+  }
 
-    for (i <- 0 to 100) {
-      this.registerTest(i.toString) {
-        var retry: B = T
+  // profiles that will be used to generate the incoming port values
+  override def getProfiles_P: MSZ[Manage_Monitor_Interface_impl_thermostat_monitor_temperature_manage_monitor_interface_Profile_P] = {
+    return MSZ(getDefaultProfile_P)
+  }
 
-        var j: Z = 0
-        while (j < GumboXUtil.numRetries && retry) {
-          getInputs() match {
-            case Some(o) =>
-
-              println(st"""${if (j > 0) s"Retry $j: " else ""}Testing with
-                        |    current_tempWstatus = $o.api_current_tempWstatus
-                        |    lower_alarm_tempWstatus = $o.api_lower_alarm_tempWstatus
-                        |    monitor_mode = $o.api_monitor_mode
-                        |    upper_alarm_tempWstatus = $o.api_upper_alarm_tempWstatus""".render)
-
-              testComputeCB(o.api_current_tempWstatus, o.api_lower_alarm_tempWstatus, o.api_monitor_mode, o.api_upper_alarm_tempWstatus) match {
-                case GumboXResult.Pre_Condition_Unsat =>
-                case GumboXResult.Post_Condition_Fail =>
-                  fail ("Post condition did not hold")
-                  retry = F
-                case GumboXResult.Post_Condition_Pass =>
-                  // success
-                  println ("Success!")
-                  retry = F
-              }
-            case _ =>
-          }
-          j = j + 1
-        }
-
-        if (retry) {
-          if (failOnUnsatPreconditions) {
-            fail ("Unable to satisfy precondition")
-          } else {
-            cprintln(T, "Unable to satisfy precondition")
-          }
-        }
-      }
-    }
+  // profiles that will be used to generate the incoming port values
+  // and the pre-state values of the state variables
+  override def getProfiles_PS: MSZ[Manage_Monitor_Interface_impl_thermostat_monitor_temperature_manage_monitor_interface_Profile_PS] = {
+    return MSZ(getDefaultProfile_PS)
   }
 }
