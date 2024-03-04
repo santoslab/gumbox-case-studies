@@ -18,17 +18,19 @@ import RTS.RandomLib
   val name: String,
   val numTests: Z, // number of tests to generate
   var numTestVectorGenRetries: Z, // number of test vector generation retries
-  var api_channel1: RandomLib,
-  var api_channel2: RandomLib,
-  var api_channel3: RandomLib,
-  var api_channel4: RandomLib)
+  var api_channel1: RandomLib, // random lib for generating Base_Types.Boolean
+  var api_channel2: RandomLib, // random lib for generating Base_Types.Boolean
+  var api_channel3: RandomLib, // random lib for generating Base_Types.Boolean
+  var api_channel4: RandomLib // random lib for generating Base_Types.Boolean
+  )
 
 // Profile with generators for state variables and incoming ports
 @record class CoincidenceLogic_i_actuationSubsystem_actuationUnit1_pressureLogic_coincidenceLogic_Profile_PS(
   val name: String,
   val numTests: Z, // number of tests to generate
   var numTestVectorGenRetries: Z, // number of test vector generation retries
-  var api_channel1: RandomLib,
-  var api_channel2: RandomLib,
-  var api_channel3: RandomLib,
-  var api_channel4: RandomLib)
+  var api_channel1: RandomLib, // random lib for generating Base_Types.Boolean
+  var api_channel2: RandomLib, // random lib for generating Base_Types.Boolean
+  var api_channel3: RandomLib, // random lib for generating Base_Types.Boolean
+  var api_channel4: RandomLib // random lib for generating Base_Types.Boolean
+  )
