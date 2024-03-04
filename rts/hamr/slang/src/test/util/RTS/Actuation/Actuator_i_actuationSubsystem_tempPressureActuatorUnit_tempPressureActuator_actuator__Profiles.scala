@@ -18,13 +18,15 @@ import RTS.RandomLib
   val name: String,
   val numTests: Z, // number of tests to generate
   var numTestVectorGenRetries: Z, // number of test vector generation retries
-  var api_input: RandomLib,
-  var api_manualActuatorInput: RandomLib)
+  var api_input: RandomLib, // random lib for generating Base_Types.Boolean
+  var api_manualActuatorInput: RandomLib // random lib for generating Base_Types.Boolean
+  )
 
 // Profile with generators for state variables and incoming ports
 @record class Actuator_i_actuationSubsystem_tempPressureActuatorUnit_tempPressureActuator_actuator_Profile_PS(
   val name: String,
   val numTests: Z, // number of tests to generate
   var numTestVectorGenRetries: Z, // number of test vector generation retries
-  var api_input: RandomLib,
-  var api_manualActuatorInput: RandomLib)
+  var api_input: RandomLib, // random lib for generating Base_Types.Boolean
+  var api_manualActuatorInput: RandomLib // random lib for generating Base_Types.Boolean
+  )
