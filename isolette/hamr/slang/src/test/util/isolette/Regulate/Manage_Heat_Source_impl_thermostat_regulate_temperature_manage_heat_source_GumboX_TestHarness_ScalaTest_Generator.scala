@@ -89,7 +89,8 @@ trait Manage_Heat_Source_impl_thermostat_regulate_temperature_manage_heat_source
   def getDefaultInitialiseProfile: Manage_Heat_Source_impl_thermostat_regulate_temperature_manage_heat_source_Profile = {
     return Manage_Heat_Source_impl_thermostat_regulate_temperature_manage_heat_source_Profile (
       name = "Default Initialise Profile",
-      numTests = 100)
+      numTests = 100
+    )
   }
 
   def getProfiles_P: MSZ[Manage_Heat_Source_impl_thermostat_regulate_temperature_manage_heat_source_Profile_P]

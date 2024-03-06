@@ -9,7 +9,8 @@ import isolette._
 
 // containers for the pre and post state values of ports and state variables
 
-@sig trait Manage_Heat_Source_impl_thermostat_regulate_temperature_manage_heat_source_PreState_Container extends art.DataContent {
+@sig trait Manage_Heat_Source_impl_thermostat_regulate_temperature_manage_heat_source_PreState_Container
+  extends Container {
   def api_current_tempWstatus: Isolette_Data_Model.TempWstatus_impl
   def api_lower_desired_temp: Isolette_Data_Model.Temp_impl
   def api_regulator_mode: Isolette_Data_Model.Regulator_Mode.Type
@@ -31,7 +32,8 @@ import isolette._
   val api_regulator_mode: Isolette_Data_Model.Regulator_Mode.Type,
   val api_upper_desired_temp: Isolette_Data_Model.Temp_impl) extends Manage_Heat_Source_impl_thermostat_regulate_temperature_manage_heat_source_PreState_Container
 
-@sig trait Manage_Heat_Source_impl_thermostat_regulate_temperature_manage_heat_source_PostState_Container extends art.DataContent {
+@sig trait Manage_Heat_Source_impl_thermostat_regulate_temperature_manage_heat_source_PostState_Container
+  extends Container {
   def api_heat_control: Isolette_Data_Model.On_Off.Type
 }
 
