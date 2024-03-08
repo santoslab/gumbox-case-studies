@@ -44,7 +44,7 @@ object Manage_Heat_Source_impl_thermostat_regulate_temperature_manage_heat_sourc
   //======================================
   // Compute Entry Point
   //======================================
-  def timeTriggered(api: Manage_Heat_Source_impl_Operational_Api): Unit = {
+ def timeTriggered(api: Manage_Heat_Source_impl_Operational_Api): Unit = {
     Contract(
       Requires(
         // BEGIN COMPUTE REQUIRES timeTriggered

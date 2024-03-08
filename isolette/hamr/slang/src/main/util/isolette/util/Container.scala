@@ -1,6 +1,6 @@
 // #Sireum
 
-package isolette
+package isolette.util
 
 import org.sireum._
 
