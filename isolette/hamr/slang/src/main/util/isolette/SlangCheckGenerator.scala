@@ -44,6 +44,8 @@ Manage_Alarm_impl_thermostat_monitor_temperature_manage_alarm__Containers.scala
 
 Manage_Monitor_Mode_impl_thermostat_monitor_temperature_manage_monitor_mode__Containers.scala
 
+Container.scala
+
 DataContent.scala
 
 Aux_Types.scala
@@ -1786,6 +1788,44 @@ Aux_Types.scala
     while (T) {
 
       continue = f(param.nextRegulateManage_Regulator_Mode_impl_thermostat_regulate_temperature_manage_regulator_mode_PostState_Container_PS())
+
+      if (!continue) {
+        return Jen.End
+      }
+    }
+    return continue
+  }
+
+  override def string: String = {
+    return s""
+  }
+}
+
+@record class Gen_utilContainer(param: RandomLibI) extends MJen[util.Container] {
+  override def generate(f: util.Container => Jen.Action): Jen.Action = {
+    var continue = Jen.Continue
+    while (T) {
+
+      continue = f(param.nextutilContainer())
+
+      if (!continue) {
+        return Jen.End
+      }
+    }
+    return continue
+  }
+
+  override def string: String = {
+    return s""
+  }
+}
+
+@record class Gen_utilEmptyContainer(param: RandomLibI) extends MJen[util.EmptyContainer] {
+  override def generate(f: util.EmptyContainer => Jen.Action): Jen.Action = {
+    var continue = Jen.Continue
+    while (T) {
+
+      continue = f(param.nextutilEmptyContainer())
 
       if (!continue) {
         return Jen.End

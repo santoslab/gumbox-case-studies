@@ -6,7 +6,7 @@ import isolette.Isolette_Data_Model._
 
 // This file will not be overwritten so is safe to edit
 class Manage_Heat_Source_impl_thermostat_regulate_temperature_manage_heat_source_Test extends Manage_Heat_Source_impl_thermostat_regulate_temperature_manage_heat_source_ScalaTest {
-/*
+
   test("Example Unit Test for Initialise Entry Point"){
     // Initialise Entry Point doesn't read input port values, so just proceed with
     // launching the entry point code
@@ -21,7 +21,6 @@ class Manage_Heat_Source_impl_thermostat_regulate_temperature_manage_heat_source
     // use get_XXX methods and check_concrete_output() from test/util/../YYY_TestApi
     // retrieve values from output ports and check against expected results
   }
- */
 
   // helper function to check for expected concrete value for heat control
   def check_expected_heat_control(heat_control: On_Off.Type): Unit = {
@@ -74,5 +73,4 @@ class Manage_Heat_Source_impl_thermostat_regulate_temperature_manage_heat_source
     val heat_control_expected: On_Off.Type = On_Off.Onn
     assert(heat_control_expected == heat_control_actual)
   }
-
 }
