@@ -1,5 +1,6 @@
 package isolette.Monitor
 
+import isolette.{Config_F32, RandomLib}
 import org.sireum._
 import isolette.GumboXUtil.GumboXResult
 import isolette.util.{Container, Profile, UnitTestConfigurationBatch}
@@ -9,14 +10,34 @@ import isolette.Monitor.Manage_Alarm_impl_thermostat_monitor_temperature_manage_
 
 class Manage_Alarm_impl_thermostat_monitor_temperature_manage_alarm_GumboX_UnitTests extends Manage_Alarm_impl_thermostat_monitor_temperature_manage_alarm_GumboX_TestHarness_ScalaTest {
 
-  val verbose: B = F
+  val verbose: B = T
   val failOnUnsatPreconditions: B = F
 
+
+
   def configs: MSZ[UnitTestConfigurationBatch] = {
+    def r(lb: F32, ub: F32, r: RandomLib): RandomLib = {
+      return r.set_Config_F32(r.get_Config_F32(low = Some(lb), high = Some(ub)))
+    }
+    var c = defaultComputewLConfig(verbose = verbose, failOnUnsatPreconditions = failOnUnsatPreconditions)
+    val p = c.profile
+    c = c(
+      name = "Custom_Ranges",
+      profile = p(
+        /*
+        api_lower_alarm_temp = r(95.0f, 102.0f, p.api_lower_alarm_temp),
+        api_upper_alarm_temp = r(96.0f, 103.0f, p.api_upper_alarm_temp),
+        api_current_tempWstatus = r(94.0f, 104.0f, p.api_current_tempWstatus)))
+        */
+        api_lower_alarm_temp = r(96.0f, 101.0f, p.api_lower_alarm_temp),
+        api_upper_alarm_temp = r(97.0f, 102.0f, p.api_upper_alarm_temp),
+        api_current_tempWstatus = r(94.0f, 104.0f, p.api_current_tempWstatus)))
+        //api_current_tempWstatus = r(90.0f, 112.0f, p.api_current_tempWstatus)))
     return MSZ(
       defaultInitializeConfig(verbose = verbose, failOnUnsatPreconditions = failOnUnsatPreconditions),
       defaultComputeConfig(verbose = verbose, failOnUnsatPreconditions = failOnUnsatPreconditions),
-      defaultComputewLConfig(verbose = verbose, failOnUnsatPreconditions = failOnUnsatPreconditions)
+      defaultComputewLConfig(verbose = verbose, failOnUnsatPreconditions = failOnUnsatPreconditions),
+      c
     )
   }
 
