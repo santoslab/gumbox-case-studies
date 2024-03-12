@@ -131,28 +131,8 @@ val tc = "tc" ~> TContainer(
   )
 )
 
-val tc_f32_bw = "tc_f32_bw" ~> TContainer(
-  "mac-mini-m1",
-  "e2206hm02.cs.ksu.edu",
-  "tc",
-  home / "temp_control" / "periodic-f32-bw" / "hamr" / "slang",
-  ISZ(1, 5, 30, 360),
-  ISZ(
-    Container("tc_f32_bw", "tc.CoolingFan", "FanPeriodic_p_tcproc_fan",
-      "Cooling Fan", "fan"),
 
-    Container("tc_f32_bw", "tc.TempControlSoftwareSystem", "OperatorInterfacePeriodic_p_tcproc_operatorInterface",
-      "Operator Interface", "operator-interface"),
-
-    Container("tc_f32_bw", "tc.TempControlSoftwareSystem", "TempControlPeriodic_p_tcproc_tempControl",
-      "Temperature Controller", "temp-control"),
-
-    Container("tc_f32_bw", "tc.TempSensor", "TempSensorPeriodic_p_tcproc_tempSensor",
-      "Temperature Sensor", "temp-sensor")
-  )
-)
-
-val projects: Map[String, TContainer] = Map.empty[String, TContainer] ++ ISZ(isolette, rts, tc, tc_f32_bw)
+val projects: Map[String, TContainer] = Map.empty[String, TContainer] ++ ISZ(isolette, rts, tc)
 
 
 def getProj(): (String, TContainer) = {
