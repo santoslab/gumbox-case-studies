@@ -34,6 +34,8 @@ OrLogic_i_actuationSubsystem_saturationActuatorUnit_actuateSaturationActuator_or
 
 Actuator_i_actuationSubsystem_saturationActuatorUnit_saturationActuator_actuator__Containers.scala
 
+Container.scala
+
 DataContent.scala
 
 Aux_Types.scala
@@ -249,5 +251,9 @@ Aux_Types.scala
 @datatype class Config_ISZB(minSize: Z, maxSize: Z, attempts: Z, verbose: B, filter: ISZ[B] => B) {}
 
 @datatype class Config_Base_TypesBits_Payload(attempts: Z, verbose: B, filter: Base_Types.Bits_Payload => B) {}
+
+@datatype class Config_utilContainer(attempts: Z, verbose: B, additiveTypeFiltering: B, typeFilter: ISZ[utilContainer_DataTypeId.Type], filter: util.Container => B) {}
+
+@datatype class Config_utilEmptyContainer(attempts: Z, verbose: B, filter: util.EmptyContainer => B) {}
 
 
