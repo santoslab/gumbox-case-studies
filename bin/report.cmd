@@ -24,6 +24,8 @@ val home = homeBin.up
 val sireumBin = Os.path(Os.env("SIREUM_HOME").get) / "bin"
 val sireum = sireumBin / (if(Os.isWin) "sireum.bat" else "sireum")
 
+val dsc_prefix: String = "dsc_gumbox_journal"
+val jenkinsJobName: String = "0DSC_Unit_Testing_start"
 
 @datatype class Container(val project: String,
                           val packageName: String,
@@ -49,7 +51,7 @@ val isolette = "isolette" ~> TContainer(
   "e2206hm02.cs.ksu.edu",
   "isolette",
   home / "isolette" / "hamr" / "slang",
-  ISZ(1, 5, 30, 360),
+  ISZ(1, 5, 30, 60, 360),
   //ISZ(1, 5, 30),
   ISZ(
     Container("isolette", "isolette.Monitor", "Manage_Alarm_impl_thermostat_monitor_temperature_manage_alarm",
@@ -70,10 +72,10 @@ val isolette = "isolette" ~> TContainer(
 
 val rts = "rts" ~> TContainer(
   "mac-mini-intel",
-  "e2206hm03.cs.ksu.edu",
+  "e2206hm02.cs.ksu.edu",
   "RTS",
   home / "rts" / "hamr" / "slang",
-  ISZ(1, 5, 30, 360),
+  ISZ(1, 5, 30, 60, 360),
   ISZ(
     Container("rts", "RTS.Actuation", "Actuator_i_actuationSubsystem_saturationActuatorUnit_saturationActuator_actuator",
       "Saturation Actuator", "saturationActuator"),
@@ -115,7 +117,7 @@ val tc = "tc" ~> TContainer(
   "e2206hm02.cs.ksu.edu",
   "tc",
   home / "temp_control" / "periodic" / "hamr" / "slang",
-  ISZ(1, 5, 30, 360),
+  ISZ(1, 5, 30, 60, 360),
   ISZ(
     Container("tc", "tc.CoolingFan", "FanPeriodic_p_tcproc_fan",
       "Cooling Fan", "fan"),
@@ -148,7 +150,7 @@ def getProj(): (String, TContainer) = {
 }
 
 def getTimeout(tcontainer: TContainer): String = {
-  if (Os.cliArgs.size != 3) {
+  if (Os.cliArgs.size < 3) {
     println(s"Must supply a timeout: ${tcontainer.timeouts}")
     Os.exit(0)
     halt("Infeasible")
@@ -164,6 +166,14 @@ def getTimeout(tcontainer: TContainer): String = {
   }
 }
 
+def rebuild: B = {
+  if (Os.cliArgs.size == 4) {
+    assert (Os.cliArgs(3) == "rebuild", "3rd argument is optional but must be 'rebuild'")
+    return T
+  }
+  return F
+}
+
 def test(): Unit = {
 
   val (project, tcontainer) = getProj()
@@ -171,47 +181,79 @@ def test(): Unit = {
   val timeout = getTimeout(tcontainer)
 
   val jar = tcontainer.projRoot / "out" / project / "assemble" / s"${project}.jar"
-  val slangCheckLoc = tcontainer.projRoot / "src" / "main" / "data" / tcontainer.basePackage / "SlangCheckRandom.scala"
 
-  val jobName = s"DSC_${project}_Begin"
-
-
-  val jenkinsUser: String = Os.env("jenkins_user") match {
+  val jenkinsUser: String = Os.env("JENKINS_USER_ID") match {
     case Some(u) => u
     case _ => halt("Must set jenkins_user environment variable")
   }
 
-  val jenkinsToken: String = Os.env("jenkins_token") match {
+  val jenkinsToken: String = Os.env("JENKINS_TOKEN") match {
     case Some(t) => t
     case _ => halt("Must set jenkins_token environment variable")
   }
 
-  if (!jar.exists) {
+  val slangCheckLoc = tcontainer.projRoot / "src" / "main" / "util" / tcontainer.basePackage / "SlangCheckRandom.scala"
+  assert(slangCheckLoc.exists)
+
+  val remoteJarLoc = s"${dsc_prefix}/${project}/${jar.name}"
+
+  if(rebuild) {
     println("Replacing for loops with whiles ...")
-    slangCheckLoc.writeOver(ops.StringOps(slangCheckLoc.read).replaceAllLiterally("for(i <- 0 to 100)", "while (true)"))
+    val lines = ops.StringOps(ops.StringOps(slangCheckLoc.read).replaceAllLiterally("\n", " \n")).split(c => c == '\n')
+    val xlines = for (l <- lines) yield (if (ops.StringOps(l).contains("for (i <- 0 to get_Config") || ops.StringOps(l).contains("for(i <- 0 to get_Config")) "while(T) {" else l)
+    slangCheckLoc.writeOver(st"${(xlines, "\n")}".render)
 
     println("Assembling ...")
     proc"sireum proyek assemble --include-sources --include-tests -n ${project} .".at(tcontainer.projRoot).console.runCheck()
 
     println("Reverting back to for loops ...")
     proc"git checkout ${slangCheckLoc.value}".at(tcontainer.projRoot).console.runCheck()
+
+    def upload(server: String): Unit = {
+      println(s"Uploading ${jar} to $server ...")
+      proc"ssh santos_jenkins@${server} mkdir -p ${dsc_prefix}/${project}".console.runCheck()
+      proc"scp ${jar.value} santos_jenkins@${server}:$remoteJarLoc".console.runCheck()
+    }
+
+    upload("linux.cs.ksu.edu")
+    upload(tcontainer.server)
+  } else {
+    println("Not rebuilding/uploading since 'rebuild' cli option not set")
   }
-
-  def upload(server: String): Unit = {
-    println(s"Uploading ${jar} to $server ...")
-    proc"ssh santos_jenkins@${server} mkdir -p dsc/${project}".console.runCheck()
-    proc"scp ${jar.value} santos_jenkins@${server}:dsc/${project}/${jar.name}".console.runCheck()
-  }
-
-  upload("linux.cs.ksu.edu")
-  upload("e2206hm02.cs.ksu.edu")
-  upload("e2206hm03.cs.ksu.edu")
-
 
   for (c <- tcontainer.containers) {
-    //val (runner_simple_name, timeout, runner_class_name) = l
-    val runner_class_name = s"${c.packageName}.${c.objectName}_GumboX_SlangCheck_TestRunner"
-    proc"curl  https://jenkins.cs.ksu.edu/job/${jobName}/buildWithParameters --user ${jenkinsUser}:${jenkinsToken} --data RUNNER_CLASS_NAME=${runner_class_name} --data RUNNER_SIMPLE_NAME=${c.dscPrefix} --data TIMEOUT=${timeout}".console.runCheck()
+    val runnerSimpleName = s"${c.objectName}_DSC_UnitTests"
+    val runner_class_name = s"${c.packageName}.$runnerSimpleName"
+    val p = proc"java -cp $jar $runner_class_name".run()
+    assert(p.ok)
+    var copts = ops.StringOps(p.out)
+    for (config <- ops.StringOps(copts.substring(2, p.out.size - 3)).split(c => c == ',')) {
+      copts = ops.StringOps(ops.StringOps(config).trim)
+      val configName = copts.substring(1, copts.indexOf('|'))
+
+      val testerDir = s"/opt/santos/jenkins/$dsc_prefix/tester/$project/$runnerSimpleName/$configName/$timeout"
+      val runnerDir = s"/opt/santos/jenkins/$dsc_prefix/runner/$project/$runnerSimpleName/$configName/$timeout"
+
+      proc"ssh santos_jenkins@${tcontainer.server} mkdir -p ${runnerDir}".echo.runCheck()
+      proc"ssh santos_jenkins@${tcontainer.server} mkdir -p ${testerDir}".echo.runCheck()
+
+      val args = ISZ[String](
+        s"DSC_RUNNER_CLASS_NAME=${runner_class_name}",
+        s"DSC_RUNNER_SIMPLE_NAME=${c.dscPrefix}",
+        s"DSC_TIMEOUT=${timeout}",
+        s"DSC_CONFIG_NAME=$configName",
+        s"DSC_PROJECT_NAME=${c.project}",
+        s"DSC_JAR_LOC=$remoteJarLoc",
+        s"DSC_PREFIX=$dsc_prefix",
+        s"DSC_TEST_SERVER=${tcontainer.server}",
+        s"DSC_RUNNER_DIR=$runnerDir",
+        s"DSC_TESTER_DIR=$testerDir"
+      )
+      assert (ops.ISZOps(args).forall(z => !ops.StringOps(z).contains(" ")), s"data args cannot contain spaces: $args")
+
+      val data = st"${(for (a <- args) yield s"--data $a", " ")}".render
+      proc"curl  https://jenkins.cs.ksu.edu/job/${jenkinsJobName}/buildWithParameters --user ${jenkinsUser}:${jenkinsToken} $data".echo.runCheck()
+    }
   }
 }
 
