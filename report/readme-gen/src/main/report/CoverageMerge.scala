@@ -437,7 +437,7 @@ object MergeUtils {
           else st"$num")
       }
       val subs: (ST, Option[ST]) = getCoverage(r, parentDir)
-      val coverage = CoverageInfo(subs._1, subs._2, st"""<a href="${reportDir.relativize(r.coverageP)}/index.html">link</a>""")
+      val coverage = CoverageInfo(subs._1, subs._2, st"""<a href="${parentDir.relativize(r.coverageP)}/index.html">link</a>""")
       val cells = ISZ(
         st"""<td><a href="${reportDir.relativize(r.unsatP.up / "report.html")}">${r.timeout}</a></td>""",
         st"""<td id=col_a title="Number of test vectors that passed">${optLink(r.passing, r.passingP)}</td>""",
