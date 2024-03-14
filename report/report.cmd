@@ -60,10 +60,9 @@ val isolette = "isolette" ~> TContainer(
       "Manage Monitor Interface", "mmi"),
     Container("isolette", "isolette.Monitor", "Manage_Monitor_Mode_impl_thermostat_monitor_temperature_manage_monitor_mode",
       "Manage Monitor Mode", "mmm"),
-
     Container("isolette", "isolette.Regulate", "Manage_Heat_Source_impl_thermostat_regulate_temperature_manage_heat_source",
       "Manage Heat Source", "mhs"),
-    Container("isolette", "isolette.Regulate", "Manage_Heat_Source_impl_thermostat_regulate_temperature_manage_heat_source",
+    Container("isolette", "isolette.Regulate", "Manage_Regulator_Interface_impl_thermostat_regulate_temperature_manage_regulator_interface",
       "Manage Regulator Interface", "mri"),
     Container("isolette", "isolette.Regulate", "Manage_Regulator_Mode_impl_thermostat_regulate_temperature_manage_regulator_mode",
       "Manage Regulator Mode", "mrm")
@@ -135,6 +134,7 @@ val tc = "tc" ~> TContainer(
 
 
 val projects: Map[String, TContainer] = Map.empty[String, TContainer] ++ ISZ(isolette, rts, tc)
+//val projects: Map[String, TContainer] = Map.empty[String, TContainer] ++ ISZ(isolette)
 
 
 def getProj(): (String, TContainer) = {
