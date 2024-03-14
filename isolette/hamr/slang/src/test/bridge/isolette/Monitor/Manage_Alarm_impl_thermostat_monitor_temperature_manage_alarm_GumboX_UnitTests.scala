@@ -67,7 +67,7 @@ class Manage_Alarm_impl_thermostat_monitor_temperature_manage_alarm_GumboX_UnitT
     val p = c.profile.asInstanceOf[DefaultComputewLProfile]
     c = c(
       name = "Compute_Config_ranges_based_on_requirements",
-      description = s"Ranges based on requirements, ie 96.0 <= lower_alarm <= 101.0 and 97.0 <= upper_alarm <= 102.  Also restrict current_temp to be between 86.0 and 112.0 inclusive",
+      description = s"Ranges based on requirements - ie 96.0 <= lower_alarm <= 101.0 and 97.0 <= upper_alarm <= 102.  Also restrict current_temp to be between 86.0 and 112.0 inclusive",
       profile = p(
         api_lower_alarm_temp = r(96.0f, 101.0f, p.api_lower_alarm_temp),
         api_upper_alarm_temp = r(97.0f, 102.0f, p.api_upper_alarm_temp),

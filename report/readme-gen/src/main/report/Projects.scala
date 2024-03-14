@@ -5,9 +5,8 @@ import org.sireum._
 
 object Projects {
 
-  val home = Os.path(".").up.up.up
+  val home: Os.Path = Os.path(".").up.up.up
 
-  val dsc_prefix: String = "dsc_gumbox_journal"
   val jenkinsJobName: String = "0DSC_Unit_Testing_start"
 
   @datatype class Container(val project: String,
@@ -30,7 +29,7 @@ object Projects {
                              val timeouts: ISZ[Z],
                              val containers: ISZ[Container])
 
-  val isolette = "isolette" ~> TContainer(
+  val isolette: (String, TContainer) = "isolette" ~> TContainer(
     "mac-mini-m1",
     "e2206hm02.cs.ksu.edu",
     "isolette",
@@ -55,7 +54,7 @@ object Projects {
     )
   )
 
-  val rts = "rts" ~> TContainer(
+  val rts: (String, TContainer) = "rts" ~> TContainer(
     "mac-mini-intel",
     "e2206hm02.cs.ksu.edu",
     "RTS",
@@ -98,7 +97,7 @@ object Projects {
     )
   )
 
-  val tc = "tc" ~> TContainer(
+  val tc: (String, TContainer) = "tc" ~> TContainer(
     "mac-mini-m1",
     "e2206hm02.cs.ksu.edu",
     "tc",

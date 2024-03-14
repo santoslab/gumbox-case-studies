@@ -24,7 +24,7 @@ val home = homeBin.up
 val sireumBin = Os.path(Os.env("SIREUM_HOME").get) / "bin"
 val sireum = sireumBin / (if(Os.isWin) "sireum.bat" else "sireum")
 
-val dsc_prefix: String = "dsc_gumbox_journal"
+val dsc_prefix: String = "dsc_gumbox_journal_cust"
 val jenkinsJobName: String = "0DSC_Unit_Testing_start"
 
 @datatype class Container(val project: String,
@@ -134,7 +134,7 @@ val tc = "tc" ~> TContainer(
 
 
 val projects: Map[String, TContainer] = Map.empty[String, TContainer] ++ ISZ(isolette, rts, tc)
-//val projects: Map[String, TContainer] = Map.empty[String, TContainer] ++ ISZ(isolette)
+//val projects: Map[String, TContainer] = Map.empty[String, TContainer] ++ ISZ(tc)
 
 
 def getProj(): (String, TContainer) = {

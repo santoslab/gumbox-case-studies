@@ -21,7 +21,7 @@ class TempControlPeriodic_p_tcproc_tempControl_GumboX_UnitTests extends TempCont
     val p = c.profile.asInstanceOf[DefaultComputewLConfig]
     c = c(
       name = "Custom_ComputewL_Config",
-      description = "Set ranges based on requirements, ie 50 <= SetPoint.Low, SetPoint.High <= 110, -128 <= current_temp <= 134",
+      description = "Set ranges based on requirements - i.e. 50 <= SetPoint.Low and SetPoint.High <= 110 and -128 <= current_temp <= 134",
       profile = p(
         api_currentTemp = r(-128.0f, 134.0f, p.api_currentTemp),
         api_setPoint = r(50, 110, p.api_setPoint)))
