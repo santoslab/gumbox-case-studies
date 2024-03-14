@@ -123,11 +123,10 @@ object MergeUtils {
     val r3 = reportDir.relativize(reportRoot / r.project / r.dscTestName / r.configName / "report.html")
 
     val cookieCrumb = cookies(ISZ(("Report", r0), (r.project, r1), (r.component, r2), (r.configName, r3)))
-    val subs: (ST, Option[ST]) = getCoverage(r, reportDir)
 
     val resultTable: ST = genResultTable(
       results = ISZ(r),
-      //coverage = CoverageInfo(subs._1, subs._2, st"""<a href="${reportDir.relativize(r.coverageP)}/index.html">link</a>"""),
+      parentDir = reportDir,
       reportDir = reportDir,
       isActualRun = T
     )
@@ -202,12 +201,10 @@ object MergeUtils {
       val timeoutResults: ISZ[Results] = for (timeout <- typ._2.entries) yield
         mergeResults (results = timeout._2, regenMergedReports = regenMergedReports, jacocoDirName = s"jacocoCoverage_${timeout._1}", relativeTo = reportDir)
 
-
-
       resultTables = resultTables :+
         genResultTable(
           results = timeoutResults,
-          //coverage = CoverageInfo(subs._1, subs._2, st"""<a href="${reportDir.relativize(r.coverageP)}/index.html">link</a>"""),
+          parentDir = reportDir,
           reportDir = reportDir,
           isActualRun = T)
     }
@@ -226,7 +223,8 @@ object MergeUtils {
     report.writeOver(html.render)
     println(s"Wrote: ${report}")
   }
-  @datatype class CoverageInfo(val behavior: ST, val gumbox: Option[ST], fullReport: ST)
+  
+  @datatype class CoverageInfo(val behavior: ST, val gumbox: Option[ST], val fullReport: ST)
 
   def addComponentReport(allConfigResults: ISZ[Results], configurations: ISZ[String], componentRoot: Os.Path, reportRoot: Os.Path, regenMergedReports: B): Unit = {
     val reportDir = componentRoot
@@ -267,13 +265,14 @@ object MergeUtils {
       val timeoutResults: ISZ[Results] = for (timeout <- typ._2.entries) yield
         mergeResults (
           results = timeout._2, regenMergedReports = regenMergedReports,
-          jacocoDirName = s"jacocoCoverage_${typ._1}_${timeout._1}", relativeTo = parentDir)
+          jacocoDirName = s"jacocoCoverage_${typ._1}_${timeout._1}", relativeTo = reportDir)
       val configNames: ISZ[String] = (Set.empty[String] ++ (for (tr <- typ._2.values; trr <- tr) yield trr.configName)).elements
       val configLinks: ISZ[String] = for (tr <- configNames) yield s"""<a href="${(parentDir.relativize(reportDir / tr / "report.html")).string}">${tr}</a><br>"""
 
       val table =
         genResultTable(
           results = timeoutResults,
+          parentDir = parentDir,
           reportDir = reportDir,
           isActualRun = F)
 
@@ -342,12 +341,12 @@ object MergeUtils {
     println(s"Wrote: $f")
   }
 
-  @datatype class Results(project: String,
-                          component: String,
-                          componentPackage: String,
-                          dscTestName: String,
-                          configName: String,
-                          timeout: Z,
+  @datatype class Results(val project: String,
+                          val component: String,
+                          val componentPackage: String,
+                          val dscTestName: String,
+                          val configName: String,
+                          val timeout: Z,
 
                           val configDescription: String,
 
@@ -429,15 +428,15 @@ object MergeUtils {
     return (st"""<a href=$summary>link</a>""", optGumbox)
   }
 
-  def genResultTable(results : ISZ[Results], reportDir: Os.Path, isActualRun: B): ST = {
+  def genResultTable(results : ISZ[Results], parentDir: Os.Path, reportDir: Os.Path, isActualRun: B): ST = {
     var tableEntries: ISZ[ST]= ISZ()
     for (r <- ops.ISZOps(results).sortWith((a,b) => a.timeout <= b.timeout)) {
       def optLink(num: Z, p: Os.Path): ST = {
         return (
-          if (isActualRun && num > 0) st"""<a href="${reportDir.relativize(p)}">$num</a>"""
+          if (isActualRun && num > 0) st"""<a href="${parentDir.relativize(p)}">$num</a>"""
           else st"$num")
       }
-      val subs: (ST, Option[ST]) = getCoverage(r, reportDir)
+      val subs: (ST, Option[ST]) = getCoverage(r, parentDir)
       val coverage = CoverageInfo(subs._1, subs._2, st"""<a href="${reportDir.relativize(r.coverageP)}/index.html">link</a>""")
       val cells = ISZ(
         st"""<td><a href="${reportDir.relativize(r.unsatP.up / "report.html")}">${r.timeout}</a></td>""",
@@ -562,7 +561,6 @@ object MergeUtils {
       val commands = ISZ[String](javaExe.string, "-jar", jacocoCli.string, "report") ++ execs ++ ISZ[String]("--encoding",
         "UTF-8", "--classfiles", dumpLoc.get.string, "--csv", csv.string, "--html", jacocoOutDir.string, "--sourcefiles", dumpLoc.get.string)
 
-      //println(commands)
       Os.proc(commands).console.echo.runCheck()
       println()
     }
