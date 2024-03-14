@@ -12,8 +12,8 @@ object TempControlPeriodic_p_tcproc_tempControl_GumboX {
     * assume currentTempRange
     */
   @strictpure def I_Assm_currentTemp(currentTemp: TempSensor.Temperature_i): B =
-    currentTemp.degrees >= -70.0f &
-      currentTemp.degrees <= 80.0f
+    currentTemp.degrees >= -128.6f &
+      currentTemp.degrees <= 134.0f
 
   // I-Assm-Guard: Integration constraint on tempControl's incoming data port currentTemp
   @strictpure def I_Assm_Guard_currentTemp(currentTemp: TempSensor.Temperature_i): B =

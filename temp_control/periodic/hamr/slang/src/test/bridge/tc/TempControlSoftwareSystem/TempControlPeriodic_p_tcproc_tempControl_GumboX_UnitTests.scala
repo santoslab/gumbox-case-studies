@@ -2,6 +2,7 @@ package tc.TempControlSoftwareSystem
 
 import org.sireum._
 import tc.GumboXUtil.GumboXResult
+import tc.RandomLib
 import tc.util.{Container, Profile, UnitTestConfigurationBatch}
 import tc.TempControlSoftwareSystem.TempControlPeriodic_p_tcproc_tempControl_UnitTestConfiguration_Util._
 
@@ -9,14 +10,26 @@ import tc.TempControlSoftwareSystem.TempControlPeriodic_p_tcproc_tempControl_Uni
 
 class TempControlPeriodic_p_tcproc_tempControl_GumboX_UnitTests extends TempControlPeriodic_p_tcproc_tempControl_GumboX_TestHarness_ScalaTest {
 
-  val verbose: B = F
-  val failOnUnsatPreconditions: B = F
+  val verbose: B = T
+  val failOnUnsatPreconditions: B = T
 
   def configs: MSZ[UnitTestConfigurationBatch] = {
+    def r(lb: F32, ub: F32, r: RandomLib): RandomLib = {
+      return r.set_Config_F32(r.get_Config_F32(low = Some(lb), high = Some(ub)))
+    }
+    var c = defaultComputewLConfig(verbose = verbose, failOnUnsatPreconditions = failOnUnsatPreconditions)
+    val p = c.profile.asInstanceOf[DefaultComputewLConfig]
+    c = c(
+      name = "Custom_ComputewL_Config",
+      description = "Set ranges based on requirements, ie 50 <= SetPoint.Low, SetPoint.High <= 110, -128 <= current_temp <= 134",
+      profile = p(
+        api_currentTemp = r(-128.0f, 134.0f, p.api_currentTemp),
+        api_setPoint = r(50, 110, p.api_setPoint)))
     return MSZ(
       defaultInitializeConfig(verbose = verbose, failOnUnsatPreconditions = failOnUnsatPreconditions),
-      defaultComputeConfig(verbose = verbose, failOnUnsatPreconditions = failOnUnsatPreconditions),
-      defaultComputewLConfig(verbose = verbose, failOnUnsatPreconditions = failOnUnsatPreconditions)
+      //defaultComputeConfig(verbose = verbose, failOnUnsatPreconditions = failOnUnsatPreconditions),
+      //defaultComputewLConfig(verbose = verbose, failOnUnsatPreconditions = failOnUnsatPreconditions)
+      c
     )
   }
 
