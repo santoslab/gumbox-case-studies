@@ -12,14 +12,6 @@ object Manage_Regulator_Interface_impl_thermostat_regulate_temperature_manage_re
   @strictpure def ROUND(num: Base_Types.Float_32): Base_Types.Float_32 = num
   // END FUNCTIONS
 
-
-  // FIXME: hack of initialization of data port values due lack of proper protocol for thread/port initialization
-  // Default lower and upper desired temperatures.
-  // Used as a hack because we don't have a proper method for initialization of thread states and port values yet
-  val LOW: Isolette_Data_Model.TempWstatus_impl = Isolette_Data_Model.TempWstatus_impl.example() //TODO This example method does not provide proper initial values in a real system.
-  val HIGH: Isolette_Data_Model.TempWstatus_impl = Isolette_Data_Model.TempWstatus_impl.example() //TODO This example method does not provide proper initial values in a real system.
-
-
   def initialise(api: Manage_Regulator_Interface_impl_Initialization_Api): Unit = {
     Contract(
       Modifies(api),
