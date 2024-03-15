@@ -134,7 +134,6 @@ val tc = "tc" ~> TContainer(
 
 
 val projects: Map[String, TContainer] = Map.empty[String, TContainer] ++ ISZ(isolette, rts, tc)
-//val projects: Map[String, TContainer] = Map.empty[String, TContainer] ++ ISZ(tc)
 
 
 def getProj(): (String, TContainer) = {
