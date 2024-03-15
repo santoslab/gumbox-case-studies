@@ -3,8 +3,11 @@ package report
 
 import org.sireum._
 import MergeUtils._
+import report.CoverageMerge.genPaperVersions
 
 object CoverageMerge extends App {
+  val genPaperVersions: B = T
+
   val removeDump: B = F
   val regenMergedReports: B = F
 
@@ -275,7 +278,20 @@ object MergeUtils {
     val cookieCrumb = cookies(ISZ(("Report", r0), (r.project, r1)))
 
     val splits: HashSMap[String, HashSMap[Z, ISZ[Results]]] = splitResults(allConfigResults)
-    val resultTables: ISZ[ST] = commonSpitter(splits, regenMergedReports, reportDir, reportDir)
+    val resultTablesX: ISZ[ST] = commonSpitter(splits, regenMergedReports, reportDir, reportDir)
+
+    val resultsTables: ISZ[ST] =
+      if (!genPaperVersions) {
+        ISZ(st"<table><tr>${(resultTablesX, "<td>&nbsp;&nbsp</td>\n")}</tr></table>")
+      } else {
+        if (resultTablesX.size == 2) {
+          ISZ(st"""${resultTablesX(1)}
+                  |<br>
+                  |${resultTablesX(0)}""")
+        } else {
+          resultTablesX
+        }
+      }
 
     val html = reportTemplate(
       cookieCrumbs = cookieCrumb,
@@ -285,7 +301,7 @@ object MergeUtils {
       system = Some(st"${r.componentNickName}"),
       families = Some(st"${(configLinks, " ")}"),
       timeouts = None(),
-      resultTables = ISZ(st"<table><tr>${(resultTables, "<td>&nbsp;&nbsp</td>\n")}</tr></table>"),
+      resultTables = resultsTables,
       reportDir = reportDir
     )
 
@@ -335,11 +351,27 @@ object MergeUtils {
     for (projSplit <- projSplits.entries) {
       val resultTablesx: ISZ[ST] = commonSpitter(projSplit._2, regenMergedReports, reportDir, reportDir / s"${projSplit._1}_DSC_UnitTests")
 
-      resultTables = resultTables :+
-        st"""<h3>${getNickName(projSplit._1)} <a style="font-size: medium; font-weight: normal;" href="${(reportDir.relativize(reportDir / s"${projSplit._1}_DSC_UnitTests" / "report.html")).string}">link</a></h3>
-            |
-            |<table><tr>${(resultTablesx, "<td>&nbsp;&nbsp</td>\n")}</tr></table>
-            |"""
+      if (!genPaperVersions) {
+        resultTables = resultTables :+
+          st"""<h3>${getNickName(projSplit._1)} <a style="font-size: medium; font-weight: normal;" href="${(reportDir.relativize(reportDir / s"${projSplit._1}_DSC_UnitTests" / "report.html")).string}">link</a></h3>
+              |
+              |<table><tr>${(resultTablesx, "<td>&nbsp;&nbsp</td>\n")}</tr></table>
+              |"""
+      } else {
+        val paperFormatted: ST = if (resultTablesx.size == 2){
+          st"""${resultTablesx(1)}
+              |<br>
+              |${resultTablesx(0)}"""
+        } else {
+          resultTablesx(0)
+        }
+
+        resultTables = resultTables :+
+          st"""<h3>${getNickName(projSplit._1)} <a style="font-size: medium; font-weight: normal;" href="${(reportDir.relativize(reportDir / s"${projSplit._1}_DSC_UnitTests" / "report.html")).string}">link</a></h3>
+              |
+              |$paperFormatted
+              |"""
+      }
     }
     val r = allConfigResults(0)
     val html = reportTemplate(
@@ -538,12 +570,15 @@ object MergeUtils {
       )
       tableEntries = tableEntries :+ st"<tr>${(cells, "\n")}</tr>"
     }
+    def colName(str: String): String = {
+      return if (genPaperVersions) s"${ops.StringOps(str).first}" else str
+    }
     val stats =
       st"""<table class=resultTable border=1>
-          |<th>Timeout(s)</th>
-          |<th>Passing<br>Tests</th>
-          |<th>Failing<br>Tests</th>
-          |<th>Unsat<br>Tests</th>
+          |<th>${colName("Timeouts")}</th>
+          |<th>${colName("Passing<br>Tests")}</th>
+          |<th>${colName("Failing<br>Tests")}</th>
+          |<th>${colName("Unsat<br>Tests")}</th>
           |<th>Behavior<br>Coverage</th>
           |<th>GumboX<br>Coverage</th>
           |<th>Full<br>Coverage</th>
@@ -663,7 +698,7 @@ object MergeUtils {
     val nicknames = Map.empty[String, String] ++
       ISZ(
         "Manage_Alarm_impl_thermostat_monitor_temperature_manage_alarm" ~> "Manage Alarm (MA)",
-        "Manage_Heat_Source_impl_thermostat_regulate_temperature_manage_heat_source" ~> "Manage Heat Source (MH)",
+        "Manage_Heat_Source_impl_thermostat_regulate_temperature_manage_heat_source" ~> "Manage Heat Source (MHS)",
         "Manage_Monitor_Interface_impl_thermostat_monitor_temperature_manage_monitor_interface" ~> "Manage Monitor Interface (MMI)",
         "Manage_Monitor_Mode_impl_thermostat_monitor_temperature_manage_monitor_mode" ~> "Manage Monitor Mode (MMM)",
         "Manage_Regulator_Interface_impl_thermostat_regulate_temperature_manage_regulator_interface" ~> "Manage Regulator Interface (MRI)",
