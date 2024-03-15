@@ -110,15 +110,6 @@ object Manage_Heat_Source_impl_thermostat_regulate_temperature_manage_heat_sourc
         // REQ-MHS-1
         currentCmd = Isolette_Data_Model.On_Off.Off
 
-      // COVERAGE NOTE: this case and its body will be marked as partial and not covered respectively.
-      //   regulate_mode's value is set by the MRM thread which does send Init_Monitor_Mode during its initialization
-      //   phase.  Components cannot read from their input ports during initialization so MHS wouldn't be able to
-      //   consume that value until it enters its compute phase.  However, MRM is scheduled to be dispatched
-      //   before MHS and it will send Normal_Monitor_Mode or Failed_Monitor_Mode during its first compute dispatch
-      //   so that is the first value that MHS will retrieve on its regulator_mode port.  REQ_MHS_1 is correctly
-      //   handled in MHS's initialization phase, but this case is explicitly handled here as a different schedule
-      //   may allow MHS to retrieve Init_Regulator_Mode during its compute phase
-
       // ------ NORMAL Mode -------
       case Isolette_Data_Model.Regulator_Mode.Normal_Regulator_Mode =>
         if (currentTemp.value > upper.value) {

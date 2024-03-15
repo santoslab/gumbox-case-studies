@@ -118,6 +118,12 @@ object Manage_Regulator_Mode_impl_thermostat_regulate_temperature_manage_regulat
       (!(interface_failure.value || internal_failure.value)
         && (current_temperature_status == Isolette_Data_Model.ValueStatus.Valid))
 
+    // COVERAGE NOTE: jacoco coverage reports will indicate at least 3 of 6 branches were missed in the preceding
+    //   expression.  This is due to the bytecode handling possible null object values.  E.g. one check is if
+    //   current_tempWstatus and Isolette_Data_Model.ValueStatus.Valid are both null in which case they'd be
+    //   equal. Slang ensures the absence of null values and as such NULL is not in its subset of Scala. Therefore
+    //   there is no way to write a valid unit test where null is introduced so these infeasible branches can be ignored
+
     lastRegulatorMode match {
 
       // Transitions from INIT Mode
