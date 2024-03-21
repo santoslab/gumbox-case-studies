@@ -3,7 +3,7 @@ package report
 
 import org.sireum._
 import MergeUtils._
-import report.CoverageMerge.genPaperVersions
+import report.CoverageMerge.{genPaperVersions, reportRoot}
 
 object CoverageMerge extends App {
   val genPaperVersions: B = T
@@ -29,7 +29,7 @@ object CoverageMerge extends App {
     var results: ISZ[Results] = ISZ()
     def walk(p: Os.Path): Unit = {
       if (p.isFile && p.name == "sireum.version") {
-        println(p.up.toUri)
+        //println(p.up.toUri)
         val passingP = fetch(".passing", p.up.list).get
         val failingP = fetch(".failing", p.up.list).get
         val unsatP = fetch(".unsat", p.up.list).get
@@ -48,7 +48,7 @@ object CoverageMerge extends App {
           val configFileName = s".$dscTestName.scala.json"
           val cached = reportRoot / project / dscTestName / configFileName
           if (cached.exists) {
-            println(s"Using cached config for ${dscTestName}")
+            //println(s"Using cached config for ${dscTestName}")
             cached
           } else {
             val actual = Os.Path.walk(hamrRoot / "src" / "test" / "bridge", F, F, p => p.name == configFileName)(0)
@@ -93,6 +93,15 @@ object CoverageMerge extends App {
         } else {
           println(s"Not process ${project} due to filter ...")
         }
+        if (removeDump && r.dumpP.nonEmpty) {
+          if (dumpLoc(r.project) != r.dumpP.get) {
+            r.dumpP.get.removeAll()
+            //println(s"     Would delete ${r.dumpP.get}")
+          } else {
+            //println(s"Would keep ${r.dumpP.get}")
+          }
+        }
+
       } else if (p.isDir) {
         val x = ops.StringOps(p.name)
         if (!x.endsWith(".coverage") && !x.endsWith(".dump")) {
@@ -367,7 +376,7 @@ object MergeUtils {
         }
 
         resultTables = resultTables :+
-          st"""<h3>${getNickName(projSplit._1)} <a style="font-size: medium; font-weight: normal;" href="${(reportDir.relativize(reportDir / s"${projSplit._1}_DSC_UnitTests" / "report.html")).string}">link</a></h3>
+          st"""<h3>${getNickName(projSplit._1)}</h3>
               |
               |$paperFormatted
               |"""
@@ -491,17 +500,19 @@ object MergeUtils {
     //val summary = reportDir.relativize(p / s"${r.component}$$.html")
     val gumbox = p / s"${r.component}_GumboX$$.html"
 
-    def mine(method: String, contents: String): (Z, Z) = {
-      var contents_ = ops.StringOps(contents)
-      val p1 = contents_.stringIndexOf(method)
-      contents_ = ops.StringOps(contents_.substring(p1, contents_.stringIndexOfFrom("el_method", p1)))
-      val p2 = contents_.stringIndexOf("id=\"h")
-      val missed = contents_.substring(p2 + 8, contents_.stringIndexOfFrom("</td>", p2))
-      val p3 = contents_.stringIndexOf("id=\"i")
-      val total = contents_.substring(p3 + 8, contents_.stringIndexOfFrom("</td>", p3))
+    def mine(pos: Z, contents: ops.StringOps): (Z, Z) = {
+      val p2 = contents.stringIndexOfFrom("id=\"h", pos)
+      val p2_1 = contents.stringIndexOfFrom("\"", p2+4)
+      val missed = contents.substring(p2_1+2, contents.stringIndexOfFrom("</td>", p2_1))
+      val p3 = contents.stringIndexOfFrom("id=\"i", p2)
+      val p3_1 = contents.stringIndexOfFrom("\"", p3+4)
+      val total = contents.substring(p3_1+2, contents.stringIndexOfFrom("</td>", p3_1))
       if (Z(total).isEmpty) {
         println(total)
         println()
+      }
+      if (Z(total).isEmpty) {
+        println(total)
       }
       val totalz = Z(total).get
       val covered = totalz - Z(missed).get
@@ -509,13 +520,33 @@ object MergeUtils {
     }
 
     val b: Option[ST] = if (behavior.exists) {
-      val info = mine(methodName, behavior.read)
+      val contents = ops.StringOps(behavior.read)
+      val info = mine(contents.stringIndexOf(methodName), contents)
       Some(st"${info._1}/${info._2}")
     } else {
       None()
     }
     val g: Option[ST] = if (gumbox.exists) {
-      None()
+      val suffix: String = if (methodName == "timeTriggered") "compute" else "initialize"
+      val contents = ops.StringOps(gumbox.read)
+      var pos = 0
+      var covered: Z = 0
+      var total: Z = 0
+      while (pos >= 0 && pos < contents.size) {
+        pos = contents.stringIndexOfFrom(suffix, pos)
+        val pos2 = contents.stringIndexOfFrom("(", pos)
+        if (pos >= 0 && pos2 >= 0) {
+          val mname = contents.substring(pos, pos2)
+          if (!ops.StringOps(mname).contains("Container")) {
+            val (x, y) = mine(pos2, contents)
+            //println(s"$x/$y - $mname")
+            covered = covered + x
+            total = total + y
+          }
+          pos = pos2 + 1
+        }
+      }
+      Some(st"$covered/$total")
     } else {
       None()
     }
@@ -533,9 +564,9 @@ object MergeUtils {
     val gumbox = p / s"${r.component}_GumboX$$.html"
     val gumboxR = reportDir.relativize(gumbox)
     val optGumbox: Option[ST] =
-      if (gumbox.exists) Some(st"<a href=$gumboxR>link</a>")
+      if (gumbox.exists) Some(st"$gumboxR")
       else None()
-    return (st"""<a href=$summary>link</a>""", optGumbox)
+    return (st"$summary", optGumbox)
   }
 
   def genResultTable(results : ISZ[Results], parentDir: Os.Path, reportDir: Os.Path, isActualRun: B): ST = {
@@ -544,16 +575,24 @@ object MergeUtils {
       def optLink(num: Z, p: Os.Path): ST = {
         return (
           if (isActualRun && num > 0) st"""<a href="${parentDir.relativize(p)}">$num</a>"""
-          else st"$num")
+          else if (genPaperVersions && num != 0) st"<a>$num</a>"
+          else st"$num"
+          )
       }
       val subs: (ST, Option[ST]) = getCoverage(r, parentDir)
       val codeCoverage = getLineCoverage(getEntrypointMethodName(r), r, parentDir)
-      val entrypointCoverageOpt: ST =
+      val entrypointCoverageOpt: ST = {
         if (codeCoverage._1.nonEmpty) {
-          st"${codeCoverage._1.get} "
+          st"""<a href="${subs._1}">${codeCoverage._1.get}</a>"""
         } else {
           st"??"
         }
+      }
+      val behaviorCoverage: ST =
+        if (codeCoverage._2.nonEmpty)
+          st"""<a href="${subs._2}">${codeCoverage._2.get}</a>"""
+        else
+          st"NA"
       val timeoutSt: ST =
         if (isActualRun) st"""<td><a href="${reportDir.relativize(r.unsatP.up / "report.html")}">${r.timeout}</a></td>"""
         else st"""<td>${r.timeout}</td>"""
@@ -564,8 +603,8 @@ object MergeUtils {
         st"""<td id=col_a title="Number of test vectors that passed">${optLink(r.passing, r.passingP)}</td>""",
         st"""<td id=col_a title="Number of test vectors that failed">${optLink(r.failing, r.failingP)}</td>""",
         st"""<td id=col_a title="Number of test vectors that failed to satisfy filter">${optLink(r.unsat, r.unsatP)}</td>""",
-        st"<td>${entrypointCoverageOpt}${coverage.behavior}</td>",
-        st"<td>${coverage.gumbox}</td>",
+        st"<td>${entrypointCoverageOpt}</td>",
+        st"<td>$behaviorCoverage</td>",
         st"<td>${coverage.fullReport}</td>"
       )
       tableEntries = tableEntries :+ st"<tr>${(cells, "\n")}</tr>"
@@ -655,7 +694,6 @@ object MergeUtils {
   def mergeResults(results: ISZ[Results], regenMergedReports: B, jacocoDirName: String, relativeTo: Os.Path): Results = {
     var (passing, failing, unsat) = (0, 0, 0)
     var execsPaths: ISZ[Os.Path] = ISZ()
-    var dumpLoc: Option[Os.Path] = None()
 
     val t = results(0).timeout
     for (r <- results) {
@@ -663,11 +701,12 @@ object MergeUtils {
       failing = failing + r.failing
       unsat = unsat + r.unsat
       execsPaths = execsPaths :+ r.exec
-      if (r.dumpP.nonEmpty && dumpLoc.isEmpty) {
-        dumpLoc = r.dumpP
-      }
+      //if (r.dumpP.nonEmpty && dumpLoc.isEmpty) {
+      //  dumpLoc = r.dumpP
+      //}
     }
-    assert (dumpLoc.nonEmpty, "Wasn't able to find a dump")
+    //assert (dumpLoc.nonEmpty, "Wasn't able to find a dump")
+    val dumpLocal = dumpLoc(results(0).project)
 
     val jacocoOutDir = relativeTo / jacocoDirName
 
@@ -676,14 +715,13 @@ object MergeUtils {
 
       val csv = relativeTo / "jacoco.csv"
 
-      val sireumHome = Sireum.homeOpt.get
       val javaExe = Sireum.javaHomeOpt.get / "bin" / (if (Os.isWin) "java.exe" else "java")
 
       val execs: ISZ[String] = for(x <- execsPaths) yield x.string
 
       println(s"Working on ${relativeTo.string} ...")
       val commands = ISZ[String](javaExe.string, "-jar", jacocoCli.string, "report") ++ execs ++ ISZ[String]("--encoding",
-        "UTF-8", "--classfiles", dumpLoc.get.string, "--csv", csv.string, "--html", jacocoOutDir.string, "--sourcefiles", dumpLoc.get.string)
+        "UTF-8", "--classfiles", dumpLocal.string, "--csv", csv.string, "--html", jacocoOutDir.string, "--sourcefiles", dumpLocal.string)
 
       Os.proc(commands).console.echo.runCheck()
       println()
@@ -692,6 +730,16 @@ object MergeUtils {
     val x = results(0)(passing = passing, failing = failing, unsat = unsat, coverageP = jacocoOutDir)
 
     return x
+  }
+
+  def dumpLoc(projectName: String): Os.Path = {
+    val ret: Os.Path = projectName match {
+      case "isolette" => reportRoot / projectName / "Manage_Alarm_impl_thermostat_monitor_temperature_manage_alarm_DSC_UnitTests/Default_Initialize_Config/1/isolette_isolette-ma__1_mac-mini-m1-jacoco.dump"
+      case "rts" => reportRoot / projectName / "Actuator_i_actuationSubsystem_saturationActuatorUnit_saturationActuator_actuator_DSC_UnitTests/Default_Initialize_Config/1/rts_rts-saturationActuator__1_mac-mini-m1-jacoco.dump"
+      case "tc" => reportRoot / projectName / "OperatorInterfacePeriodic_p_tcproc_operatorInterface_DSC_UnitTests/Default_Initialize_Config/1/tc_tc-operator-interface__1_mac-mini-m1-jacoco.dump"
+    }
+    assert (ret.exists, ret)
+    return ret
   }
 
   def getNickName(s: String): String = {
