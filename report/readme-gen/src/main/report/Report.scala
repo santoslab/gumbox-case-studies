@@ -389,7 +389,7 @@ object Report {
     val configs: ISZ[ReportLevel] = {
       var entries: HashSMap[String, ISZ[ReportBlock]] = HashSMap.empty
       for (config <- project.testConfigs) {
-
+        /*
         val scheduleFile = config.systemTestOutputDir / s"${config.manualTestingFilename}_schedule.json"
         val schedulesJsons: HashSMap[String, String] = Util.parseJson(scheduleFile.read, ISZ("nickNames", "scheduleProvider", "schedule"))
 
@@ -487,6 +487,7 @@ object Report {
           }
           entries = entries + harnessName ~> (subEntries :+ configReport)
         }
+        */
       }
 
       var ret: ISZ[ReportLevel] = ISZ()
@@ -558,6 +559,7 @@ object Report {
     val reportRoot = project.projectRootDir.up
     val stagReadme = readmeRoot.relativize(reportRoot / "report/util/SystemTestArtifactGen/readme.md")
 
+    /*
     val exTestConfig = project.testConfigs(0)
     val exContainer = readmeRoot.relativize(exTestConfig.inputOutputContainers)
     val testOutputDirRel = readmeRoot.relativize(exTestConfig.systemTestOutputDir)
@@ -782,9 +784,14 @@ object Report {
             |or Windows ``set PATH=%PATH%\bin;%PATH%``
             |
             |"""),
+
+
       content = ISZ(),
       subLevels = ISZ(framework, manualTesting, dscTesting)
+
     )
+    */
+    halt("Todo")
   }
 
   def genReport(project: Project): ReportLevel = {

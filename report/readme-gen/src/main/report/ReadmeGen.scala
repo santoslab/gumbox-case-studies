@@ -15,40 +15,33 @@ object ReadmeGen extends App {
 
   val repoRootDir: Os.Path = {
     val c = Os.path(".").up.up.up
-    if (!(c/ "isolette").exists || !(c / "rts").exists) {
+    if (!(c/ "isolette").exists || !(c / "rts").exists || ~(c / "temp_control" / "periodic").exists) {
       halt(s"Root dir should contain all the subprojects: $c")
     }
     c
   }
 
-  @datatype class TestConfig(val name: String,
-                             val schema: String,
-                             val profile: String,
-                             val filter: String,
-                             val property: String)
+  @enum object EntrypointType {
+    "Initialize"
+    "Compute"
+    "ComputeWstateVars"
+  }
 
-  @datatype class SystemTestingArtifacts(val systemName: String,
-                                         val inputOutputContainers: Os.Path,
-                                         val systemTestOutputDir: Os.Path,
+  @datatype class UnitTestConfig(val name: String,
+                                 val description: String,
+                                 val entrypointType: EntrypointType.Type)
 
-                                         val exampleTestFrameworkPrefix: String,
-                                         val manualTestingFilename: String,
-                                         val exampleTestConfig: TestConfig,
-
-                                         val dscTestingFileName: String,
-                                         val dscFQName: String
+  @datatype class ComponentArtifacts(val componentNickName: String,
+                                       val componentFullName: String,
+                                       val testConfigs: ISZ[UnitTestConfig],
+                                       val manualTestingFilename: Os.Path,
+                                       val dscTestingFileName: Os.Path
                                         ) {
-    def manualTestingFile: Os.Path = {
-      return systemTestOutputDir / manualTestingFilename
-    }
-    def dscHarnessFile: Os.Path = {
-      return systemTestOutputDir / dscTestingFileName
-    }
     def simpleManualTestSuiteName: String = {
-      return ops.StringOps(manualTestingFilename).replaceAllLiterally(".scala", "")
+      return ops.StringOps(manualTestingFilename.name).replaceAllLiterally(".scala", "")
     }
     def simpleDscHarnessName: String = {
-      return ops.StringOps(dscTestingFileName).replaceAllLiterally(".scala", "")
+      return ops.StringOps(dscTestingFileName.name).replaceAllLiterally(".scala", "")
     }
   }
 
@@ -64,9 +57,131 @@ object ReadmeGen extends App {
                           //       accessible to tipe
                           val configs: ISZ[Cli.SireumHamrCodegenOption],
 
-                          val testConfigs: ISZ[SystemTestingArtifacts]
+                          val testConfigs: ISZ[ComponentArtifacts]
                          )
 
+
+  val isolette: Project = {
+    val projRootDir = repoRootDir / "isolette"
+    val defaultDirs = Util.getDefaultDirectories(projRootDir)
+
+    Project(
+      title = "Isolette",
+      description = None(),
+      projectRootDir = projRootDir,
+      air = defaultDirs.json,
+      configs = ISZ(Util.baseOptions(
+        packageName = Some("isolette"),
+        args = ISZ(defaultDirs.json.value),
+        outputDir = Some(defaultDirs.slangDir.value),
+        aadlRootDir = Some(defaultDirs.aadlDir.value)
+      )),
+      testConfigs = getTestArtifacts(defaultDirs.slangDir / "src" / "test"/ "bridge" / "isolette")
+        /*
+        ISZ(
+        ComponentArtifacts(
+          componentNickName = "MA",
+          componentFullName = "Manage Alarm",
+
+          manualTestingFilename = defaultDirs.slangDir / "src" / "test"/ "isolette" / "Monitor" /  "Manage_Alarm_impl_thermostat_monitor_temperature_manage_alarm_GumboX_UnitTests.scala",
+          dscTestingFileName =  defaultDirs.slangDir / "src" / "test"/ "isolette" / "Monitor" /  "Manage_Alarm_impl_thermostat_monitor_temperature_manage_alarm_DSC_UnitTests.scala",
+
+          testConfigs = getConfigs(defaultDirs.slangDir / "src" / "test"/ "isolette" / "Monitor" /  "Manage_Alarm_impl_thermostat_monitor_temperature_manage_alarm_GumboX_UnitTests.scala")
+        )*/
+    )
+  }
+/*
+
+  val rts: Project = {
+    val projRootDir = repoRootDir / "rts"
+    val defaultDirs = Util.getDefaultDirectories(projRootDir)
+
+    Project(
+      title = "RTS",
+      description = None(),
+      projectRootDir = projRootDir,
+      air = defaultDirs.json,
+      configs = ISZ(Util.baseOptions(
+        packageName = Some("RTS"),
+        args = ISZ(defaultDirs.json.value),
+        outputDir = Some(defaultDirs.slangDir.value),
+        aadlRootDir = Some(defaultDirs.aadlDir.value)
+      )),
+      testConfigs = ISZ(
+        UnitTestingArtifacts(
+          systemName = "Actuator subsystem",
+          inputOutputContainers = defaultDirs.slangDir / "src/main/util/RTS/system_tests/rts1/Containers.scala",
+          systemTestOutputDir = defaultDirs.slangDir / "src/test/system/RTS/system_tests/rts1",
+          exampleTestFrameworkPrefix = "Example_Actuation_Subsystem_Inputs_Container",
+          manualTestingFilename = "Actuation_Subsystem_Test_wSlangCheck.scala",
+          dscTestingFileName = "Actuation_Subsystem_DSC_Test_Harness.scala",
+          dscFQName = "RTS.system_tests.rts1.Actuation_Subsystem_DSC_Test_Harness",
+          exampleTestConfig = UnitTestConfig(
+            name = "TempPress_Manual_Trip",
+            schema = "Actuation_Subsystem_1HP_script_schema",
+            profile = "getDefaultProfile",
+            filter = "examplePreStateContainerFilter",
+            property = "sysProp_SaturationManualTrip"
+          )
+        )
+      )
+    )
+  }
+
+ */
+
+  def h(s: String): Unit = {
+    halt(s)
+  }
+
+
+  def getTestArtifacts(path: Os.Path): ISZ[ComponentArtifacts] = {
+    var artifacts: ISZ[ComponentArtifacts] = ISZ()
+    for (json <- Os.Path.walk(path, T, F, p => p.ext == "json")) {
+      val name = ops.StringOps(json.name).replaceAllLiterally("_DSC_UnitTests.scala.json", "")
+      artifacts = artifacts :+ ComponentArtifacts(
+        componentNickName = getNickName(name),
+        componentFullName = getComponentFullName(name),
+
+        manualTestingFilename = json.up / s"${name}_GumboX_UnitTests.scala",
+        dscTestingFileName =  json.up / s"${name}_DSC_UnitTests.scala",
+        testConfigs = getConfigs(json)
+      )
+    }
+    return artifacts
+  }
+
+  def getComponentFullName(name: String): String = {
+    return name
+  }
+
+  def getNickName(name: String): String = {
+    return name
+  }
+
+  def getConfigs(json: Os.Path): ISZ[UnitTestConfig] = {
+    assert (json.exists, json)
+    val lines = json.readLines
+    assert(lines.size == 1)
+    val entries = ops.StringOps(ops.StringOps(lines(0)).substring(2, lines(0).size - 2)).split(c => c == ',')
+    var configs: ISZ[UnitTestConfig] = ISZ()
+    for (c <- entries) {
+      val cc = ops.StringOps(ops.StringOps(c).trim)
+      val x = ops.StringOps(cc.substring(1, cc.size - 2)).split(c => c == '|')
+      val x0 = ops.StringOps(x(0))
+      val etype: EntrypointType.Type = {
+        if (x(0) == "Compute_Config_ranges_based_on_requirements" || x0.contains("ComputewL")) {EntrypointType.ComputeWstateVars}
+        else if (x0.contains("Compute")) {EntrypointType.Compute}
+        else if (x0.contains("Initialize")) {EntrypointType.Initialize}
+        else {
+          h(x(0))
+          EntrypointType.Initialize
+        }
+      }
+      configs = configs :+ UnitTestConfig(name = x(0), description = x(1), entrypointType = etype)
+    }
+    return configs
+  }
   /*
   val tempControlSporadic: Project = {
     val projRootDir = repoRootDir / "temp_control" / "sporadic"
@@ -89,101 +204,7 @@ object ReadmeGen extends App {
   }
   */
 
-  val isolette: Project = {
-    val projRootDir = repoRootDir / "isolette"
-    val defaultDirs = Util.getDefaultDirectories(projRootDir)
-
-    Project(
-      title = "Isolette",
-      description = None(),
-      projectRootDir = projRootDir,
-      //aadlRootDir = defaultDirs.aadlDir,
-      air = defaultDirs.json,
-      //packageName = Some("isolette"),
-      configs = ISZ(Util.baseOptions(
-        packageName = Some("isolette"),
-        args = ISZ(defaultDirs.json.value),
-        outputDir = Some(defaultDirs.slangDir.value),
-        aadlRootDir = Some(defaultDirs.aadlDir.value)
-      )),
-      testConfigs = ISZ(
-        SystemTestingArtifacts(
-          systemName = "Regulator subsystem",
-          inputOutputContainers = defaultDirs.slangDir / "src/main/util/isolette/system_tests/rst/Regulate_Subsystem_Containers.scala",
-          systemTestOutputDir = defaultDirs.slangDir / "src/test/system/isolette/system_tests/rst",
-          exampleTestFrameworkPrefix = "Example_Regulate_Subsystem_Inputs_Container",
-          manualTestingFilename = "Regulate_Subsystem_Test_wSlangCheck.scala",
-
-          dscTestingFileName = "Regulate_Subsystem_Test_wSlangCheck_DSC_Test_Harness.scala",
-          dscFQName = "isolette.system_tests.rst.Regulate_Subsystem_Test_wSlangCheck_DSC_Test_Harness",
-
-          exampleTestConfig = TestConfig(
-            name = "HC__Normal_____Heat_On",
-            schema = "Regulator_1HP_script_schema",
-            profile = "validRanges",
-            filter = "Regulate_Subsystem_Inputs_Container_GumboX.system_Pre_Container",
-            property = "sysProp_NormalModeHeatOn"
-          )
-        ),
-        SystemTestingArtifacts(
-          systemName = "Monitor subsystem",
-          inputOutputContainers = defaultDirs.slangDir / "src/main/util/isolette/system_tests/monitor1/Monitor_Subsystem_Containers.scala",
-          systemTestOutputDir = defaultDirs.slangDir / "src/test/system/isolette/system_tests/monitor1",
-          exampleTestFrameworkPrefix = "Example_Monitor_Subsystem_Inputs_Container",
-          manualTestingFilename = "Monitor_Subsystem_Test_wSlangCheck.scala",
-          dscTestingFileName = "Monitor_Subsystem_DSC_Test_Harness.scala",
-          dscFQName = "isolette.system_tests.monitor1.Monitor_Subsystem_DSC_Test_Harness",
-          exampleTestConfig = TestConfig(
-            name = "MA__Normal_____Alarm_On",
-            schema = "Monitor_1HP_script_schema",
-            profile = "validRanges",
-            filter = "assumeFigureA_7",
-            property = "sysProp_NormalModeAlarmOn"
-          )
-        )
-      )
-    )
-  }
-
-  val rts: Project = {
-    val projRootDir = repoRootDir / "rts"
-    val defaultDirs = Util.getDefaultDirectories(projRootDir)
-
-    Project(
-      title = "RTS",
-      description = None(),
-      projectRootDir = projRootDir,
-      //aadlRootDir = defaultDirs.aadlDir,
-      air = defaultDirs.json,
-      //packageName = Some("RTS"),
-      configs = ISZ(Util.baseOptions(
-        packageName = Some("RTS"),
-        args = ISZ(defaultDirs.json.value),
-        outputDir = Some(defaultDirs.slangDir.value),
-        aadlRootDir = Some(defaultDirs.aadlDir.value)
-      )),
-      testConfigs = ISZ(
-        SystemTestingArtifacts(
-          systemName = "Actuator subsystem",
-          inputOutputContainers = defaultDirs.slangDir / "src/main/util/RTS/system_tests/rts1/Containers.scala",
-          systemTestOutputDir = defaultDirs.slangDir / "src/test/system/RTS/system_tests/rts1",
-          exampleTestFrameworkPrefix = "Example_Actuation_Subsystem_Inputs_Container",
-          manualTestingFilename = "Actuation_Subsystem_Test_wSlangCheck.scala",
-          dscTestingFileName = "Actuation_Subsystem_DSC_Test_Harness.scala",
-          dscFQName = "RTS.system_tests.rts1.Actuation_Subsystem_DSC_Test_Harness",
-          exampleTestConfig = TestConfig(
-            name = "TempPress_Manual_Trip",
-            schema = "Actuation_Subsystem_1HP_script_schema",
-            profile = "getDefaultProfile",
-            filter = "examplePreStateContainerFilter",
-            property = "sysProp_SaturationManualTrip"
-          )
-        )
-      )
-    )
-  }
-
-  val projects: ISZ[Project] = ISZ(isolette, rts)
+  val projects: ISZ[Project] = ISZ(isolette)//, rts)
 
   def main(args: ISZ[String]): Z = {
     run()
