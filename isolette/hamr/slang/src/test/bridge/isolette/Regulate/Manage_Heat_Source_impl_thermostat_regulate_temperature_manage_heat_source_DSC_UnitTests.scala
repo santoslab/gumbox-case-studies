@@ -38,7 +38,7 @@ class Manage_Heat_Source_impl_thermostat_regulate_temperature_manage_heat_source
 
   override def fromJson(json: String): Container = {
     isolette.JSON.toutilContainer(json) match {
-      case Either.Left(o) => return o.asInstanceOf[Container]
+      case Either.Left(o) => return o
       case Either.Right(msg) => halt(msg.string)
     }
   }

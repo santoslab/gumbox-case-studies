@@ -15,12 +15,12 @@ class Manage_Alarm_impl_thermostat_monitor_temperature_manage_alarm_GumboX_UnitT
 
   val leftPartitionConfig = defaultComputewLConfig(verbose = verbose, failOnUnsatPreconditions = failOnUnsatPreconditions,
     name = "Compute_Config_Left_Partition_Config",
-    description = "Generate a current_temp s.t. lower_alarm_temp < current_temp <= lower_alarm_temp + 0.5",
+    description = "Generate a current_temp s.t. lower_alarm_temp <= current_temp <= lower_alarm_temp + 0.5",
     profile = new Manage_Alarm_impl_thermostat_monitor_temperature_manage_alarm_Profile_PS_Trait with MutableBase {
       override def next: Manage_Alarm_impl_thermostat_monitor_temperature_manage_alarm_PreState_Container_PS = {
         val low = api_lower_alarm_temp.nextIsolette_Data_ModelTemp_impl()
         val currentTemp = api_current_tempWstatus.set_Config_F32(
-            api_current_tempWstatus.get_Config_F32(low = Some(low.value + 0.01f), high = Some(low.value + 0.5f)))
+            api_current_tempWstatus.get_Config_F32(low = Some(low.value), high = Some(low.value + 0.5f)))
           .nextIsolette_Data_ModelTempWstatus_impl()
         return (Manage_Alarm_impl_thermostat_monitor_temperature_manage_alarm_PreState_Container_PS(
           api_lower_alarm_temp = low,
@@ -38,12 +38,12 @@ class Manage_Alarm_impl_thermostat_monitor_temperature_manage_alarm_GumboX_UnitT
 
   val rightPartitionConfig = defaultComputewLConfig(verbose = verbose, failOnUnsatPreconditions = failOnUnsatPreconditions,
     name = "Compute_Config_Right_Partition_Config",
-    description = "Generate a current_temp s.t. upper_alarm_temp - 0.5 <= current_temp < upper_alarm_temp",
+    description = "Generate a current_temp s.t. upper_alarm_temp - 0.5 <= current_temp <= upper_alarm_temp",
     profile = new Manage_Alarm_impl_thermostat_monitor_temperature_manage_alarm_Profile_PS_Trait with MutableBase {
       override def next: Manage_Alarm_impl_thermostat_monitor_temperature_manage_alarm_PreState_Container_PS = {
         val high = api_upper_alarm_temp.nextIsolette_Data_ModelTemp_impl()
         val currentTemp = api_current_tempWstatus.set_Config_F32(
-            api_current_tempWstatus.get_Config_F32(low = Some(high.value - 0.5f), high = Some(high.value - 0.01f)))
+            api_current_tempWstatus.get_Config_F32(low = Some(high.value - 0.5f), high = Some(high.value)))
           .nextIsolette_Data_ModelTempWstatus_impl()
         return (Manage_Alarm_impl_thermostat_monitor_temperature_manage_alarm_PreState_Container_PS(
           api_lower_alarm_temp = api_lower_alarm_temp.nextIsolette_Data_ModelTemp_impl(),
