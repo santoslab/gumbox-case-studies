@@ -11,7 +11,8 @@ import report.Report
 object ReadmeGen extends App {
 
   val runCodegen: B = F
-  val replaceReadmes: B = F
+  val replaceReadmes: B = T
+  val emitMarkdown: B = T
 
   val repoRootDir: Os.Path = {
     val c = Os.path(".").up.up.up
@@ -21,10 +22,12 @@ object ReadmeGen extends App {
     c
   }
 
+  val rootDefaultConfigCoverageLink: String = "https://people.cs.ksu.edu/~santos_jenkins/pub/gumbox-journal/default_configs"
+  val rootCustomConfigCoverageLink: String = "https://people.cs.ksu.edu/~santos_jenkins/pub/gumbox-journal/custom_configs"
+
   @enum object EntrypointType {
     "Initialize"
     "Compute"
-    "ComputeWstateVars"
   }
 
   @datatype class UnitTestConfig(val name: String,
@@ -32,11 +35,12 @@ object ReadmeGen extends App {
                                  val entrypointType: EntrypointType.Type)
 
   @datatype class ComponentArtifacts(val componentNickName: String,
-                                       val componentFullName: String,
-                                       val testConfigs: ISZ[UnitTestConfig],
-                                       val manualTestingFilename: Os.Path,
-                                       val dscTestingFileName: Os.Path
-                                        ) {
+                                     val componentFullName: String,
+                                     val testConfigs: ISZ[UnitTestConfig],
+                                     val manualTestingFilename: Os.Path,
+                                     val dscTestingFileName: Os.Path,
+                                     val defaultConfigLocation: Os.Path
+                                    ) {
     def simpleManualTestSuiteName: String = {
       return ops.StringOps(manualTestingFilename.name).replaceAllLiterally(".scala", "")
     }
@@ -46,6 +50,7 @@ object ReadmeGen extends App {
   }
 
   @datatype class Project(val title: String,
+                          val coverageRootName: String,
                           val description: Option[String],
                           val projectRootDir: Os.Path,
                           //val aadlRootDir: Os.Path,
@@ -57,7 +62,7 @@ object ReadmeGen extends App {
                           //       accessible to tipe
                           val configs: ISZ[Cli.SireumHamrCodegenOption],
 
-                          val testConfigs: ISZ[ComponentArtifacts]
+                          val testComponentArtifacts: ISZ[ComponentArtifacts]
                          )
 
 
@@ -67,6 +72,7 @@ object ReadmeGen extends App {
 
     Project(
       title = "Isolette",
+      coverageRootName = "isolette",
       description = None(),
       projectRootDir = projRootDir,
       air = defaultDirs.json,
@@ -76,21 +82,9 @@ object ReadmeGen extends App {
         outputDir = Some(defaultDirs.slangDir.value),
         aadlRootDir = Some(defaultDirs.aadlDir.value)
       )),
-      testConfigs = getTestArtifacts(defaultDirs.slangDir / "src" / "test"/ "bridge" / "isolette")
-        /*
-        ISZ(
-        ComponentArtifacts(
-          componentNickName = "MA",
-          componentFullName = "Manage Alarm",
-
-          manualTestingFilename = defaultDirs.slangDir / "src" / "test"/ "isolette" / "Monitor" /  "Manage_Alarm_impl_thermostat_monitor_temperature_manage_alarm_GumboX_UnitTests.scala",
-          dscTestingFileName =  defaultDirs.slangDir / "src" / "test"/ "isolette" / "Monitor" /  "Manage_Alarm_impl_thermostat_monitor_temperature_manage_alarm_DSC_UnitTests.scala",
-
-          testConfigs = getConfigs(defaultDirs.slangDir / "src" / "test"/ "isolette" / "Monitor" /  "Manage_Alarm_impl_thermostat_monitor_temperature_manage_alarm_GumboX_UnitTests.scala")
-        )*/
+      testComponentArtifacts = getTestArtifacts(defaultDirs.slangDir / "src" / "test"/ "bridge" / "isolette", defaultDirs.slangDir)
     )
   }
-/*
 
   val rts: Project = {
     val projRootDir = repoRootDir / "rts"
@@ -98,6 +92,7 @@ object ReadmeGen extends App {
 
     Project(
       title = "RTS",
+      coverageRootName = "rts",
       description = None(),
       projectRootDir = projRootDir,
       air = defaultDirs.json,
@@ -107,44 +102,48 @@ object ReadmeGen extends App {
         outputDir = Some(defaultDirs.slangDir.value),
         aadlRootDir = Some(defaultDirs.aadlDir.value)
       )),
-      testConfigs = ISZ(
-        UnitTestingArtifacts(
-          systemName = "Actuator subsystem",
-          inputOutputContainers = defaultDirs.slangDir / "src/main/util/RTS/system_tests/rts1/Containers.scala",
-          systemTestOutputDir = defaultDirs.slangDir / "src/test/system/RTS/system_tests/rts1",
-          exampleTestFrameworkPrefix = "Example_Actuation_Subsystem_Inputs_Container",
-          manualTestingFilename = "Actuation_Subsystem_Test_wSlangCheck.scala",
-          dscTestingFileName = "Actuation_Subsystem_DSC_Test_Harness.scala",
-          dscFQName = "RTS.system_tests.rts1.Actuation_Subsystem_DSC_Test_Harness",
-          exampleTestConfig = UnitTestConfig(
-            name = "TempPress_Manual_Trip",
-            schema = "Actuation_Subsystem_1HP_script_schema",
-            profile = "getDefaultProfile",
-            filter = "examplePreStateContainerFilter",
-            property = "sysProp_SaturationManualTrip"
-          )
-        )
-      )
+      testComponentArtifacts = getTestArtifacts(defaultDirs.slangDir / "src" / "test" / "bridge" / "RTS", defaultDirs.slangDir)
     )
   }
 
- */
+  val tempControlPeriodic: Project = {
+    val projRootDir = repoRootDir / "temp_control" / "periodic"
+    val defaultDirs = Util.getDefaultDirectories(projRootDir)
+
+    Project(
+      title ="Temperature Control Sporadic",
+      coverageRootName = "tc",
+      description = None(),
+      projectRootDir = projRootDir,
+      air = defaultDirs.json,
+      configs = ISZ(Util.baseOptions(
+        packageName = Some("tc"),
+        args = ISZ(defaultDirs.json.value),
+        outputDir = Some(defaultDirs.slangDir.value),
+        aadlRootDir = Some(defaultDirs.aadlDir.value)
+      )),
+      testComponentArtifacts = getTestArtifacts(defaultDirs.slangDir / "src" / "test" / "bridge" / "tc", defaultDirs.slangDir)
+    )
+  }
 
   def h(s: String): Unit = {
     halt(s)
   }
 
 
-  def getTestArtifacts(path: Os.Path): ISZ[ComponentArtifacts] = {
+  def getTestArtifacts(path: Os.Path, slangRoot: Os.Path): ISZ[ComponentArtifacts] = {
     var artifacts: ISZ[ComponentArtifacts] = ISZ()
     for (json <- Os.Path.walk(path, T, F, p => p.ext == "json")) {
-      val name = ops.StringOps(json.name).replaceAllLiterally("_DSC_UnitTests.scala.json", "")
+      var name = ops.StringOps(json.name).replaceAllLiterally("_DSC_UnitTests.scala.json", "")
+      name = ops.StringOps(name).substring(1, name.size)
+      val rel = path.relativize(json)
       artifacts = artifacts :+ ComponentArtifacts(
         componentNickName = getNickName(name),
         componentFullName = getComponentFullName(name),
 
         manualTestingFilename = json.up / s"${name}_GumboX_UnitTests.scala",
         dscTestingFileName =  json.up / s"${name}_DSC_UnitTests.scala",
+        defaultConfigLocation = Util.hackyFind(slangRoot / "src" / "test" / "util", s"${name}_UnitTestConfiguration_Util.scala").get,
         testConfigs = getConfigs(json)
       )
     }
@@ -152,11 +151,13 @@ object ReadmeGen extends App {
   }
 
   def getComponentFullName(name: String): String = {
-    return name
+    assert (Util.threadNicknames.contains(name), name)
+    return Util.threadNicknames.get(name).get
   }
 
   def getNickName(name: String): String = {
-    return name
+    assert (Util.threadNicknames.contains(name), name)
+    return Util.threadNicknames.get(name).get
   }
 
   def getConfigs(json: Os.Path): ISZ[UnitTestConfig] = {
@@ -167,11 +168,10 @@ object ReadmeGen extends App {
     var configs: ISZ[UnitTestConfig] = ISZ()
     for (c <- entries) {
       val cc = ops.StringOps(ops.StringOps(c).trim)
-      val x = ops.StringOps(cc.substring(1, cc.size - 2)).split(c => c == '|')
+      val x = ops.StringOps(cc.substring(1, cc.size - 1)).split(c => c == '|')
       val x0 = ops.StringOps(x(0))
       val etype: EntrypointType.Type = {
-        if (x(0) == "Compute_Config_ranges_based_on_requirements" || x0.contains("ComputewL")) {EntrypointType.ComputeWstateVars}
-        else if (x0.contains("Compute")) {EntrypointType.Compute}
+        if (x0.contains("Compute")) {EntrypointType.Compute}
         else if (x0.contains("Initialize")) {EntrypointType.Initialize}
         else {
           h(x(0))
@@ -182,29 +182,9 @@ object ReadmeGen extends App {
     }
     return configs
   }
-  /*
-  val tempControlSporadic: Project = {
-    val projRootDir = repoRootDir / "temp_control" / "sporadic"
-    val defaultDirs = Util.getDefaultDirectories(projRootDir)
 
-    Project(
-      title ="Temperature Control Sporadic",
-      description = None(),
-      projectRootDir = projRootDir,
-      //aadlRootDir = defaultDirs.aadlDir,
-      //packageName = Some("tc"),
-      air = defaultDirs.json,
-      configs = ISZ(Util.baseOptions(
-        packageName = Some("tc"),
-        args = ISZ(defaultDirs.json.value),
-        outputDir = Some(defaultDirs.slangDir.value),
-        aadlRootDir = Some(defaultDirs.aadlDir.value)
-      ))
-    )
-  }
-  */
 
-  val projects: ISZ[Project] = ISZ(isolette)//, rts)
+  val projects: ISZ[Project] = ISZ(isolette, rts, tempControlPeriodic)
 
   def main(args: ISZ[String]): Z = {
     run()
@@ -240,7 +220,7 @@ object ReadmeGen extends App {
 
       if (!reporter.hasError) {
         val readmeLoc = project.projectRootDir / "readme.md"
-        val readmeContent = Report.genReport(project, packageName, aadlRootDir, repoRootDir, reporter)
+        val readmeContent = Report.genReport(project, packageName, aadlRootDir, repoRootDir, reporter, emitMarkdown)
         if (!reporter.hasError) {
           if (!readmeLoc.exists || replaceReadmes) {
             Report.overwrite(readmeLoc, readmeContent)

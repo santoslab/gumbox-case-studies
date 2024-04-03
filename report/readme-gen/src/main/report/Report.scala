@@ -6,7 +6,7 @@ import org.sireum.hamr.codegen.common.StringUtil
 import org.sireum.hamr.codegen.common.symbols.{AadlComponent, AadlThread, SymbolTable}
 import org.sireum.hamr.ir
 import org.sireum.message.{Position, Reporter}
-import report.ReadmeGen.{Project, repoRootDir}
+import report.ReadmeGen.{EntrypointType, Project, projects, repoRootDir}
 import report.Report._
 
 @sig trait Level {
@@ -119,9 +119,9 @@ object Report {
 
   var seenTags: Set[String] = Set.empty
 
-  def genReport(project: Project, packageName: String, aadlRootDir: Os.Path, rootDir: Os.Path, reporter: Reporter): ReportLevel = {
+  def genReport(project: Project, packageName: String, aadlRootDir: Os.Path, rootDir: Os.Path, reporter: Reporter, emitMarkdown: B): ReportLevel = {
     seenTags = Set.empty
-    return Report(packageName, aadlRootDir, repoRootDir).genReport(project)
+    return Report(packageName, aadlRootDir, repoRootDir, emitMarkdown).genReport(project)
   }
 
   def createAadlComponentLink(linkToImplementation: B,
@@ -212,7 +212,7 @@ object Report {
   }
 }
 
-@datatype class Report(packageName: String, aadlRootDir: Os.Path, repoRoot: Os.Path) {
+@datatype class Report(packageName: String, aadlRootDir: Os.Path, repoRoot: Os.Path, emitMarkDown: B) {
 
   def runCloc(dirs: ISZ[Os.Path]): ST = {
 
@@ -382,160 +382,98 @@ object Report {
   }
 
   def genTestingSection(project: Project, table: SymbolTable): ReportLevel = {
-    var scheduleProviderCand: String = ""
-    var scheduleCand: String = ""
-    var nickNamesCand: Map[String, AadlComponent] = Map.empty
 
-    val configs: ISZ[ReportLevel] = {
-      var entries: HashSMap[String, ISZ[ReportBlock]] = HashSMap.empty
-      for (config <- project.testConfigs) {
-        /*
-        val scheduleFile = config.systemTestOutputDir / s"${config.manualTestingFilename}_schedule.json"
-        val schedulesJsons: HashSMap[String, String] = Util.parseJson(scheduleFile.read, ISZ("nickNames", "scheduleProvider", "schedule"))
+    val componentReports: ISZ[ReportLevel] = {
+      var componentReports: ISZ[ReportLevel] = ISZ()
+      for (componentArtifact <- project.testComponentArtifacts) {
 
-        if (scheduleCand == "") {
-          scheduleProviderCand = schedulesJsons.get("scheduleProvider").get
-          scheduleCand = schedulesJsons.get("schedule").get
-          nickNamesCand = processNickNames(schedulesJsons.get("nickNames").get, table)
-        } else {
-          assert (scheduleProviderCand == schedulesJsons.get("scheduleProvider").get)
-          assert (scheduleCand == schedulesJsons.get("schedule").get)
-          assert (nickNamesCand == processNickNames(schedulesJsons.get("nickNames").get, table))
-        }
-
-        val keys = ISZ[String]("testConfigurationName", "description", "schema", "property", "profile", "filter", "components")
-        val jsonsFile = config.systemTestOutputDir / s"${config.manualTestingFilename}.json"
-        val jsons: ISZ[HashSMap[String, String]] = for (l <- jsonsFile.readLines) yield Util.parseJson(l, keys)
-
-        val manualTestingFile = config.manualTestingFile
+        var entries: HashSMap[EntrypointType.Type, ISZ[ST]] = HashSMap.empty
+        val manualTestingFile = componentArtifact.manualTestingFilename
         val mtfContents = ops.StringOps(ops.StringOps(manualTestingFile.read).replaceAllLiterally("\n", " \n")).split(c => c == '\n')
         val mtf = project.projectRootDir.relativize(manualTestingFile)
 
-        val dscHarnessFile = config.dscHarnessFile
+        val dscHarnessFile = componentArtifact.dscTestingFileName
         assert(dscHarnessFile.exists, dscHarnessFile)
 
-        for (json <- jsons) {
-          val harnessName = config.simpleDscHarnessName
-          val configName = json.get("testConfigurationName").get
+        for (unitConfig <- componentArtifact.testConfigs) {
+          val configName = unitConfig.name
+          val configDescription = unitConfig.description
+          val entrypoint = unitConfig.entrypointType
 
-          val emitMarkDown = F
-
-          val coverageLinks: ISZ[ST] = {
-            val phtmldir: String = {
-              if (project.title == "Isolette") "isolette"
-              else if (project.title == "RTS") "RTS"
-              else "??"
-            }
-            val harness = project.testConfigs(0).simpleDscHarnessName
-            val config = project.testConfigs(0).exampleTestConfig.name
-            val rootConfigCoverage = s"$htmlDir/$phtmldir/$harness/$config"
-            val rootJacoco = s"$rootConfigCoverage/jacocoCoverage"
-            val components = ops.StringOps(json.get("components").get).split(c => c == ',')
-            var ret: ISZ[ST] = ISZ()
-            for (c <- components) {
-              val comp = nickNamesCand.get(c).get
-              val base = project.configs(0).packageName.get
-              val names = org.sireum.hamr.arsit.Util.nameProvider(comp.component, base)
-              val packageName = names.classifier(0)
-              val l2 = s"$rootJacoco/${base}.${packageName}/${names.componentSingletonType}$$.html"
-              if (emitMarkDown) {
-                ret = ret :+ st"[$c](${l2})"
-              } else {
-                ret = ret :+ st"""<a href="$l2">$c</a>"""
-              }
-            }
-            ret
-          }
-
-          val content: ST = if (emitMarkDown)
-            st"""${Util.locateText(configName, mtfContents, mtf)}
-                ||||
-                ||:--|--|
-                || Description: | ${json.get("description").get}|
-                || Script Schema: | ${Util.locateMethodDefinition(json.get("schema").get, mtfContents, mtf)}|
-                || Property: | ${Util.locateMethodDefinition(json.get("property").get, mtfContents, mtf)}|
-                || Randomization Profile: | ${Util.locateTextD(T, F, json.get("profile").get, mtfContents, mtf)}|
-                || Random Vector Filter: | ${Util.locateTextD(T, F, json.get("filter").get, mtfContents, mtf)}|
-                || Relevant Coverage: | ${(coverageLinks, ", ")} |
-                |"""
-          else
-            st"""<table>
-                |<tr><th colspan=2 align="left">${Util.locateTextD(F, T, configName, mtfContents, mtf)}</th>
-                |</tr><tr>
-                |<td>Description:</td><td>${json.get("description").get}</td>
-                |</tr><tr>
-                |<td>Script Schema:</td><td>${Util.locateMethodDefinitionH(T, json.get("schema").get, mtfContents, mtf)}</td>
-                |</tr><tr>
-                |<td>Property:</td><td>${Util.locateMethodDefinitionH(T, json.get("property").get, mtfContents, mtf)}</td>
-                |</tr><tr>
-                |<td>Randomization Profile:</td><td>${Util.locateTextD(T, T, json.get("profile").get, mtfContents, mtf)}</td>
-                |</tr><tr>
-                |<td>Random Vector Filter:</td><td>${Util.locateTextD(T, T, json.get("filter").get, mtfContents, mtf)}</td>
-                |</tr><tr>
-                |<td>Relevant Coverage:</td><td>${(coverageLinks, ", ")}</td>
-                |</tr>
-                |</table>
-                |"""
-
-          val configReport = ReportBlock(
-            tag = createTag(s"${harnessName}_${configName}_configuration_content"),
-            content = Some(content)
+          var x = Util.locateTextD(
+            rev = F,
+            makeHtmlLinks = T,
+            s = configName,
+            lines = Util.readLines(componentArtifact.manualTestingFilename.read, '\n'),
+            linkPrefix = project.projectRootDir.relativize(componentArtifact.manualTestingFilename)
           )
-          val subEntries: ISZ[ReportBlock] = entries.get(harnessName) match {
-            case Some(existing) => existing
-            case _ => ISZ()
+          if (x.isEmpty) {
+            x = Util.locateTextD(
+              rev = F,
+              makeHtmlLinks = T,
+              s = configName,
+              lines = Util.readLines(componentArtifact.defaultConfigLocation.read, '\n'),
+              linkPrefix = project.projectRootDir.relativize(componentArtifact.defaultConfigLocation)
+            )
           }
-          entries = entries + harnessName ~> (subEntries :+ configReport)
+
+          val t = st"<tr><td valign=top>${x.get}</td><td>${configDescription}</td></tr>"
+
+          val isz: ISZ[ST] = if (entries.contains(entrypoint)) entries.get(entrypoint).get else ISZ()
+          entries = entries + (entrypoint ~> (isz :+ t))
         }
-        */
-      }
 
-      var ret: ISZ[ReportLevel] = ISZ()
-      for (e <- entries.entries) {
-        ret = ret :+ ReportLevel(
-          tag = createTag(s"${e._1}_configurations"),
-          title = Some(st"Configurations for ${e._1}"),
-          description = None(),
-          content = e._2,
-          subLevels = ISZ()
-        )
-      }
-      ret
-    }
+        //var ret: ISZ[ReportBlock] = ISZ()
+        var ret: ISZ[ST] = ISZ()
+        for (e <- entries.entries) {
+          val content = st"""- Configurations for the ${e._1} Entrypoint
+                            |  <table>
+                            |    ${(e._2, "\n")}
+                            |  </table>
+                            |"""
+          //ret = ret :+ ReportBlock(
+           // tag = createTag(s"${e._1}_configurations"),
+            //content = Some(content))
+          ret = ret :+ content
+        }
 
-    val provider: Os.Path = {
-      val path = ops.StringOps(ops.StringOps(scheduleProviderCand).replaceAllLiterally(".", "/")).replaceAllLiterally("$", "")
-      val lookingFor = s"${path}.scala"
-      val cands = ops.ISZOps((Os.path(project.configs(0).outputDir.get) / "src" / "main").list).filter(p => (p / lookingFor).exists)
-      assert (cands.size == 1, s"didn't find $lookingFor")
-      cands(0) / lookingFor
-    }
+        val optLink: Option[ST] =
+          if (componentArtifact.componentNickName == "MA" ||componentArtifact.componentNickName == "TempControl")
+            Some(
+              st"""<br>
+                  |*(Custom configurations were used for this component. Click [here](${ReadmeGen.rootDefaultConfigCoverageLink}/${project.coverageRootName}/${componentArtifact.simpleDscHarnessName}/report.html) for the coverage report obtained when only the default configurations are used)*""")
+          else None()
 
-    val schedule: ISZ[ST] = {
-      var ret: ISZ[ST] = ISZ()
-      for ( s <- ops.StringOps(scheduleCand).split(c => c == ',')) {
-        val comp = nickNamesCand.get(s).get
-        val tpath = st"${(ops.ISZOps(comp.path).drop(1), "_")}".render
-        val (behavior, _) = findBehaviorCode(tpath, project)
-        ret = ret :+ st"[${s}](${project.projectRootDir.relativize(behavior.get)})"
+        val coverageLink: String = s"[link](${ReadmeGen.rootCustomConfigCoverageLink}/${project.coverageRootName}/${componentArtifact.simpleDscHarnessName}/report.html)"
+        val relly = project.projectRootDir.relativize(componentArtifact.manualTestingFilename)
+        componentReports = componentReports :+
+          ReportLevel(
+            tag = createTag(s"${componentArtifact.componentFullName}_configurations"),
+            title = Some(st"${componentArtifact.componentNickName}"),
+            description = Some(
+              st"""- GUMBOX Unit Test Harness [link](${relly})
+                  |- Component coverage report using the configurations below ${coverageLink}$optLink
+                  |<br>
+                  |<br>
+                  |${(ret, "\n")}"""),
+            content = ISZ(),
+            subLevels = ISZ()
+          )
       }
-      ret
+      componentReports
     }
 
     val configurations: ReportLevel = ReportLevel(
       tag = createTag("configurations"),
-      title = Some(st"Test Run Configurations"),
-      description = Some(
-        st"""All configurations use the following static schedule provided by [${provider.name}](${project.projectRootDir.relativize(provider)})
-            |
-            |- ${(schedule, ", ")}"""),
+      title = Some(st"Unit Test Run Configurations"),
+      description = None(),
       content = ISZ(),
-      subLevels = configs
+      subLevels = componentReports
     )
 
     val ret: ReportLevel = ReportLevel(
-      tag = createTag("system-testing-setup"),
-      title = Some(st"System Testing"),
+      tag = createTag("gumbox-unit-testing-setup"),
+      title = Some(st"GUMBOX Unit Testing"),
       description = None(),
       content = ISZ(),
       subLevels = ISZ(configurations)
@@ -772,12 +710,12 @@ object Report {
       content = ISZ(),
       subLevels = ISZ()
     )
-
+    */
     return ReportLevel(
       tag = createTag("how-to-run"),
       title = Some(st"How to Run"),
       description = Some(
-        st"""System testing requires a Sireum distribution. Instructions on how to obtain a
+        st"""GUMBOX unit testing requires a Sireum distribution. Instructions on how to obtain a
             |distribution are available at [https://sireum.org/getting-started/](https://sireum.org/getting-started/).
             |The rest of this documentation assumes the ``SIREUM_HOME`` environmental variable has been set and that
             |sireum's bin directory has been added to your path (e.g. for Linux/MacOS ``export PATH=$$SIREUM_HOME/bin:$$PATH``
@@ -787,37 +725,11 @@ object Report {
 
 
       content = ISZ(),
-      subLevels = ISZ(framework, manualTesting, dscTesting)
+      subLevels = ISZ()//framework, manualTesting, dscTesting)
 
     )
-    */
-    halt("Todo")
   }
 
-  def genReport(project: Project): ReportLevel = {
-
-    val model = AadlModelUtil.getModel(project.air, F)
-    val table = AadlModelUtil.getSymbolTable(model, packageName, project.configs(0))
-
-    val arch: ReportLevel = genArchitectureSection(project, table)
-
-    val behaviorCode: ReportLevel = genBehaviorCodeSection(project, table)
-
-    val metrics: ReportLevel = genCodeMetrics(project)
-
-    val systemTesting: ReportLevel = genTestingSection(project, table)
-
-    //val logika: ReportLevel = genLogikaSection(project, table)
-    val howToRun: ReportLevel = genHowToRunSection(project, table)
-
-    return ReportLevel(
-      tag = createTag(project.title),
-      title = Some(st"${project.title}"),
-      description = Some(st"The data, links, and images in this file are auto-generated from HAMR's report generation facility. Additional text explanations have been added for readability."),
-      content = ISZ(),
-      subLevels = ISZ(arch, behaviorCode, metrics, systemTesting, howToRun)
-    )
-  }
 
 
   def collect(index: Z, content: ISZ[ISZ[String]]): Z = {
@@ -1103,7 +1015,7 @@ object Report {
       }
 
       val tpath = st"${(ops.ISZOps(thread.path).drop(1), "_")}".render
-      val tnick = Util.threadNicknames.get(tpath).get
+      val tnick = Util.threadNickNameBySuffix(tpath)
 
       blocks = blocks :+ ReportBlock(
         tag = createTag(s"${tagPrefix}-${thread.identifier}-$tnick"),
@@ -1145,7 +1057,7 @@ object Report {
 
     for (thread <- table.getThreads()) {
       val tpath = st"${(ops.ISZOps(thread.path).drop(1), "_")}".render
-      val tnick = Util.threadNicknames.get(tpath).get
+      val tnick = Util.threadNickNameBySuffix(tpath)
       val (behavior, gumbox) = findBehaviorCode(tpath, project)
       val gumboxOpt: Option[ST] = if (gumbox.nonEmpty)
         Some(st"<br>[GumboX](${project.projectRootDir.relativize(gumbox.get)})")
@@ -1171,14 +1083,14 @@ object Report {
                           |the user-code application logic for each component (below) with auto-generated threading
                           |and communication infrastructure code, along with HAMR's implementation of AADL run-time
                           |(based on AADL's standardized Run-Time Services). Note that HAMR is smart enough to
-                          |accomodate changes to model-level interface declarations (ports, etc.) as well as changes
+                          |accommodate changes to model-level interface declarations (ports, etc.) as well as changes
                           |to GUMBO contracts -- user code will not be clobbered when the model is changed and HAMR
                           |code generation is rerun. Instead, HAMR uses specially designed delimiters in the
                           |application code files to, e.g., re-weave updated contracts into the application code.
                           |
                           |Executable Slang versions of the GUMBO contracts (referred to as "GUMBOX" contracts)
                           |are also automatically generated in the code generation process. These executable
-                          |contracts are automatically integrated into the system testing process: appropriate
+                          |contracts are automatically integrated into the unit testing process: appropriate
                           |portions of the executable contracts are invoked in the pre-state and the post-state
                           |of a thread dispatch to dynamically check that the thread's behavior for that particular
                           |dispatch conforms to the model-level GUMBO contracts."""
@@ -1188,6 +1100,33 @@ object Report {
       description = Some(description),
       content = threads,
       subLevels = ISZ()
+    )
+  }
+
+
+  def genReport(project: Project): ReportLevel = {
+
+    val model = AadlModelUtil.getModel(project.air, F)
+    val table = AadlModelUtil.getSymbolTable(model, packageName, project.configs(0))
+
+    val arch: ReportLevel = genArchitectureSection(project, table)
+
+    val behaviorCode: ReportLevel = genBehaviorCodeSection(project, table)
+
+    val metrics: ReportLevel = genCodeMetrics(project)
+
+    val unitTesting: ReportLevel = genTestingSection(project, table)
+
+    //val logika: ReportLevel = genLogikaSection(project, table)
+
+    //val howToRun: ReportLevel = genHowToRunSection(project, table)
+
+    return ReportLevel(
+      tag = createTag(project.title),
+      title = Some(st"${project.title}"),
+      description = Some(st"The data, links, and images in this file are auto-generated from HAMR's report generation facility. Additional text explanations have been added for readability."),
+      content = ISZ(),
+      subLevels = ISZ(arch, behaviorCode, metrics, unitTesting)//, howToRun)
     )
   }
 }
