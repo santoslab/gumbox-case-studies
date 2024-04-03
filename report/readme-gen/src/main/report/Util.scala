@@ -5,42 +5,55 @@ package report
 import org.sireum._
 
 object Util {
+  def threadNickNameBySuffix(suffix: String): String = {
+    for (key <- threadNicknames.keys if (ops.StringOps(key).endsWith(suffix))) {
+      return threadNicknames.get(key).get
+    }
+    halt(s"Couldn't find suffix ${suffix}")
+  }
   val threadNicknames: Map[String, String] = Map.empty ++ ISZ(
-    "instrumentationMock_instrumentationMockThread" ~> "instrumentationMockThread",
-    "eventControlMock_eventControlMockThread" ~> "eventControlMockThread",
-    "actuatorsMock_actuatorsMockThread" ~> "actuatorsMockThread",
+    "Actuator_i_actuationSubsystem_saturationActuatorUnit_saturationActuator_actuator" ~> "SAU_satActuator_actuator",
+    "Actuator_i_actuationSubsystem_tempPressureActuatorUnit_tempPressureActuator_actuator" ~> "TPAU_tempPressA_actuator",
 
-    "actuationSubsystem_actuationUnit1_temperatureLogic_coincidenceLogic" ~> "au1_temp_coincidenceLogic",
-    "actuationSubsystem_actuationUnit1_pressureLogic_coincidenceLogic" ~> "au1_press_coincidenceLogic",
-    "actuationSubsystem_actuationUnit1_saturationLogic_coincidenceLogic" ~> "au1_satLogic_coincidenceLogic",
-    "actuationSubsystem_actuationUnit1_tempPressureTripOut_orLogic" ~> "au1_tempPressTripOut_orLogic",
+    "CoincidenceLogic_i_actuationSubsystem_actuationUnit1_pressureLogic_coincidenceLogic" ~> "au1_press_coincidenceLogic",
+    "CoincidenceLogic_i_actuationSubsystem_actuationUnit1_saturationLogic_coincidenceLogic" ~> "au1_satLogic_coincidenceLogic",
+    "CoincidenceLogic_i_actuationSubsystem_actuationUnit1_temperatureLogic_coincidenceLogic" ~> "au1_temp_coincidenceLogic",
 
-    "actuationSubsystem_actuationUnit2_temperatureLogic_coincidenceLogic" ~> "au2_temp_coincidenceLogic",
-    "actuationSubsystem_actuationUnit2_pressureLogic_coincidenceLogic" ~> "au2_press_coincidenceLogic",
-    "actuationSubsystem_actuationUnit2_saturationLogic_coincidenceLogic" ~> "au2_sat_coincidenceLogic",
-    "actuationSubsystem_actuationUnit2_tempPressureTripOut_orLogic" ~> "au2_tempPressTripOut_orLogic",
+    "CoincidenceLogic_i_actuationSubsystem_actuationUnit2_pressureLogic_coincidenceLogic" ~> "au2_press_coincidenceLogic",
+    "CoincidenceLogic_i_actuationSubsystem_actuationUnit2_saturationLogic_coincidenceLogic" ~> "au2_sat_coincidenceLogic",
+    "CoincidenceLogic_i_actuationSubsystem_actuationUnit2_temperatureLogic_coincidenceLogic" ~> "au2_temp_coincidenceLogic",
 
-    "actuationSubsystem_tempPressureActuatorUnit_actuateTempPressureActuator_orLogic" ~> "TPAU_actTempPA_orLogic",
-    "actuationSubsystem_tempPressureActuatorUnit_tempPressureActuator_actuator" ~> "TPAU_tempPressA_actuator",
-    "actuationSubsystem_saturationActuatorUnit_actuateSaturationActuator_orLogic" ~> "SAU_actSatActuator_orLogic",
-    "actuationSubsystem_saturationActuatorUnit_saturationActuator_actuator" ~> "SAU_satActuator_actuator",
+    "OrLogic_i_actuationSubsystem_actuationUnit1_tempPressureTripOut_orLogic" ~> "au1_tempPressTripOut_orLogic",
+    "OrLogic_i_actuationSubsystem_actuationUnit2_tempPressureTripOut_orLogic" ~> "au2_tempPressTripOut_orLogic",
 
-    "operator_interface_oip_oit" ~> "OpInterface",
+    "OrLogic_i_actuationSubsystem_saturationActuatorUnit_actuateSaturationActuator_orLogic" ~> "SAU_actSatActuator_orLogic",
+    "OrLogic_i_actuationSubsystem_tempPressureActuatorUnit_actuateTempPressureActuator_orLogic" ~> "TPAU_actTempPA_orLogic",
 
-    "thermostat_regulate_temperature_manage_heat_source" ~> "RegMHS",
-    "thermostat_regulate_temperature_manage_regulator_interface" ~> "RegMRI",
-    "thermostat_regulate_temperature_manage_regulator_mode" ~> "RegMRM",
-
-    "thermostat_monitor_temperature_manage_monitor_interface" ~> "MonMMI",
-    "thermostat_monitor_temperature_manage_alarm" ~> "MonMA",
-    "thermostat_monitor_temperature_manage_monitor_mode" ~> "MonMMM",
-
-    "heat_source_cpi_heat_controller" ~> "HS",
-    "thermostat_regulate_temperature_detect_regulator_failure" ~> "DRF",
-    "thermostat_monitor_temperature_detect_monitor_failure" ~> "DMF",
-    "temperature_sensor_cpi_thermostat" ~> "TS"
+    "InstrumentationMockThread_i_instrumentationMock_instrumentationMockThread" ~> "instrumentationMockThread",
+    "EventControlMockThread_i_eventControlMock_eventControlMockThread" ~> "eventControlMockThread",
+    "ActuatorsMockThread_i_actuatorsMock_actuatorsMockThread" ~> "actuatorsMockThread",
 
 
+    "operator_interface_thread_impl_operator_interface_oip_oit" ~> "OpInterface",
+
+    "Manage_Heat_Source_impl_thermostat_regulate_temperature_manage_heat_source" ~> "MHS",
+    "Manage_Regulator_Interface_impl_thermostat_regulate_temperature_manage_regulator_interface" ~> "MRI",
+    "Manage_Regulator_Mode_impl_thermostat_regulate_temperature_manage_regulator_mode" ~> "MRM",
+
+    "Manage_Monitor_Interface_impl_thermostat_monitor_temperature_manage_monitor_interface" ~> "MMI",
+    "Manage_Alarm_impl_thermostat_monitor_temperature_manage_alarm" ~> "MA",
+    "Manage_Monitor_Mode_impl_thermostat_monitor_temperature_manage_monitor_mode" ~> "MMM",
+
+    "Heat_Source_impl_heat_source_cpi_heat_controller" ~> "HS",
+    "Detect_Regulator_Failure_impl_thermostat_regulate_temperature_detect_regulator_failure" ~> "DRF",
+    "Detect_Monitor_Failure_impl_thermostat_monitor_temperature_detect_monitor_failure" ~> "DMF",
+    "Temperature_Sensor_impl_temperature_sensor_cpi_thermostat" ~> "TS",
+
+
+    "FanPeriodic_p_tcproc_fan" ~> "Fan",
+    "OperatorInterfacePeriodic_p_tcproc_operatorInterface" ~> "OpInterface",
+    "TempControlPeriodic_p_tcproc_tempControl" ~> "TempControl",
+    "TempSensorPeriodic_p_tcproc_tempSensor" ~> "TempSensor"
   )
 
   def hackyFind(dir: Os.Path, suffix: String): Option[Os.Path] = {
@@ -134,24 +147,24 @@ object Util {
     experimentalOptions = ISZ()
   )
 
-  def locateText(s: String, lines: ISZ[String], linkPrefix: Os.Path): String = {
+  def locateText(s: String, lines: ISZ[String], linkPrefix: Os.Path): Option[String] = {
     return locateTextD(F, F, s, lines, linkPrefix)
   }
-  def locateTextD(rev: B, makeHtmlLinks: B, s: String, lines: ISZ[String], linkPrefix: Os.Path): String = {
+  def locateTextD(rev: B, makeHtmlLinks: B, s: String, lines: ISZ[String], linkPrefix: Os.Path): Option[String] = {
     if (ops.StringOps(s).startsWith("Default ")) {
-      return (if (makeHtmlLinks) "getDefaultProfile, <i>i.e. uses default configurations as provided by SlangCheck</i>"
-       else "getDefaultProfile, _i.e. uses default configurations as provided by SlangCheck_")
+      return (if (makeHtmlLinks) Some("getDefaultProfile, <i>i.e. uses default configurations as provided by SlangCheck</i>")
+       else Some("getDefaultProfile, _i.e. uses default configurations as provided by SlangCheck_"))
     }
     if (rev) {
       for (i <- lines.size - 1 to 0 by -1 if ops.StringOps(lines(i)).contains(s)) {
-        return mkLink(makeHtmlLinks, s, s"${linkPrefix}#L${i + 1})")
+        return Some(mkLink(makeHtmlLinks, s, s"${linkPrefix}#L${i + 1})"))
       }
     } else {
       for (i <- 0 until lines.size if ops.StringOps(lines(i)).contains(s)) {
-        return mkLink(makeHtmlLinks, s, s"${linkPrefix}#L${i + 1}")
+        return Some(mkLink(makeHtmlLinks, s, s"${linkPrefix}#L${i + 1}"))
       }
     }
-    return s"Didn't find $s in $linkPrefix"
+    return None()
   }
   def locateMethodDefinition(methodName: String, lines: ISZ[String], linkPrefix: Os.Path): String = {
     return locateMethodDefinitionH(F, methodName, lines, linkPrefix)

@@ -1,9 +1,3 @@
-# GUMBOX 2023 Case Studies
+[GUMBOX 2024 Journal Version](journal-readme.md)
 
-## [Periodic Temperature Control](temp_control/periodic/readme.md)
-
-
-## [Isolette](isolette/readme.md)
-
-
-## [RTS](rts/readme.md)
+[GUMBOX 2023 Paper Version](https://github.com/santoslab/gumbox-case-studies/tree/paper_version/readme.md)
