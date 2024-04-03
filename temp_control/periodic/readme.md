@@ -144,12 +144,11 @@ likely would be excluded in a release build
 <!--start__temperature-control-sporadic_gumbox-unit-testing-setup_configurations_fan_configurations-description-->
 - GUMBOX Unit Test Harness [link](hamr/slang/src/test/bridge/tc/CoolingFan/FanPeriodic_p_tcproc_fan_GumboX_UnitTests.scala)
 - Component coverage report using the configurations below [link](https://people.cs.ksu.edu/~santos_jenkins/pub/gumbox-journal/custom_configs/tc/FanPeriodic_p_tcproc_fan_DSC_UnitTests/report.html)
-<br>
-<br>
-- Configurations for the Compute Entrypoint
-  <table>
-    <tr><td valign=top><a href="hamr/slang/src/test/util/tc/CoolingFan/FanPeriodic_p_tcproc_fan_UnitTestConfiguration_Util.scala#L22">Default_Compute_Config</a></td><td>Default Compute Configuration</td></tr>
-  </table>
+
+    - Configurations for the Compute Entrypoint
+      <table>
+        <tr><td valign=top><a href="hamr/slang/src/test/util/tc/CoolingFan/FanPeriodic_p_tcproc_fan_UnitTestConfiguration_Util.scala#L22">Default_Compute_Config</a></td><td>Default Compute Configuration</td></tr>
+      </table>
 
 <!--end____temperature-control-sporadic_gumbox-unit-testing-setup_configurations_fan_configurations-description-->
 
@@ -157,17 +156,16 @@ likely would be excluded in a release build
 <!--start__temperature-control-sporadic_gumbox-unit-testing-setup_configurations_opinterface_configurations-description-->
 - GUMBOX Unit Test Harness [link](hamr/slang/src/test/bridge/tc/TempControlSoftwareSystem/OperatorInterfacePeriodic_p_tcproc_operatorInterface_GumboX_UnitTests.scala)
 - Component coverage report using the configurations below [link](https://people.cs.ksu.edu/~santos_jenkins/pub/gumbox-journal/custom_configs/tc/OperatorInterfacePeriodic_p_tcproc_operatorInterface_DSC_UnitTests/report.html)
-<br>
-<br>
-- Configurations for the Initialize Entrypoint
-  <table>
-    <tr><td valign=top><a href="hamr/slang/src/test/util/tc/TempControlSoftwareSystem/OperatorInterfacePeriodic_p_tcproc_operatorInterface_UnitTestConfiguration_Util.scala#L22">Default_Initialize_Config</a></td><td>Default Initialize Configuration</td></tr>
-  </table>
 
-- Configurations for the Compute Entrypoint
-  <table>
-    <tr><td valign=top><a href="hamr/slang/src/test/util/tc/TempControlSoftwareSystem/OperatorInterfacePeriodic_p_tcproc_operatorInterface_UnitTestConfiguration_Util.scala#L38">Default_Compute_Config</a></td><td>Default Compute Configuration</td></tr>
-  </table>
+    - Configurations for the Initialize Entrypoint
+      <table>
+        <tr><td valign=top><a href="hamr/slang/src/test/util/tc/TempControlSoftwareSystem/OperatorInterfacePeriodic_p_tcproc_operatorInterface_UnitTestConfiguration_Util.scala#L22">Default_Initialize_Config</a></td><td>Default Initialize Configuration</td></tr>
+      </table>
+
+    - Configurations for the Compute Entrypoint
+      <table>
+        <tr><td valign=top><a href="hamr/slang/src/test/util/tc/TempControlSoftwareSystem/OperatorInterfacePeriodic_p_tcproc_operatorInterface_UnitTestConfiguration_Util.scala#L38">Default_Compute_Config</a></td><td>Default Compute Configuration</td></tr>
+      </table>
 
 <!--end____temperature-control-sporadic_gumbox-unit-testing-setup_configurations_opinterface_configurations-description-->
 
@@ -176,17 +174,16 @@ likely would be excluded in a release build
 - GUMBOX Unit Test Harness [link](hamr/slang/src/test/bridge/tc/TempControlSoftwareSystem/TempControlPeriodic_p_tcproc_tempControl_GumboX_UnitTests.scala)
 - Component coverage report using the configurations below [link](https://people.cs.ksu.edu/~santos_jenkins/pub/gumbox-journal/custom_configs/tc/TempControlPeriodic_p_tcproc_tempControl_DSC_UnitTests/report.html)<br>
 *(Custom configurations were used for this component. Click [here](https://people.cs.ksu.edu/~santos_jenkins/pub/gumbox-journal/default_configs/tc/TempControlPeriodic_p_tcproc_tempControl_DSC_UnitTests/report.html) for the coverage report obtained when only the default configurations are used)*
-<br>
-<br>
-- Configurations for the Initialize Entrypoint
-  <table>
-    <tr><td valign=top><a href="hamr/slang/src/test/util/tc/TempControlSoftwareSystem/TempControlPeriodic_p_tcproc_tempControl_UnitTestConfiguration_Util.scala#L22">Default_Initialize_Config</a></td><td>Default Initialize Configuration</td></tr>
-  </table>
 
-- Configurations for the Compute Entrypoint
-  <table>
-    <tr><td valign=top><a href="hamr/slang/src/test/bridge/tc/TempControlSoftwareSystem/TempControlPeriodic_p_tcproc_tempControl_GumboX_UnitTests.scala#L23">Custom_ComputewL_Config</a></td><td>Set ranges based on requirements - i.e. 50 <= SetPoint.Low and SetPoint.High <= 110 and -128 <= current_temp <= 134</td></tr>
-  </table>
+    - Configurations for the Initialize Entrypoint
+      <table>
+        <tr><td valign=top><a href="hamr/slang/src/test/util/tc/TempControlSoftwareSystem/TempControlPeriodic_p_tcproc_tempControl_UnitTestConfiguration_Util.scala#L22">Default_Initialize_Config</a></td><td>Default Initialize Configuration</td></tr>
+      </table>
+
+    - Configurations for the Compute Entrypoint
+      <table>
+        <tr><td valign=top><a href="hamr/slang/src/test/bridge/tc/TempControlSoftwareSystem/TempControlPeriodic_p_tcproc_tempControl_GumboX_UnitTests.scala#L23">Custom_ComputewL_Config</a></td><td>Set ranges based on requirements - i.e. 50 <= SetPoint.Low and SetPoint.High <= 110 and -128 <= current_temp <= 134</td></tr>
+      </table>
 
 <!--end____temperature-control-sporadic_gumbox-unit-testing-setup_configurations_tempcontrol_configurations-description-->
 
@@ -194,16 +191,15 @@ likely would be excluded in a release build
 <!--start__temperature-control-sporadic_gumbox-unit-testing-setup_configurations_tempsensor_configurations-description-->
 - GUMBOX Unit Test Harness [link](hamr/slang/src/test/bridge/tc/TempSensor/TempSensorPeriodic_p_tcproc_tempSensor_GumboX_UnitTests.scala)
 - Component coverage report using the configurations below [link](https://people.cs.ksu.edu/~santos_jenkins/pub/gumbox-journal/custom_configs/tc/TempSensorPeriodic_p_tcproc_tempSensor_DSC_UnitTests/report.html)
-<br>
-<br>
-- Configurations for the Initialize Entrypoint
-  <table>
-    <tr><td valign=top><a href="hamr/slang/src/test/util/tc/TempSensor/TempSensorPeriodic_p_tcproc_tempSensor_UnitTestConfiguration_Util.scala#L22">Default_Initialize_Config</a></td><td>Default Initialize Configuration</td></tr>
-  </table>
 
-- Configurations for the Compute Entrypoint
-  <table>
-    <tr><td valign=top><a href="hamr/slang/src/test/util/tc/TempSensor/TempSensorPeriodic_p_tcproc_tempSensor_UnitTestConfiguration_Util.scala#L38">Default_Compute_Config</a></td><td>Default Compute Configuration</td></tr>
-  </table>
+    - Configurations for the Initialize Entrypoint
+      <table>
+        <tr><td valign=top><a href="hamr/slang/src/test/util/tc/TempSensor/TempSensorPeriodic_p_tcproc_tempSensor_UnitTestConfiguration_Util.scala#L22">Default_Initialize_Config</a></td><td>Default Initialize Configuration</td></tr>
+      </table>
+
+    - Configurations for the Compute Entrypoint
+      <table>
+        <tr><td valign=top><a href="hamr/slang/src/test/util/tc/TempSensor/TempSensorPeriodic_p_tcproc_tempSensor_UnitTestConfiguration_Util.scala#L38">Default_Compute_Config</a></td><td>Default Compute Configuration</td></tr>
+      </table>
 
 <!--end____temperature-control-sporadic_gumbox-unit-testing-setup_configurations_tempsensor_configurations-description-->
