@@ -222,17 +222,16 @@ likely would be excluded in a release build
 - GUMBOX Unit Test Harness [link](hamr/slang/src/test/bridge/isolette/Monitor/Manage_Alarm_impl_thermostat_monitor_temperature_manage_alarm_GumboX_UnitTests.scala)
 - Component coverage report using the configurations below [link](https://people.cs.ksu.edu/~santos_jenkins/pub/gumbox-journal/custom_configs/isolette/Manage_Alarm_impl_thermostat_monitor_temperature_manage_alarm_DSC_UnitTests/report.html)<br>
 *(Custom configurations were used for this component. Click [here](https://people.cs.ksu.edu/~santos_jenkins/pub/gumbox-journal/default_configs/isolette/Manage_Alarm_impl_thermostat_monitor_temperature_manage_alarm_DSC_UnitTests/report.html) for the coverage report obtained when only the default configurations are used)*
-<br>
-<br>
-- Configurations for the Initialize Entrypoint
-  <table>
-    <tr><td valign=top><a href="hamr/slang/src/test/util/isolette/Monitor/Manage_Alarm_impl_thermostat_monitor_temperature_manage_alarm_UnitTestConfiguration_Util.scala#L22">Default_Initialize_Config</a></td><td>Default Initialize Configuration</td></tr>
-  </table>
 
-- Configurations for the Compute Entrypoint
-  <table>
-    <tr><td valign=top><a href="hamr/slang/src/test/bridge/isolette/Monitor/Manage_Alarm_impl_thermostat_monitor_temperature_manage_alarm_GumboX_UnitTests.scala#L69">Compute_Config_ranges_based_on_requirements</a></td><td>Ranges based on requirements - ie 96.0 <= lower_alarm <= 101.0 and 97.0 <= upper_alarm <= 102.  Also restrict current_temp to be between 86.0 and 112.0 inclusive</td></tr>
-  </table>
+    - Configurations for the Initialize Entrypoint
+      <table>
+        <tr><td valign=top><a href="hamr/slang/src/test/util/isolette/Monitor/Manage_Alarm_impl_thermostat_monitor_temperature_manage_alarm_UnitTestConfiguration_Util.scala#L22">Default_Initialize_Config</a></td><td>Default Initialize Configuration</td></tr>
+      </table>
+
+    - Configurations for the Compute Entrypoint
+      <table>
+        <tr><td valign=top><a href="hamr/slang/src/test/bridge/isolette/Monitor/Manage_Alarm_impl_thermostat_monitor_temperature_manage_alarm_GumboX_UnitTests.scala#L69">Compute_Config_ranges_based_on_requirements</a></td><td>Ranges based on requirements - ie 96.0 <= lower_alarm <= 101.0 and 97.0 <= upper_alarm <= 102.  Also restrict current_temp to be between 86.0 and 112.0 inclusive</td></tr>
+      </table>
 
 <!--end____isolette_gumbox-unit-testing-setup_configurations_ma_configurations-description-->
 
@@ -240,18 +239,17 @@ likely would be excluded in a release build
 <!--start__isolette_gumbox-unit-testing-setup_configurations_mmi_configurations-description-->
 - GUMBOX Unit Test Harness [link](hamr/slang/src/test/bridge/isolette/Monitor/Manage_Monitor_Interface_impl_thermostat_monitor_temperature_manage_monitor_interface_GumboX_UnitTests.scala)
 - Component coverage report using the configurations below [link](https://people.cs.ksu.edu/~santos_jenkins/pub/gumbox-journal/custom_configs/isolette/Manage_Monitor_Interface_impl_thermostat_monitor_temperature_manage_monitor_interface_DSC_UnitTests/report.html)
-<br>
-<br>
-- Configurations for the Initialize Entrypoint
-  <table>
-    <tr><td valign=top><a href="hamr/slang/src/test/util/isolette/Monitor/Manage_Monitor_Interface_impl_thermostat_monitor_temperature_manage_monitor_interface_UnitTestConfiguration_Util.scala#L22">Default_Initialize_Config</a></td><td>Default Initialize Configuration</td></tr>
-  </table>
 
-- Configurations for the Compute Entrypoint
-  <table>
-    <tr><td valign=top><a href="hamr/slang/src/test/util/isolette/Monitor/Manage_Monitor_Interface_impl_thermostat_monitor_temperature_manage_monitor_interface_UnitTestConfiguration_Util.scala#L38">Default_Compute_Config</a></td><td>Default Compute Configuration</td></tr>
-    <tr><td valign=top><a href="hamr/slang/src/test/util/isolette/Monitor/Manage_Monitor_Interface_impl_thermostat_monitor_temperature_manage_monitor_interface_UnitTestConfiguration_Util.scala#L61">Default_ComputewL_Config</a></td><td>Default ComputewL Configuration</td></tr>
-  </table>
+    - Configurations for the Initialize Entrypoint
+      <table>
+        <tr><td valign=top><a href="hamr/slang/src/test/util/isolette/Monitor/Manage_Monitor_Interface_impl_thermostat_monitor_temperature_manage_monitor_interface_UnitTestConfiguration_Util.scala#L22">Default_Initialize_Config</a></td><td>Default Initialize Configuration</td></tr>
+      </table>
+
+    - Configurations for the Compute Entrypoint
+      <table>
+        <tr><td valign=top><a href="hamr/slang/src/test/util/isolette/Monitor/Manage_Monitor_Interface_impl_thermostat_monitor_temperature_manage_monitor_interface_UnitTestConfiguration_Util.scala#L38">Default_Compute_Config</a></td><td>Default Compute Configuration</td></tr>
+        <tr><td valign=top><a href="hamr/slang/src/test/util/isolette/Monitor/Manage_Monitor_Interface_impl_thermostat_monitor_temperature_manage_monitor_interface_UnitTestConfiguration_Util.scala#L61">Default_ComputewL_Config</a></td><td>Default ComputewL Configuration</td></tr>
+      </table>
 
 <!--end____isolette_gumbox-unit-testing-setup_configurations_mmi_configurations-description-->
 
@@ -259,18 +257,17 @@ likely would be excluded in a release build
 <!--start__isolette_gumbox-unit-testing-setup_configurations_mmm_configurations-description-->
 - GUMBOX Unit Test Harness [link](hamr/slang/src/test/bridge/isolette/Monitor/Manage_Monitor_Mode_impl_thermostat_monitor_temperature_manage_monitor_mode_GumboX_UnitTests.scala)
 - Component coverage report using the configurations below [link](https://people.cs.ksu.edu/~santos_jenkins/pub/gumbox-journal/custom_configs/isolette/Manage_Monitor_Mode_impl_thermostat_monitor_temperature_manage_monitor_mode_DSC_UnitTests/report.html)
-<br>
-<br>
-- Configurations for the Initialize Entrypoint
-  <table>
-    <tr><td valign=top><a href="hamr/slang/src/test/util/isolette/Monitor/Manage_Monitor_Mode_impl_thermostat_monitor_temperature_manage_monitor_mode_UnitTestConfiguration_Util.scala#L22">Default_Initialize_Config</a></td><td>Default Initialize Configuration</td></tr>
-  </table>
 
-- Configurations for the Compute Entrypoint
-  <table>
-    <tr><td valign=top><a href="hamr/slang/src/test/util/isolette/Monitor/Manage_Monitor_Mode_impl_thermostat_monitor_temperature_manage_monitor_mode_UnitTestConfiguration_Util.scala#L38">Default_Compute_Config</a></td><td>Default Compute Configuration</td></tr>
-    <tr><td valign=top><a href="hamr/slang/src/test/util/isolette/Monitor/Manage_Monitor_Mode_impl_thermostat_monitor_temperature_manage_monitor_mode_UnitTestConfiguration_Util.scala#L60">Default_ComputewL_Config</a></td><td>Default ComputewL Configuration</td></tr>
-  </table>
+    - Configurations for the Initialize Entrypoint
+      <table>
+        <tr><td valign=top><a href="hamr/slang/src/test/util/isolette/Monitor/Manage_Monitor_Mode_impl_thermostat_monitor_temperature_manage_monitor_mode_UnitTestConfiguration_Util.scala#L22">Default_Initialize_Config</a></td><td>Default Initialize Configuration</td></tr>
+      </table>
+
+    - Configurations for the Compute Entrypoint
+      <table>
+        <tr><td valign=top><a href="hamr/slang/src/test/util/isolette/Monitor/Manage_Monitor_Mode_impl_thermostat_monitor_temperature_manage_monitor_mode_UnitTestConfiguration_Util.scala#L38">Default_Compute_Config</a></td><td>Default Compute Configuration</td></tr>
+        <tr><td valign=top><a href="hamr/slang/src/test/util/isolette/Monitor/Manage_Monitor_Mode_impl_thermostat_monitor_temperature_manage_monitor_mode_UnitTestConfiguration_Util.scala#L60">Default_ComputewL_Config</a></td><td>Default ComputewL Configuration</td></tr>
+      </table>
 
 <!--end____isolette_gumbox-unit-testing-setup_configurations_mmm_configurations-description-->
 
@@ -278,18 +275,17 @@ likely would be excluded in a release build
 <!--start__isolette_gumbox-unit-testing-setup_configurations_mhs_configurations-description-->
 - GUMBOX Unit Test Harness [link](hamr/slang/src/test/bridge/isolette/Regulate/Manage_Heat_Source_impl_thermostat_regulate_temperature_manage_heat_source_GumboX_UnitTests.scala)
 - Component coverage report using the configurations below [link](https://people.cs.ksu.edu/~santos_jenkins/pub/gumbox-journal/custom_configs/isolette/Manage_Heat_Source_impl_thermostat_regulate_temperature_manage_heat_source_DSC_UnitTests/report.html)
-<br>
-<br>
-- Configurations for the Initialize Entrypoint
-  <table>
-    <tr><td valign=top><a href="hamr/slang/src/test/util/isolette/Regulate/Manage_Heat_Source_impl_thermostat_regulate_temperature_manage_heat_source_UnitTestConfiguration_Util.scala#L22">Default_Initialize_Config</a></td><td>Default Initialize Configuration</td></tr>
-  </table>
 
-- Configurations for the Compute Entrypoint
-  <table>
-    <tr><td valign=top><a href="hamr/slang/src/test/util/isolette/Regulate/Manage_Heat_Source_impl_thermostat_regulate_temperature_manage_heat_source_UnitTestConfiguration_Util.scala#L38">Default_Compute_Config</a></td><td>Default Compute Configuration</td></tr>
-    <tr><td valign=top><a href="hamr/slang/src/test/util/isolette/Regulate/Manage_Heat_Source_impl_thermostat_regulate_temperature_manage_heat_source_UnitTestConfiguration_Util.scala#L61">Default_ComputewL_Config</a></td><td>Default ComputewL Configuration</td></tr>
-  </table>
+    - Configurations for the Initialize Entrypoint
+      <table>
+        <tr><td valign=top><a href="hamr/slang/src/test/util/isolette/Regulate/Manage_Heat_Source_impl_thermostat_regulate_temperature_manage_heat_source_UnitTestConfiguration_Util.scala#L22">Default_Initialize_Config</a></td><td>Default Initialize Configuration</td></tr>
+      </table>
+
+    - Configurations for the Compute Entrypoint
+      <table>
+        <tr><td valign=top><a href="hamr/slang/src/test/util/isolette/Regulate/Manage_Heat_Source_impl_thermostat_regulate_temperature_manage_heat_source_UnitTestConfiguration_Util.scala#L38">Default_Compute_Config</a></td><td>Default Compute Configuration</td></tr>
+        <tr><td valign=top><a href="hamr/slang/src/test/util/isolette/Regulate/Manage_Heat_Source_impl_thermostat_regulate_temperature_manage_heat_source_UnitTestConfiguration_Util.scala#L61">Default_ComputewL_Config</a></td><td>Default ComputewL Configuration</td></tr>
+      </table>
 
 <!--end____isolette_gumbox-unit-testing-setup_configurations_mhs_configurations-description-->
 
@@ -297,17 +293,16 @@ likely would be excluded in a release build
 <!--start__isolette_gumbox-unit-testing-setup_configurations_mri_configurations-description-->
 - GUMBOX Unit Test Harness [link](hamr/slang/src/test/bridge/isolette/Regulate/Manage_Regulator_Interface_impl_thermostat_regulate_temperature_manage_regulator_interface_GumboX_UnitTests.scala)
 - Component coverage report using the configurations below [link](https://people.cs.ksu.edu/~santos_jenkins/pub/gumbox-journal/custom_configs/isolette/Manage_Regulator_Interface_impl_thermostat_regulate_temperature_manage_regulator_interface_DSC_UnitTests/report.html)
-<br>
-<br>
-- Configurations for the Initialize Entrypoint
-  <table>
-    <tr><td valign=top><a href="hamr/slang/src/test/util/isolette/Regulate/Manage_Regulator_Interface_impl_thermostat_regulate_temperature_manage_regulator_interface_UnitTestConfiguration_Util.scala#L22">Default_Initialize_Config</a></td><td>Default Initialize Configuration</td></tr>
-  </table>
 
-- Configurations for the Compute Entrypoint
-  <table>
-    <tr><td valign=top><a href="hamr/slang/src/test/util/isolette/Regulate/Manage_Regulator_Interface_impl_thermostat_regulate_temperature_manage_regulator_interface_UnitTestConfiguration_Util.scala#L38">Default_Compute_Config</a></td><td>Default Compute Configuration</td></tr>
-  </table>
+    - Configurations for the Initialize Entrypoint
+      <table>
+        <tr><td valign=top><a href="hamr/slang/src/test/util/isolette/Regulate/Manage_Regulator_Interface_impl_thermostat_regulate_temperature_manage_regulator_interface_UnitTestConfiguration_Util.scala#L22">Default_Initialize_Config</a></td><td>Default Initialize Configuration</td></tr>
+      </table>
+
+    - Configurations for the Compute Entrypoint
+      <table>
+        <tr><td valign=top><a href="hamr/slang/src/test/util/isolette/Regulate/Manage_Regulator_Interface_impl_thermostat_regulate_temperature_manage_regulator_interface_UnitTestConfiguration_Util.scala#L38">Default_Compute_Config</a></td><td>Default Compute Configuration</td></tr>
+      </table>
 
 <!--end____isolette_gumbox-unit-testing-setup_configurations_mri_configurations-description-->
 
@@ -315,17 +310,16 @@ likely would be excluded in a release build
 <!--start__isolette_gumbox-unit-testing-setup_configurations_mrm_configurations-description-->
 - GUMBOX Unit Test Harness [link](hamr/slang/src/test/bridge/isolette/Regulate/Manage_Regulator_Mode_impl_thermostat_regulate_temperature_manage_regulator_mode_GumboX_UnitTests.scala)
 - Component coverage report using the configurations below [link](https://people.cs.ksu.edu/~santos_jenkins/pub/gumbox-journal/custom_configs/isolette/Manage_Regulator_Mode_impl_thermostat_regulate_temperature_manage_regulator_mode_DSC_UnitTests/report.html)
-<br>
-<br>
-- Configurations for the Initialize Entrypoint
-  <table>
-    <tr><td valign=top><a href="hamr/slang/src/test/util/isolette/Regulate/Manage_Regulator_Mode_impl_thermostat_regulate_temperature_manage_regulator_mode_UnitTestConfiguration_Util.scala#L22">Default_Initialize_Config</a></td><td>Default Initialize Configuration</td></tr>
-  </table>
 
-- Configurations for the Compute Entrypoint
-  <table>
-    <tr><td valign=top><a href="hamr/slang/src/test/util/isolette/Regulate/Manage_Regulator_Mode_impl_thermostat_regulate_temperature_manage_regulator_mode_UnitTestConfiguration_Util.scala#L38">Default_Compute_Config</a></td><td>Default Compute Configuration</td></tr>
-    <tr><td valign=top><a href="hamr/slang/src/test/util/isolette/Regulate/Manage_Regulator_Mode_impl_thermostat_regulate_temperature_manage_regulator_mode_UnitTestConfiguration_Util.scala#L60">Default_ComputewL_Config</a></td><td>Default ComputewL Configuration</td></tr>
-  </table>
+    - Configurations for the Initialize Entrypoint
+      <table>
+        <tr><td valign=top><a href="hamr/slang/src/test/util/isolette/Regulate/Manage_Regulator_Mode_impl_thermostat_regulate_temperature_manage_regulator_mode_UnitTestConfiguration_Util.scala#L22">Default_Initialize_Config</a></td><td>Default Initialize Configuration</td></tr>
+      </table>
+
+    - Configurations for the Compute Entrypoint
+      <table>
+        <tr><td valign=top><a href="hamr/slang/src/test/util/isolette/Regulate/Manage_Regulator_Mode_impl_thermostat_regulate_temperature_manage_regulator_mode_UnitTestConfiguration_Util.scala#L38">Default_Compute_Config</a></td><td>Default Compute Configuration</td></tr>
+        <tr><td valign=top><a href="hamr/slang/src/test/util/isolette/Regulate/Manage_Regulator_Mode_impl_thermostat_regulate_temperature_manage_regulator_mode_UnitTestConfiguration_Util.scala#L60">Default_ComputewL_Config</a></td><td>Default ComputewL Configuration</td></tr>
+      </table>
 
 <!--end____isolette_gumbox-unit-testing-setup_configurations_mrm_configurations-description-->

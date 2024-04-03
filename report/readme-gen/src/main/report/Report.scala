@@ -453,9 +453,8 @@ object Report {
             description = Some(
               st"""- GUMBOX Unit Test Harness [link](${relly})
                   |- Component coverage report using the configurations below ${coverageLink}$optLink
-                  |<br>
-                  |<br>
-                  |${(ret, "\n")}"""),
+                  |    
+                  |    ${(ret, "\n")}"""),
             content = ISZ(),
             subLevels = ISZ()
           )

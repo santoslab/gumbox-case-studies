@@ -280,17 +280,16 @@ likely would be excluded in a release build
 <!--start__rts_gumbox-unit-testing-setup_configurations_sau_satactuator_actuator_configurations-description-->
 - GUMBOX Unit Test Harness [link](hamr/slang/src/test/bridge/RTS/Actuation/Actuator_i_actuationSubsystem_saturationActuatorUnit_saturationActuator_actuator_GumboX_UnitTests.scala)
 - Component coverage report using the configurations below [link](https://people.cs.ksu.edu/~santos_jenkins/pub/gumbox-journal/custom_configs/rts/Actuator_i_actuationSubsystem_saturationActuatorUnit_saturationActuator_actuator_DSC_UnitTests/report.html)
-<br>
-<br>
-- Configurations for the Initialize Entrypoint
-  <table>
-    <tr><td valign=top><a href="hamr/slang/src/test/util/RTS/Actuation/Actuator_i_actuationSubsystem_saturationActuatorUnit_saturationActuator_actuator_UnitTestConfiguration_Util.scala#L22">Default_Initialize_Config</a></td><td>Default Initialize Configuration</td></tr>
-  </table>
 
-- Configurations for the Compute Entrypoint
-  <table>
-    <tr><td valign=top><a href="hamr/slang/src/test/util/RTS/Actuation/Actuator_i_actuationSubsystem_saturationActuatorUnit_saturationActuator_actuator_UnitTestConfiguration_Util.scala#L38">Default_Compute_Config</a></td><td>Default Compute Configuration</td></tr>
-  </table>
+    - Configurations for the Initialize Entrypoint
+      <table>
+        <tr><td valign=top><a href="hamr/slang/src/test/util/RTS/Actuation/Actuator_i_actuationSubsystem_saturationActuatorUnit_saturationActuator_actuator_UnitTestConfiguration_Util.scala#L22">Default_Initialize_Config</a></td><td>Default Initialize Configuration</td></tr>
+      </table>
+
+    - Configurations for the Compute Entrypoint
+      <table>
+        <tr><td valign=top><a href="hamr/slang/src/test/util/RTS/Actuation/Actuator_i_actuationSubsystem_saturationActuatorUnit_saturationActuator_actuator_UnitTestConfiguration_Util.scala#L38">Default_Compute_Config</a></td><td>Default Compute Configuration</td></tr>
+      </table>
 
 <!--end____rts_gumbox-unit-testing-setup_configurations_sau_satactuator_actuator_configurations-description-->
 
@@ -298,17 +297,16 @@ likely would be excluded in a release build
 <!--start__rts_gumbox-unit-testing-setup_configurations_tpau_temppressa_actuator_configurations-description-->
 - GUMBOX Unit Test Harness [link](hamr/slang/src/test/bridge/RTS/Actuation/Actuator_i_actuationSubsystem_tempPressureActuatorUnit_tempPressureActuator_actuator_GumboX_UnitTests.scala)
 - Component coverage report using the configurations below [link](https://people.cs.ksu.edu/~santos_jenkins/pub/gumbox-journal/custom_configs/rts/Actuator_i_actuationSubsystem_tempPressureActuatorUnit_tempPressureActuator_actuator_DSC_UnitTests/report.html)
-<br>
-<br>
-- Configurations for the Initialize Entrypoint
-  <table>
-    <tr><td valign=top><a href="hamr/slang/src/test/util/RTS/Actuation/Actuator_i_actuationSubsystem_tempPressureActuatorUnit_tempPressureActuator_actuator_UnitTestConfiguration_Util.scala#L22">Default_Initialize_Config</a></td><td>Default Initialize Configuration</td></tr>
-  </table>
 
-- Configurations for the Compute Entrypoint
-  <table>
-    <tr><td valign=top><a href="hamr/slang/src/test/util/RTS/Actuation/Actuator_i_actuationSubsystem_tempPressureActuatorUnit_tempPressureActuator_actuator_UnitTestConfiguration_Util.scala#L38">Default_Compute_Config</a></td><td>Default Compute Configuration</td></tr>
-  </table>
+    - Configurations for the Initialize Entrypoint
+      <table>
+        <tr><td valign=top><a href="hamr/slang/src/test/util/RTS/Actuation/Actuator_i_actuationSubsystem_tempPressureActuatorUnit_tempPressureActuator_actuator_UnitTestConfiguration_Util.scala#L22">Default_Initialize_Config</a></td><td>Default Initialize Configuration</td></tr>
+      </table>
+
+    - Configurations for the Compute Entrypoint
+      <table>
+        <tr><td valign=top><a href="hamr/slang/src/test/util/RTS/Actuation/Actuator_i_actuationSubsystem_tempPressureActuatorUnit_tempPressureActuator_actuator_UnitTestConfiguration_Util.scala#L38">Default_Compute_Config</a></td><td>Default Compute Configuration</td></tr>
+      </table>
 
 <!--end____rts_gumbox-unit-testing-setup_configurations_tpau_temppressa_actuator_configurations-description-->
 
@@ -316,12 +314,11 @@ likely would be excluded in a release build
 <!--start__rts_gumbox-unit-testing-setup_configurations_au1_press_coincidencelogic_configurations-description-->
 - GUMBOX Unit Test Harness [link](hamr/slang/src/test/bridge/RTS/Actuation/CoincidenceLogic_i_actuationSubsystem_actuationUnit1_pressureLogic_coincidenceLogic_GumboX_UnitTests.scala)
 - Component coverage report using the configurations below [link](https://people.cs.ksu.edu/~santos_jenkins/pub/gumbox-journal/custom_configs/rts/CoincidenceLogic_i_actuationSubsystem_actuationUnit1_pressureLogic_coincidenceLogic_DSC_UnitTests/report.html)
-<br>
-<br>
-- Configurations for the Compute Entrypoint
-  <table>
-    <tr><td valign=top><a href="hamr/slang/src/test/util/RTS/Actuation/CoincidenceLogic_i_actuationSubsystem_actuationUnit1_pressureLogic_coincidenceLogic_UnitTestConfiguration_Util.scala#L22">Default_Compute_Config</a></td><td>Default Compute Configuration</td></tr>
-  </table>
+
+    - Configurations for the Compute Entrypoint
+      <table>
+        <tr><td valign=top><a href="hamr/slang/src/test/util/RTS/Actuation/CoincidenceLogic_i_actuationSubsystem_actuationUnit1_pressureLogic_coincidenceLogic_UnitTestConfiguration_Util.scala#L22">Default_Compute_Config</a></td><td>Default Compute Configuration</td></tr>
+      </table>
 
 <!--end____rts_gumbox-unit-testing-setup_configurations_au1_press_coincidencelogic_configurations-description-->
 
@@ -329,12 +326,11 @@ likely would be excluded in a release build
 <!--start__rts_gumbox-unit-testing-setup_configurations_au1_satlogic_coincidencelogic_configurations-description-->
 - GUMBOX Unit Test Harness [link](hamr/slang/src/test/bridge/RTS/Actuation/CoincidenceLogic_i_actuationSubsystem_actuationUnit1_saturationLogic_coincidenceLogic_GumboX_UnitTests.scala)
 - Component coverage report using the configurations below [link](https://people.cs.ksu.edu/~santos_jenkins/pub/gumbox-journal/custom_configs/rts/CoincidenceLogic_i_actuationSubsystem_actuationUnit1_saturationLogic_coincidenceLogic_DSC_UnitTests/report.html)
-<br>
-<br>
-- Configurations for the Compute Entrypoint
-  <table>
-    <tr><td valign=top><a href="hamr/slang/src/test/util/RTS/Actuation/CoincidenceLogic_i_actuationSubsystem_actuationUnit1_saturationLogic_coincidenceLogic_UnitTestConfiguration_Util.scala#L22">Default_Compute_Config</a></td><td>Default Compute Configuration</td></tr>
-  </table>
+
+    - Configurations for the Compute Entrypoint
+      <table>
+        <tr><td valign=top><a href="hamr/slang/src/test/util/RTS/Actuation/CoincidenceLogic_i_actuationSubsystem_actuationUnit1_saturationLogic_coincidenceLogic_UnitTestConfiguration_Util.scala#L22">Default_Compute_Config</a></td><td>Default Compute Configuration</td></tr>
+      </table>
 
 <!--end____rts_gumbox-unit-testing-setup_configurations_au1_satlogic_coincidencelogic_configurations-description-->
 
@@ -342,12 +338,11 @@ likely would be excluded in a release build
 <!--start__rts_gumbox-unit-testing-setup_configurations_au1_temp_coincidencelogic_configurations-description-->
 - GUMBOX Unit Test Harness [link](hamr/slang/src/test/bridge/RTS/Actuation/CoincidenceLogic_i_actuationSubsystem_actuationUnit1_temperatureLogic_coincidenceLogic_GumboX_UnitTests.scala)
 - Component coverage report using the configurations below [link](https://people.cs.ksu.edu/~santos_jenkins/pub/gumbox-journal/custom_configs/rts/CoincidenceLogic_i_actuationSubsystem_actuationUnit1_temperatureLogic_coincidenceLogic_DSC_UnitTests/report.html)
-<br>
-<br>
-- Configurations for the Compute Entrypoint
-  <table>
-    <tr><td valign=top><a href="hamr/slang/src/test/util/RTS/Actuation/CoincidenceLogic_i_actuationSubsystem_actuationUnit1_temperatureLogic_coincidenceLogic_UnitTestConfiguration_Util.scala#L22">Default_Compute_Config</a></td><td>Default Compute Configuration</td></tr>
-  </table>
+
+    - Configurations for the Compute Entrypoint
+      <table>
+        <tr><td valign=top><a href="hamr/slang/src/test/util/RTS/Actuation/CoincidenceLogic_i_actuationSubsystem_actuationUnit1_temperatureLogic_coincidenceLogic_UnitTestConfiguration_Util.scala#L22">Default_Compute_Config</a></td><td>Default Compute Configuration</td></tr>
+      </table>
 
 <!--end____rts_gumbox-unit-testing-setup_configurations_au1_temp_coincidencelogic_configurations-description-->
 
@@ -355,12 +350,11 @@ likely would be excluded in a release build
 <!--start__rts_gumbox-unit-testing-setup_configurations_au2_press_coincidencelogic_configurations-description-->
 - GUMBOX Unit Test Harness [link](hamr/slang/src/test/bridge/RTS/Actuation/CoincidenceLogic_i_actuationSubsystem_actuationUnit2_pressureLogic_coincidenceLogic_GumboX_UnitTests.scala)
 - Component coverage report using the configurations below [link](https://people.cs.ksu.edu/~santos_jenkins/pub/gumbox-journal/custom_configs/rts/CoincidenceLogic_i_actuationSubsystem_actuationUnit2_pressureLogic_coincidenceLogic_DSC_UnitTests/report.html)
-<br>
-<br>
-- Configurations for the Compute Entrypoint
-  <table>
-    <tr><td valign=top><a href="hamr/slang/src/test/util/RTS/Actuation/CoincidenceLogic_i_actuationSubsystem_actuationUnit2_pressureLogic_coincidenceLogic_UnitTestConfiguration_Util.scala#L22">Default_Compute_Config</a></td><td>Default Compute Configuration</td></tr>
-  </table>
+
+    - Configurations for the Compute Entrypoint
+      <table>
+        <tr><td valign=top><a href="hamr/slang/src/test/util/RTS/Actuation/CoincidenceLogic_i_actuationSubsystem_actuationUnit2_pressureLogic_coincidenceLogic_UnitTestConfiguration_Util.scala#L22">Default_Compute_Config</a></td><td>Default Compute Configuration</td></tr>
+      </table>
 
 <!--end____rts_gumbox-unit-testing-setup_configurations_au2_press_coincidencelogic_configurations-description-->
 
@@ -368,12 +362,11 @@ likely would be excluded in a release build
 <!--start__rts_gumbox-unit-testing-setup_configurations_au2_sat_coincidencelogic_configurations-description-->
 - GUMBOX Unit Test Harness [link](hamr/slang/src/test/bridge/RTS/Actuation/CoincidenceLogic_i_actuationSubsystem_actuationUnit2_saturationLogic_coincidenceLogic_GumboX_UnitTests.scala)
 - Component coverage report using the configurations below [link](https://people.cs.ksu.edu/~santos_jenkins/pub/gumbox-journal/custom_configs/rts/CoincidenceLogic_i_actuationSubsystem_actuationUnit2_saturationLogic_coincidenceLogic_DSC_UnitTests/report.html)
-<br>
-<br>
-- Configurations for the Compute Entrypoint
-  <table>
-    <tr><td valign=top><a href="hamr/slang/src/test/util/RTS/Actuation/CoincidenceLogic_i_actuationSubsystem_actuationUnit2_saturationLogic_coincidenceLogic_UnitTestConfiguration_Util.scala#L22">Default_Compute_Config</a></td><td>Default Compute Configuration</td></tr>
-  </table>
+
+    - Configurations for the Compute Entrypoint
+      <table>
+        <tr><td valign=top><a href="hamr/slang/src/test/util/RTS/Actuation/CoincidenceLogic_i_actuationSubsystem_actuationUnit2_saturationLogic_coincidenceLogic_UnitTestConfiguration_Util.scala#L22">Default_Compute_Config</a></td><td>Default Compute Configuration</td></tr>
+      </table>
 
 <!--end____rts_gumbox-unit-testing-setup_configurations_au2_sat_coincidencelogic_configurations-description-->
 
@@ -381,12 +374,11 @@ likely would be excluded in a release build
 <!--start__rts_gumbox-unit-testing-setup_configurations_au2_temp_coincidencelogic_configurations-description-->
 - GUMBOX Unit Test Harness [link](hamr/slang/src/test/bridge/RTS/Actuation/CoincidenceLogic_i_actuationSubsystem_actuationUnit2_temperatureLogic_coincidenceLogic_GumboX_UnitTests.scala)
 - Component coverage report using the configurations below [link](https://people.cs.ksu.edu/~santos_jenkins/pub/gumbox-journal/custom_configs/rts/CoincidenceLogic_i_actuationSubsystem_actuationUnit2_temperatureLogic_coincidenceLogic_DSC_UnitTests/report.html)
-<br>
-<br>
-- Configurations for the Compute Entrypoint
-  <table>
-    <tr><td valign=top><a href="hamr/slang/src/test/util/RTS/Actuation/CoincidenceLogic_i_actuationSubsystem_actuationUnit2_temperatureLogic_coincidenceLogic_UnitTestConfiguration_Util.scala#L22">Default_Compute_Config</a></td><td>Default Compute Configuration</td></tr>
-  </table>
+
+    - Configurations for the Compute Entrypoint
+      <table>
+        <tr><td valign=top><a href="hamr/slang/src/test/util/RTS/Actuation/CoincidenceLogic_i_actuationSubsystem_actuationUnit2_temperatureLogic_coincidenceLogic_UnitTestConfiguration_Util.scala#L22">Default_Compute_Config</a></td><td>Default Compute Configuration</td></tr>
+      </table>
 
 <!--end____rts_gumbox-unit-testing-setup_configurations_au2_temp_coincidencelogic_configurations-description-->
 
@@ -394,12 +386,11 @@ likely would be excluded in a release build
 <!--start__rts_gumbox-unit-testing-setup_configurations_au1_temppresstripout_orlogic_configurations-description-->
 - GUMBOX Unit Test Harness [link](hamr/slang/src/test/bridge/RTS/Actuation/OrLogic_i_actuationSubsystem_actuationUnit1_tempPressureTripOut_orLogic_GumboX_UnitTests.scala)
 - Component coverage report using the configurations below [link](https://people.cs.ksu.edu/~santos_jenkins/pub/gumbox-journal/custom_configs/rts/OrLogic_i_actuationSubsystem_actuationUnit1_tempPressureTripOut_orLogic_DSC_UnitTests/report.html)
-<br>
-<br>
-- Configurations for the Compute Entrypoint
-  <table>
-    <tr><td valign=top><a href="hamr/slang/src/test/util/RTS/Actuation/OrLogic_i_actuationSubsystem_actuationUnit1_tempPressureTripOut_orLogic_UnitTestConfiguration_Util.scala#L22">Default_Compute_Config</a></td><td>Default Compute Configuration</td></tr>
-  </table>
+
+    - Configurations for the Compute Entrypoint
+      <table>
+        <tr><td valign=top><a href="hamr/slang/src/test/util/RTS/Actuation/OrLogic_i_actuationSubsystem_actuationUnit1_tempPressureTripOut_orLogic_UnitTestConfiguration_Util.scala#L22">Default_Compute_Config</a></td><td>Default Compute Configuration</td></tr>
+      </table>
 
 <!--end____rts_gumbox-unit-testing-setup_configurations_au1_temppresstripout_orlogic_configurations-description-->
 
@@ -407,12 +398,11 @@ likely would be excluded in a release build
 <!--start__rts_gumbox-unit-testing-setup_configurations_au2_temppresstripout_orlogic_configurations-description-->
 - GUMBOX Unit Test Harness [link](hamr/slang/src/test/bridge/RTS/Actuation/OrLogic_i_actuationSubsystem_actuationUnit2_tempPressureTripOut_orLogic_GumboX_UnitTests.scala)
 - Component coverage report using the configurations below [link](https://people.cs.ksu.edu/~santos_jenkins/pub/gumbox-journal/custom_configs/rts/OrLogic_i_actuationSubsystem_actuationUnit2_tempPressureTripOut_orLogic_DSC_UnitTests/report.html)
-<br>
-<br>
-- Configurations for the Compute Entrypoint
-  <table>
-    <tr><td valign=top><a href="hamr/slang/src/test/util/RTS/Actuation/OrLogic_i_actuationSubsystem_actuationUnit2_tempPressureTripOut_orLogic_UnitTestConfiguration_Util.scala#L22">Default_Compute_Config</a></td><td>Default Compute Configuration</td></tr>
-  </table>
+
+    - Configurations for the Compute Entrypoint
+      <table>
+        <tr><td valign=top><a href="hamr/slang/src/test/util/RTS/Actuation/OrLogic_i_actuationSubsystem_actuationUnit2_tempPressureTripOut_orLogic_UnitTestConfiguration_Util.scala#L22">Default_Compute_Config</a></td><td>Default Compute Configuration</td></tr>
+      </table>
 
 <!--end____rts_gumbox-unit-testing-setup_configurations_au2_temppresstripout_orlogic_configurations-description-->
 
@@ -420,12 +410,11 @@ likely would be excluded in a release build
 <!--start__rts_gumbox-unit-testing-setup_configurations_sau_actsatactuator_orlogic_configurations-description-->
 - GUMBOX Unit Test Harness [link](hamr/slang/src/test/bridge/RTS/Actuation/OrLogic_i_actuationSubsystem_saturationActuatorUnit_actuateSaturationActuator_orLogic_GumboX_UnitTests.scala)
 - Component coverage report using the configurations below [link](https://people.cs.ksu.edu/~santos_jenkins/pub/gumbox-journal/custom_configs/rts/OrLogic_i_actuationSubsystem_saturationActuatorUnit_actuateSaturationActuator_orLogic_DSC_UnitTests/report.html)
-<br>
-<br>
-- Configurations for the Compute Entrypoint
-  <table>
-    <tr><td valign=top><a href="hamr/slang/src/test/util/RTS/Actuation/OrLogic_i_actuationSubsystem_saturationActuatorUnit_actuateSaturationActuator_orLogic_UnitTestConfiguration_Util.scala#L22">Default_Compute_Config</a></td><td>Default Compute Configuration</td></tr>
-  </table>
+
+    - Configurations for the Compute Entrypoint
+      <table>
+        <tr><td valign=top><a href="hamr/slang/src/test/util/RTS/Actuation/OrLogic_i_actuationSubsystem_saturationActuatorUnit_actuateSaturationActuator_orLogic_UnitTestConfiguration_Util.scala#L22">Default_Compute_Config</a></td><td>Default Compute Configuration</td></tr>
+      </table>
 
 <!--end____rts_gumbox-unit-testing-setup_configurations_sau_actsatactuator_orlogic_configurations-description-->
 
@@ -433,11 +422,10 @@ likely would be excluded in a release build
 <!--start__rts_gumbox-unit-testing-setup_configurations_tpau_acttemppa_orlogic_configurations-description-->
 - GUMBOX Unit Test Harness [link](hamr/slang/src/test/bridge/RTS/Actuation/OrLogic_i_actuationSubsystem_tempPressureActuatorUnit_actuateTempPressureActuator_orLogic_GumboX_UnitTests.scala)
 - Component coverage report using the configurations below [link](https://people.cs.ksu.edu/~santos_jenkins/pub/gumbox-journal/custom_configs/rts/OrLogic_i_actuationSubsystem_tempPressureActuatorUnit_actuateTempPressureActuator_orLogic_DSC_UnitTests/report.html)
-<br>
-<br>
-- Configurations for the Compute Entrypoint
-  <table>
-    <tr><td valign=top><a href="hamr/slang/src/test/util/RTS/Actuation/OrLogic_i_actuationSubsystem_tempPressureActuatorUnit_actuateTempPressureActuator_orLogic_UnitTestConfiguration_Util.scala#L22">Default_Compute_Config</a></td><td>Default Compute Configuration</td></tr>
-  </table>
+
+    - Configurations for the Compute Entrypoint
+      <table>
+        <tr><td valign=top><a href="hamr/slang/src/test/util/RTS/Actuation/OrLogic_i_actuationSubsystem_tempPressureActuatorUnit_actuateTempPressureActuator_orLogic_UnitTestConfiguration_Util.scala#L22">Default_Compute_Config</a></td><td>Default Compute Configuration</td></tr>
+      </table>
 
 <!--end____rts_gumbox-unit-testing-setup_configurations_tpau_acttemppa_orlogic_configurations-description-->
