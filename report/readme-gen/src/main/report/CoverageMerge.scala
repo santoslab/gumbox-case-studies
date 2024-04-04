@@ -2,14 +2,18 @@
 package report
 
 import org.sireum._
-import MergeUtils._
-import report.CoverageMerge.{genPaperVersions, reportRoot}
+import report.CoverageMerge.{genPaperVersions, regenMergedReports, remergeVectorFiles, reportRoot}
+import report.MergeUtils._
 
 object CoverageMerge extends App {
   val genPaperVersions: B = T
 
+  val removeUnsatFromPassing: B = F // Need to do this at least once
+
   val removeDump: B = F
   val regenMergedReports: B = F
+  val remergeVectorFiles: B = F
+  val emptyTrash: B = F
 
   val dsc_prefix: String = "dsc_gumbox_journal_cust"
 
@@ -27,6 +31,7 @@ object CoverageMerge extends App {
 
     var map: cmap = HashSMap.empty
     var results: ISZ[Results] = ISZ()
+    var trashes: ISZ[Os.Path] = ISZ()
     def walk(p: Os.Path): Unit = {
       if (p.isFile && p.name == "sireum.version") {
         //println(p.up.toUri)
@@ -57,6 +62,10 @@ object CoverageMerge extends App {
           }
         }
 
+        if (removeUnsatFromPassing) {
+          cleanupPassingFile(passingP, unsatP)
+        }
+
         val behaviorP = Os.Path.walk(hamrRoot / "src" / "main" / "component", F, F, p => p.name == s"$componentName.scala")(0)
         val gumboxP: Option[Os.Path] = {
           val ll = Os.Path.walk(hamrRoot / "src" / "main" / "bridge", F, F, p => p.name == s"${componentName}_GumboX.scala")
@@ -73,7 +82,7 @@ object CoverageMerge extends App {
           configName = configName,
           configDescription = getConfigDescription(configName, configJsonP),
           timeout = timeout,
-          passing = numVectors(passingP) - numVectors(unsatP),
+          passing = numVectors(passingP),
           failing = numVectors(failingP),
           unsat = numVectors(unsatP),
           passingP = passingP,
@@ -104,6 +113,9 @@ object CoverageMerge extends App {
 
       } else if (p.isDir) {
         val x = ops.StringOps(p.name)
+        if(p.name == "trash") {
+          trashes = trashes :+ p
+        }
         if (!x.endsWith(".coverage") && !x.endsWith(".dump")) {
           for (l <- p.list) {
             walk(l)
@@ -111,34 +123,42 @@ object CoverageMerge extends App {
         }
       }
     }
-    walk(reportRoot)
 
+    walk(reportRoot)
+    //println()
     //println(map)
 
+    if(emptyTrash) {
+      for (t <- trashes) {
+        t.removeAll()
+      }
+    }
     var topLevelProjs: ISZ[(String, Os.Path)] = ISZ()
 
     for (projects <- map.entries) {
-      var projectResults = ISZ[Results]()
-      for (components <- projects._2.entries) {
+      var projectResults = ISZ[(String, ISZ[(ISZ[Os.Path], ISZ[Results])])]()
+      for (component <- projects._2.entries) {
         var componentResults = ISZ[Results]()
-        for (configs <- components._2.entries) {
+        for (configs <- component._2.entries) {
           var configResults = ISZ[Results]()
           for (timeouts <- configs._2.entries) {
             val results = timeouts._2
             configResults = configResults :+ results
             componentResults = componentResults :+ results
-            projectResults = projectResults :+ results
             addTimeoutReport(results, reportRoot)
           }
           val configurationRoot = configResults(0).passingP.up.up
-          addConfigurationReport(configResults, configurationRoot, reportRoot, regenMergedReports)
+          addConfigurationReport(configResults, configurationRoot, reportRoot)
         }
         val componentRoot = componentResults(0).passingP.up.up.up
-        addComponentReport(componentResults, components._2.keys, componentRoot, reportRoot, regenMergedReports)
+
+        val splits: ISZ[(ISZ[Os.Path], ISZ[Results])] = splitResults(componentResults, componentRoot)
+        projectResults = projectResults :+ (component._1, splits)
+        addComponentReport(splits, component._2.keys, componentRoot, reportRoot)
       }
-      val projectRoot = projectResults(0).passingP.up.up.up.up
+      val projectRoot = projectResults(0)._2(0)._2(0).passingP.up.up.up.up
       val components: ISZ[(String, String)] = for (p <- projects._2.keys) yield (p, getNickName(p))
-      addProjectReport(projectResults, components, projectRoot, reportRoot, F) // never T
+      addProjectReport(projectResults, components, projectRoot, reportRoot)
 
       topLevelProjs = topLevelProjs :+ (projects._1, projectRoot)
     }
@@ -168,8 +188,9 @@ object MergeUtils {
     )
 
     val html = reportTemplate(cookieCrumbs = cookieCrumb,
-      purpose = st"""This presents the combined coverage information along with the number of passing/failing/unsat test vectors
-                    |for the ${r.configName} configuration with a ${r.timeout} second timeout""",
+      purpose =
+        st"""This presents the combined coverage information along with the number of passing/failing/unsat test vectors
+            |for the ${r.configName} configuration with a ${r.timeout} second timeout""",
       project = st"""<a href="$r1">${r.project}</a>""",
       system = Some(st"""<a href="$r2">${r.componentNickName}</a>"""),
       families = Some(st"""<a href="$r3">${r.configName}</a> : ${r.configDescription}"""),
@@ -193,42 +214,48 @@ object MergeUtils {
     }
   }
 
-  //                                                       component     entrypoint     timeout
-  def splitProjectResults(results: ISZ[Results]): HashSMap[String, HashSMap[String, HashSMap[Z, ISZ[Results]]]] = {
-    var t = HashSMap.empty[String, ISZ[Results]]
-    for (r <- results) {
-      val e: ISZ[Results] = t.get(r.component) match {
-        case Some(ee) => ee
-        case _ => ISZ()
-      }
-      t = t + r.component ~> (e :+ r)
-    }
-    var ret = HashSMap.empty[String, HashSMap[String, HashSMap[Z, ISZ[Results]]]]
-    for (e <- t.entries) {
-      ret = ret + e._1 ~> splitResults(e._2)
-    }
-    return ret
+  @enum object EntrypointType {
+    "Initialize"
+    "Compute"
   }
 
-  //                                                 entrypoint     timeout
-  def splitResults(results: ISZ[Results]) : HashSMap[String, HashSMap[Z, ISZ[Results]]] = {
-    var ret = HashSMap.empty[String, HashSMap[Z, ISZ[Results]]]
-    for(r <- results) {
-      val typ: String = if (ops.StringOps(r.configName).contains("Compute")) "Compute" else "Initialize"
-      val e: HashSMap[Z, ISZ[Results]] = ret.get(typ) match {
+  def splitResults(results: ISZ[Results], outputDir: Os.Path): ISZ[(ISZ[Os.Path], ISZ[Results])] = {
+    var splits = HashSMap.empty[EntrypointType.Type, HashSMap[Z, ISZ[Results]]]
+    for (r <- results) {
+      val typ: EntrypointType.Type = if (ops.StringOps(r.configName).contains("Compute")) EntrypointType.Compute else EntrypointType.Initialize
+      val e: HashSMap[Z, ISZ[Results]] = splits.get(typ) match {
         case Some(ee) => ee
         case _ => HashSMap.empty[Z, ISZ[Results]]
       }
       val e2: ISZ[Results] = e.get(r.timeout) match {
-        case Some(ee2)=> ee2
+        case Some(ee2) => ee2
         case _ => ISZ()
       }
-      ret = ret + typ ~> (e + (r.timeout ~> (e2 :+ r)))
+      splits = splits + typ ~> (e + (r.timeout ~> (e2 :+ r)))
+    }
+
+    var ret = ISZ[(ISZ[Os.Path], ISZ[Results])]()
+    for (typ <- splits.entries) {
+      var timeoutResults: ISZ[Results] = ISZ()
+      var configPaths: Set[Os.Path] = Set.empty
+      for (timeout <- typ._2.entries) {
+        configPaths = configPaths ++ (for (e <- timeout._2) yield outputDir / e.configName)
+        if (timeout._2.size == 1) {
+          // no need to merge
+          timeoutResults = timeoutResults :+ timeout._2(0)
+        } else {
+          timeoutResults = timeoutResults :+
+            mergeResults(
+              results = timeout._2, remergeVectorFiles = remergeVectorFiles, regenMergedReports = regenMergedReports,
+              jacocoDirName = s"jacocoCoverage_${typ._1}_${timeout._1}", relativeTo = outputDir)
+        }
+      }
+      ret = ret :+ (configPaths.elements, timeoutResults)
     }
     return ret
   }
 
-  def addConfigurationReport(configResults: ISZ[Results], configRoot: Os.Path, reportRoot: Os.Path, regenMergedReports: B): Unit = {
+  def addConfigurationReport(configResults: ISZ[Results], configRoot: Os.Path, reportRoot: Os.Path): Unit = {
     val reportDir = configRoot
 
     val r = configResults(0)
@@ -236,29 +263,22 @@ object MergeUtils {
     val r1 = reportDir.relativize(reportRoot / r.project / "report.html")
     val r2 = reportDir.relativize(reportRoot / r.project / r.dscTestName / "report.html")
 
-    val stimeouts = ops.ISZOps(for(r <- configResults) yield r.timeout).sortWith((a,b) => a <= b)
-    val timeOuts: ISZ[String] = for(t <- stimeouts) yield s"<a href=\"${(reportDir.relativize(reportDir / t.string / "report.html")).string}\">${t.string}</a>"
+    val stimeouts = ops.ISZOps(for (r <- configResults) yield r.timeout).sortWith((a, b) => a <= b)
+    val timeOuts: ISZ[String] = for (t <- stimeouts) yield s"<a href=\"${(reportDir.relativize(reportDir / t.string / "report.html")).string}\">${t.string}</a>"
 
     val cookieCrumb = cookies(ISZ(("Report", r0), (r.project, r1), (r.componentNickName, r2)))
 
-    val splits = splitResults(configResults)
-
-    var resultTables: ISZ[ST] = ISZ()
-    for (typ <- splits.entries) {
-      val timeoutResults: ISZ[Results] = for (timeout <- typ._2.entries) yield
-        mergeResults (results = timeout._2, regenMergedReports = regenMergedReports, jacocoDirName = s"jacocoCoverage_${timeout._1}", relativeTo = reportDir)
-
-      resultTables = resultTables :+
-        genResultTable(
-          results = timeoutResults,
-          parentDir = reportDir,
-          reportDir = reportDir,
-          isActualRun = T)
-    }
+    val resultTables = ISZ(
+      genResultTable(
+        results = configResults,
+        parentDir = reportDir,
+        reportDir = reportDir,
+        isActualRun = T))
 
     val html = reportTemplate(cookieCrumbs = cookieCrumb,
-      purpose = st"""This presents the combined coverage information along with the number of passing/failing/unsat test vectors
-                    |for the ${r.configName} configuration""",
+      purpose =
+        st"""This presents the combined coverage information along with the number of passing/failing/unsat test vectors
+            |for the ${r.configName} configuration""",
       project = st"""<a href="$r1">${r.project}</a>""",
       system = Some(st"""<a href="$r2">${r.componentNickName}</a>"""),
       families = Some(st"""${r.configName} : ${r.configDescription}"""),
@@ -270,33 +290,51 @@ object MergeUtils {
     report.writeOver(html.render)
     println(s"Wrote: ${report}")
   }
-  
+
   @datatype class CoverageInfo(val behavior: ST, val gumbox: Option[ST], val fullReport: ST)
 
-  def addComponentReport(allConfigResults: ISZ[Results], configurations: ISZ[String], componentRoot: Os.Path, reportRoot: Os.Path, regenMergedReports: B): Unit = {
+  def addComponentReport(allConfigResults: ISZ[(ISZ[Os.Path], ISZ[Results])], configurations: ISZ[String], componentRoot: Os.Path, reportRoot: Os.Path): Unit = {
     val reportDir = componentRoot
 
-    val r = allConfigResults(0)
+    val r: Results = allConfigResults(0)._2(0)
 
     val r0 = reportDir.relativize(reportRoot / "report.html")
     val r1 = reportDir.relativize(reportRoot / r.project / "report.html")
 
-    val configLinks: ISZ[String] = for(t <- configurations) yield
+    val configLinks: ISZ[String] = for (t <- configurations) yield
       s"""<a href="${(reportDir.relativize(reportDir / t / "report.html")).string}">${t}</a><br>"""
 
     val cookieCrumb = cookies(ISZ(("Report", r0), (r.project, r1)))
 
-    val splits: HashSMap[String, HashSMap[Z, ISZ[Results]]] = splitResults(allConfigResults)
-    val resultTablesX: ISZ[ST] = commonSpitter(splits, regenMergedReports, reportDir, reportDir)
+    assert (allConfigResults.size == 1 || allConfigResults.size == 2, allConfigResults.size)
+
+    var resultTablesX: ISZ[ST] = ISZ()
+    for (e <- allConfigResults) {
+      val configLinks: ISZ[String] = for (tr <- e._1) yield s"""<a href="${(componentRoot.relativize(tr / "report.html")).string}">${tr.name}</a><br>"""
+
+      val table =
+        genResultTable(
+          results = e._2,
+          parentDir = componentRoot,
+          reportDir = reportDir,
+          isActualRun = F)
+
+      resultTablesX = resultTablesX :+
+        st"""<td valign="bottom" style='vertical-align: bottom'>
+            |  ${(configLinks, "\n")}
+            |  $table
+            |</td>"""
+    }
 
     val resultsTables: ISZ[ST] =
       if (!genPaperVersions) {
         ISZ(st"<table><tr>${(resultTablesX, "<td>&nbsp;&nbsp</td>\n")}</tr></table>")
       } else {
         if (resultTablesX.size == 2) {
-          ISZ(st"""${resultTablesX(1)}
-                  |<br>
-                  |${resultTablesX(0)}""")
+          ISZ(
+            st"""${resultTablesX(1)}
+                |<br>
+                |${resultTablesX(0)}""")
         } else {
           resultTablesX
         }
@@ -304,8 +342,9 @@ object MergeUtils {
 
     val html = reportTemplate(
       cookieCrumbs = cookieCrumb,
-      purpose = st"""The presents the combined coverage information along with the number of passing/failing/unsat test vectors
-                    |for running all the configurations for ${r.componentNickName}""",
+      purpose =
+        st"""The presents the combined coverage information along with the number of passing/failing/unsat test vectors
+            |for running all the configurations for ${r.componentNickName}""",
       project = st"""<a href="$r1">${r.project}</a>""",
       system = Some(st"${r.componentNickName}"),
       families = Some(st"${(configLinks, " ")}"),
@@ -319,74 +358,65 @@ object MergeUtils {
     println(s"Wrote: ${report}")
   }
 
-  def commonSpitter(splits: HashSMap[String, HashSMap[Z, ISZ[Results]]], regenMergedReports: B, parentDir: Os.Path, reportDir: Os.Path): ISZ[ST] = {
-    var resultTables: ISZ[ST] = ISZ()
-    for (typ <- splits.entries) {
-      val timeoutResults: ISZ[Results] = for (timeout <- typ._2.entries) yield
-        mergeResults (
-          results = timeout._2, regenMergedReports = regenMergedReports,
-          jacocoDirName = s"jacocoCoverage_${typ._1}_${timeout._1}", relativeTo = reportDir)
-      val configNames: ISZ[String] = (Set.empty[String] ++ (for (tr <- typ._2.values; trr <- tr) yield trr.configName)).elements
-      val configLinks: ISZ[String] = for (tr <- configNames) yield s"""<a href="${(parentDir.relativize(reportDir / tr / "report.html")).string}">${tr}</a><br>"""
-
-      val table =
-        genResultTable(
-          results = timeoutResults,
-          parentDir = parentDir,
-          reportDir = reportDir,
-          isActualRun = F)
-
-      resultTables = resultTables :+
-        st"""<td valign="bottom" style='vertical-align: bottom'>
-            |  ${(configLinks, "\n")}
-            |  $table
-            |</td>"""
-    }
-    return resultTables
-  }
-
-
-  def addProjectReport(allConfigResults: ISZ[Results], components: ISZ[(String, String)], projectRoot: Os.Path, reportRoot: Os.Path, regenMergedReports: B): Unit = {
+  def addProjectReport(allConfigResults: ISZ[(String, ISZ[(ISZ[Os.Path], ISZ[Results])])], components: ISZ[(String, String)], projectRoot: Os.Path, reportRoot: Os.Path): Unit = {
     val reportDir = projectRoot
+
+    val r: Results = allConfigResults(0)._2(0)._2(0)
 
     val r0 = reportDir.relativize(reportRoot / "report.html")
 
-    val componentLinks: ISZ[String] = for(component <- components) yield s"<a href=\"${(reportDir.relativize(reportDir / s"${component._1}_DSC_UnitTests" / "report.html")).string}\">${component._2}</a>"
+    val componentLinks: ISZ[String] = for (component <- components) yield s"<a href=\"${(reportDir.relativize(reportDir / s"${component._1}_DSC_UnitTests" / "report.html")).string}\">${component._2}</a>"
 
     val cookieCrumb = cookies(ISZ(("Report", r0)))
 
-    val projSplits = splitProjectResults(allConfigResults)
     var resultTables: ISZ[ST] = ISZ()
-    for (projSplit <- projSplits.entries) {
-      val resultTablesx: ISZ[ST] = commonSpitter(projSplit._2, regenMergedReports, reportDir, reportDir / s"${projSplit._1}_DSC_UnitTests")
+    for (component <- allConfigResults) {
+      var resultTablesX: ISZ[ST] = ISZ()
+      for (e <- component._2) {
+        val configLinks: ISZ[String] = for (tr <- e._1) yield s"""<a href="${(projectRoot.relativize(tr / "report.html")).string}">${tr.name}</a><br>"""
+
+        val table =
+          genResultTable(
+            results = e._2,
+            parentDir = projectRoot,
+            reportDir = reportDir,
+            isActualRun = F)
+
+        resultTablesX = resultTablesX :+
+          st"""<td valign="bottom" style='vertical-align: bottom'>
+              |  ${(configLinks, "\n")}
+              |  $table
+              |</td>"""
+      }
 
       if (!genPaperVersions) {
         resultTables = resultTables :+
-          st"""<h3>${getNickName(projSplit._1)} <a style="font-size: medium; font-weight: normal;" href="${(reportDir.relativize(reportDir / s"${projSplit._1}_DSC_UnitTests" / "report.html")).string}">link</a></h3>
+          st"""<h3>${getNickName(component._1)} <a style="font-size: medium; font-weight: normal;" href="${(reportDir.relativize(reportDir / s"${component._1}_DSC_UnitTests" / "report.html")).string}">link</a></h3>
               |
-              |<table><tr>${(resultTablesx, "<td>&nbsp;&nbsp</td>\n")}</tr></table>
+              |<table><tr>${(resultTablesX, "<td>&nbsp;&nbsp</td>\n")}</tr></table>
               |"""
       } else {
-        val paperFormatted: ST = if (resultTablesx.size == 2){
-          st"""${resultTablesx(1)}
+        val paperFormatted: ST = if (resultTablesX.size == 2) {
+          st"""${resultTablesX(1)}
               |<br>
-              |${resultTablesx(0)}"""
+              |${resultTablesX(0)}"""
         } else {
-          resultTablesx(0)
+          resultTablesX(0)
         }
 
         resultTables = resultTables :+
-          st"""<h3>${getNickName(projSplit._1)}</h3>
+          st"""<h3>${getNickName(component._1)} <a style="font-size: medium; font-weight: normal;" href="${(reportDir.relativize(reportDir / s"${component._1}_DSC_UnitTests" / "report.html")).string}">link</a></h3>
               |
               |$paperFormatted
               |"""
       }
     }
-    val r = allConfigResults(0)
+
     val html = reportTemplate(
       cookieCrumbs = cookieCrumb,
-      purpose = st"""This presents the combined coverage information along with the number of passing/failing/unsat test vectors
-                    |for each of the ${r.project}'s components under testing""",
+      purpose =
+        st"""This presents the combined coverage information along with the number of passing/failing/unsat test vectors
+            |for each of the ${r.project}'s components under testing""",
       project = st"${r.project}",
       system = Some(st"${(componentLinks, "<br><br> ")}"),
       resultTables = resultTables,
@@ -490,7 +520,7 @@ object MergeUtils {
   }
 
   def cookies(ps: ISZ[(String, Os.Path)]): ST = {
-    val x: ISZ[ST] = for(p <- ps) yield st"""<a href="${p._2}">${p._1}</a>"""
+    val x: ISZ[ST] = for (p <- ps) yield st"""<a href="${p._2}">${p._1}</a>"""
     return st"${(x, " > ")}"
   }
 
@@ -502,11 +532,11 @@ object MergeUtils {
 
     def mine(pos: Z, contents: ops.StringOps): (Z, Z) = {
       val p2 = contents.stringIndexOfFrom("id=\"h", pos)
-      val p2_1 = contents.stringIndexOfFrom("\"", p2+4)
-      val missed = contents.substring(p2_1+2, contents.stringIndexOfFrom("</td>", p2_1))
+      val p2_1 = contents.stringIndexOfFrom("\"", p2 + 4)
+      val missed = contents.substring(p2_1 + 2, contents.stringIndexOfFrom("</td>", p2_1))
       val p3 = contents.stringIndexOfFrom("id=\"i", p2)
-      val p3_1 = contents.stringIndexOfFrom("\"", p3+4)
-      val total = contents.substring(p3_1+2, contents.stringIndexOfFrom("</td>", p3_1))
+      val p3_1 = contents.stringIndexOfFrom("\"", p3 + 4)
+      val total = contents.substring(p3_1 + 2, contents.stringIndexOfFrom("</td>", p3_1))
       if (Z(total).isEmpty) {
         println(total)
         println()
@@ -569,16 +599,17 @@ object MergeUtils {
     return (st"$summary", optGumbox)
   }
 
-  def genResultTable(results : ISZ[Results], parentDir: Os.Path, reportDir: Os.Path, isActualRun: B): ST = {
-    var tableEntries: ISZ[ST]= ISZ()
-    for (r <- ops.ISZOps(results).sortWith((a,b) => a.timeout <= b.timeout)) {
+  def genResultTable(results: ISZ[Results], parentDir: Os.Path, reportDir: Os.Path, isActualRun: B): ST = {
+    var tableEntries: ISZ[ST] = ISZ()
+    for (r <- ops.ISZOps(results).sortWith((a, b) => a.timeout <= b.timeout)) {
       def optLink(num: Z, p: Os.Path): ST = {
         return (
-          if (isActualRun && num > 0) st"""<a href="${parentDir.relativize(p)}">$num</a>"""
-          else if (genPaperVersions && num != 0) st"<a>$num</a>"
+          if (num > 0) st"""<a href="${parentDir.relativize(p)}">$num</a>"""
+          //else if (genPaperVersions && num != 0) st"<a>$num</a>"
           else st"$num"
           )
       }
+
       val subs: (ST, Option[ST]) = getCoverage(r, parentDir)
       val codeCoverage = getLineCoverage(getEntrypointMethodName(r), r, parentDir)
       val entrypointCoverageOpt: ST = {
@@ -609,9 +640,11 @@ object MergeUtils {
       )
       tableEntries = tableEntries :+ st"<tr>${(cells, "\n")}</tr>"
     }
+
     def colName(str: String): String = {
       return if (genPaperVersions) s"${ops.StringOps(str).first}" else str
     }
+
     val stats =
       st"""<table class=resultTable border=1>
           |<th>${colName("Timeouts")}</th>
@@ -639,7 +672,7 @@ object MergeUtils {
       if (o.nonEmpty) Some(st"""<tr><td id=col_a title="$title">${n}: </td><td>${o.get}<br><br></td></tr>""")
       else None()
 
-    return(
+    return (
       st"""<html>
           |  <head>
           |    <style>
@@ -691,20 +724,33 @@ object MergeUtils {
           |""")
   }
 
-  def mergeResults(results: ISZ[Results], regenMergedReports: B, jacocoDirName: String, relativeTo: Os.Path): Results = {
-    var (passing, failing, unsat) = (0, 0, 0)
-    var execsPaths: ISZ[Os.Path] = ISZ()
+  def mergeResults(results: ISZ[Results], remergeVectorFiles: B, regenMergedReports: B, jacocoDirName: String, relativeTo: Os.Path): Results = {
+    val passingP = relativeTo / "combined.passing"
+    val failingP = relativeTo / "combined.failing"
+    val unsatP = relativeTo / "combined.unsat"
 
-    val t = results(0).timeout
-    for (r <- results) {
-      passing = passing + r.passing
-      failing = failing + r.failing
-      unsat = unsat + r.unsat
-      execsPaths = execsPaths :+ r.exec
-      //if (r.dumpP.nonEmpty && dumpLoc.isEmpty) {
-      //  dumpLoc = r.dumpP
-      //}
+    if (remergeVectorFiles) {
+      var passingV: ISZ[String] = ISZ()
+      var failingV: ISZ[String] = ISZ()
+      var unsatV: ISZ[String] = ISZ()
+      for (r <- results) {
+        passingV = passingV :+ ops.StringOps(r.passingP.read).trim
+        failingV = failingV :+ ops.StringOps(r.failingP.read).trim
+        unsatV = unsatV :+ ops.StringOps(r.unsatP.read).trim
+      }
+      passingP.writeOver(st"${(passingV, "\n")}".render)
+      failingP.writeOver(st"${(failingV, "\n")}".render)
+      unsatP.writeOver(st"${(unsatV, "\n")}".render)
+      println(s"Wrote: ${passingP}")
+      println(s"Wrote: ${failingP}")
+      println(s"Wrote: ${unsatP}")
     }
+    val passing = passingP.readLines.size
+    val failing = failingP.readLines.size
+    val unsat = unsatP.readLines.size
+
+    val execsPaths: ISZ[Os.Path] = for(r <- results) yield r.exec
+
     //assert (dumpLoc.nonEmpty, "Wasn't able to find a dump")
     val dumpLocal = dumpLoc(results(0).project)
 
@@ -717,7 +763,7 @@ object MergeUtils {
 
       val javaExe = Sireum.javaHomeOpt.get / "bin" / (if (Os.isWin) "java.exe" else "java")
 
-      val execs: ISZ[String] = for(x <- execsPaths) yield x.string
+      val execs: ISZ[String] = for (x <- execsPaths) yield x.string
 
       println(s"Working on ${relativeTo.string} ...")
       val commands = ISZ[String](javaExe.string, "-jar", jacocoCli.string, "report") ++ execs ++ ISZ[String]("--encoding",
@@ -727,9 +773,36 @@ object MergeUtils {
       println()
     }
 
-    val x = results(0)(passing = passing, failing = failing, unsat = unsat, coverageP = jacocoOutDir)
+    val x = results(0)(
+      passing = passing, failing = failing, unsat = unsat,
+      passingP = passingP, failingP = failingP, unsatP = unsatP,
+      coverageP = jacocoOutDir)
 
     return x
+  }
+
+  def cleanupPassingFile(passingP: Os.Path, unsatP: Os.Path): Unit = {
+    val unsat = unsatP.readLines
+    if (unsat.isEmpty) {
+      return
+    }
+    println(s"Processing ${passingP.name} vs ${unsatP.name}")
+    val uops = ops.ISZOps(unsat)
+    val passing = passingP.readLines
+    var clean: ISZ[String] = ISZ()
+    for (p <- passing) {
+      if (!uops.contains(p)) {
+        clean = clean :+ p
+      }
+    }
+    println(s"  Removed ${passing.size - clean.size}")
+    val out = st"${(clean, "\n")}".render
+
+    val newPassing = passingP.up / s"${passingP.name}.clean"
+    newPassing.remove()
+
+    passingP.writeOver(out)
+    println(s"Wrote ${passingP}")
   }
 
   def dumpLoc(projectName: String): Os.Path = {
@@ -738,7 +811,7 @@ object MergeUtils {
       case "rts" => reportRoot / projectName / "Actuator_i_actuationSubsystem_saturationActuatorUnit_saturationActuator_actuator_DSC_UnitTests/Default_Initialize_Config/1/rts_rts-saturationActuator__1_mac-mini-m1-jacoco.dump"
       case "tc" => reportRoot / projectName / "OperatorInterfacePeriodic_p_tcproc_operatorInterface_DSC_UnitTests/Default_Initialize_Config/1/tc_tc-operator-interface__1_mac-mini-m1-jacoco.dump"
     }
-    assert (ret.exists, ret)
+    assert(ret.exists, ret)
     return ret
   }
 
@@ -757,7 +830,7 @@ object MergeUtils {
         "TempControlPeriodic_p_tcproc_tempControl" ~> "Temp Control",
         "TempSensorPeriodic_p_tcproc_tempSensor" ~> "Temp Sensor",
 
-        
+
         "CoincidenceLogic_i_actuationSubsystem_actuationUnit1_pressureLogic_coincidenceLogic" ~> "au1_press_coincidenceLogic",
         "CoincidenceLogic_i_actuationSubsystem_actuationUnit1_saturationLogic_coincidenceLogic" ~> "au1_satLogic_coincidenceLogic",
         "CoincidenceLogic_i_actuationSubsystem_actuationUnit1_temperatureLogic_coincidenceLogic" ~> "au1_temp_coincidenceLogic",
