@@ -10,7 +10,7 @@ object CoverageMerge extends App {
 
   val removeUnsatFromPassing: B = F // Need to do this at least once
 
-  val removeDump: B = F
+  val removeDump: B = T
   val regenMergedReports: B = F
   val remergeVectorFiles: B = F
   val emptyTrash: B = F
@@ -94,7 +94,8 @@ object CoverageMerge extends App {
           dumpP = dumpP,
           configJsonP = configJsonP,
           gumboXP = gumboxP,
-          behaviorP = behaviorP
+          behaviorP = behaviorP,
+          actualRunDir = passingP.up
         )
         if (!filter || ops.ISZOps(filters).contains(project)) {
           results = results :+ r
@@ -147,16 +148,16 @@ object CoverageMerge extends App {
             componentResults = componentResults :+ results
             addTimeoutReport(results, reportRoot)
           }
-          val configurationRoot = configResults(0).passingP.up.up
+          val configurationRoot = configResults(0).actualRunDir.up
           addConfigurationReport(configResults, configurationRoot, reportRoot)
         }
-        val componentRoot = componentResults(0).passingP.up.up.up
+        val componentRoot = componentResults(0).actualRunDir.up.up
 
         val splits: ISZ[(ISZ[Os.Path], ISZ[Results])] = splitResults(componentResults, componentRoot)
         projectResults = projectResults :+ (component._1, splits)
         addComponentReport(splits, component._2.keys, componentRoot, reportRoot)
       }
-      val projectRoot = projectResults(0)._2(0)._2(0).passingP.up.up.up.up
+      val projectRoot = projectResults(0)._2(0)._2(0).actualRunDir.up.up.up
       val components: ISZ[(String, String)] = for (p <- projects._2.keys) yield (p, getNickName(p))
       addProjectReport(projectResults, components, projectRoot, reportRoot)
 
@@ -247,7 +248,7 @@ object MergeUtils {
           timeoutResults = timeoutResults :+
             mergeResults(
               results = timeout._2, remergeVectorFiles = remergeVectorFiles, regenMergedReports = regenMergedReports,
-              jacocoDirName = s"jacocoCoverage_${typ._1}_${timeout._1}", relativeTo = outputDir)
+              vectorFilePrefix = s"${typ._1.name}_${timeout._1.string}", jacocoDirName = s"jacocoCoverage_${typ._1}_${timeout._1}", relativeTo = outputDir)
         }
       }
       ret = ret :+ (configPaths.elements, timeoutResults)
@@ -472,7 +473,9 @@ object MergeUtils {
 
                           val configJsonP: Os.Path,
                           val gumboXP: Option[Os.Path],
-                          val behaviorP: Os.Path)
+                          val behaviorP: Os.Path,
+
+                          val actualRunDir: Os.Path)
 
   def fetch(suffix: String, paths: ISZ[Os.Path]): Option[Os.Path] = {
     val ret: Option[Os.Path] = (ops.ISZOps(paths).filter(f => ops.StringOps(f.name).endsWith(suffix)) match {
@@ -724,12 +727,15 @@ object MergeUtils {
           |""")
   }
 
-  def mergeResults(results: ISZ[Results], remergeVectorFiles: B, regenMergedReports: B, jacocoDirName: String, relativeTo: Os.Path): Results = {
-    val passingP = relativeTo / "combined.passing"
-    val failingP = relativeTo / "combined.failing"
-    val unsatP = relativeTo / "combined.unsat"
+  def mergeResults(results: ISZ[Results], remergeVectorFiles: B, regenMergedReports: B, vectorFilePrefix: String, jacocoDirName: String, relativeTo: Os.Path): Results = {
+    val passingP = relativeTo / s"${vectorFilePrefix}-combined.passing"
+    val failingP = relativeTo / s"${vectorFilePrefix}-combined.failing"
+    val unsatP = relativeTo / s"${vectorFilePrefix}-combined.unsat"
 
     if (remergeVectorFiles) {
+      //for (old <- relativeTo.list if old.ext == "passing" || old.ext == "failing" || old.ext == "unsat") {
+      //  old.removeAll()
+      //}
       var passingV: ISZ[String] = ISZ()
       var failingV: ISZ[String] = ISZ()
       var unsatV: ISZ[String] = ISZ()
@@ -797,9 +803,6 @@ object MergeUtils {
     }
     println(s"  Removed ${passing.size - clean.size}")
     val out = st"${(clean, "\n")}".render
-
-    val newPassing = passingP.up / s"${passingP.name}.clean"
-    newPassing.remove()
 
     passingP.writeOver(out)
     println(s"Wrote ${passingP}")
