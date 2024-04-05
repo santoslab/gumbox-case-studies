@@ -219,9 +219,9 @@ likely would be excluded in a release build
 <!--end____isolette_gumbox-unit-testing-setup_configurations-description-->
 #### <!--start__isolette_gumbox-unit-testing-setup_configurations_ma_configurations-title-->MA<!--end____isolette_gumbox-unit-testing-setup_configurations_ma_configurations-title-->
 <!--start__isolette_gumbox-unit-testing-setup_configurations_ma_configurations-description-->
-- GUMBOX Unit Test Harness [link](hamr/slang/src/test/bridge/isolette/Monitor/Manage_Alarm_impl_thermostat_monitor_temperature_manage_alarm_GumboX_UnitTests.scala)
-- Component coverage report using the configurations below [link](https://people.cs.ksu.edu/~santos_jenkins/pub/gumbox-journal/custom_configs/isolette/Manage_Alarm_impl_thermostat_monitor_temperature_manage_alarm_DSC_UnitTests/report.html)<br>
-*(Custom configurations were used for this component. Click [here](https://people.cs.ksu.edu/~santos_jenkins/pub/gumbox-journal/default_configs/isolette/Manage_Alarm_impl_thermostat_monitor_temperature_manage_alarm_DSC_UnitTests/report.html) for the coverage report obtained when only the default configurations are used)*
+- Auto-generated GUMBOX Unit Test Harness [link](hamr/slang/src/test/bridge/isolette/Monitor/Manage_Alarm_impl_thermostat_monitor_temperature_manage_alarm_GumboX_UnitTests.scala), that was subsequently modified to provide custom configurations
+- Auto-generated component coverage report using the configurations below [link](https://people.cs.ksu.edu/~santos_jenkins/pub/gumbox-journal/custom_configs/isolette/Manage_Alarm_impl_thermostat_monitor_temperature_manage_alarm_DSC_UnitTests/report.html).  Custom configurations were used for this component. Click [here](https://people.cs.ksu.edu/~santos_jenkins/pub/gumbox-journal/default_configs/isolette/Manage_Alarm_impl_thermostat_monitor_temperature_manage_alarm_DSC_UnitTests/report.html)
+for the coverage report obtained when only the default configurations are used
 
     - Configurations for the Initialize Entrypoint
       <table>
@@ -237,8 +237,8 @@ likely would be excluded in a release build
 
 #### <!--start__isolette_gumbox-unit-testing-setup_configurations_mmi_configurations-title-->MMI<!--end____isolette_gumbox-unit-testing-setup_configurations_mmi_configurations-title-->
 <!--start__isolette_gumbox-unit-testing-setup_configurations_mmi_configurations-description-->
-- GUMBOX Unit Test Harness [link](hamr/slang/src/test/bridge/isolette/Monitor/Manage_Monitor_Interface_impl_thermostat_monitor_temperature_manage_monitor_interface_GumboX_UnitTests.scala)
-- Component coverage report using the configurations below [link](https://people.cs.ksu.edu/~santos_jenkins/pub/gumbox-journal/custom_configs/isolette/Manage_Monitor_Interface_impl_thermostat_monitor_temperature_manage_monitor_interface_DSC_UnitTests/report.html)
+- Auto-generated GUMBOX Unit Test Harness [link](hamr/slang/src/test/bridge/isolette/Monitor/Manage_Monitor_Interface_impl_thermostat_monitor_temperature_manage_monitor_interface_GumboX_UnitTests.scala)
+- Auto-generated component coverage report using the configurations below [link](https://people.cs.ksu.edu/~santos_jenkins/pub/gumbox-journal/custom_configs/isolette/Manage_Monitor_Interface_impl_thermostat_monitor_temperature_manage_monitor_interface_DSC_UnitTests/report.html)
 
     - Configurations for the Initialize Entrypoint
       <table>
@@ -255,8 +255,8 @@ likely would be excluded in a release build
 
 #### <!--start__isolette_gumbox-unit-testing-setup_configurations_mmm_configurations-title-->MMM<!--end____isolette_gumbox-unit-testing-setup_configurations_mmm_configurations-title-->
 <!--start__isolette_gumbox-unit-testing-setup_configurations_mmm_configurations-description-->
-- GUMBOX Unit Test Harness [link](hamr/slang/src/test/bridge/isolette/Monitor/Manage_Monitor_Mode_impl_thermostat_monitor_temperature_manage_monitor_mode_GumboX_UnitTests.scala)
-- Component coverage report using the configurations below [link](https://people.cs.ksu.edu/~santos_jenkins/pub/gumbox-journal/custom_configs/isolette/Manage_Monitor_Mode_impl_thermostat_monitor_temperature_manage_monitor_mode_DSC_UnitTests/report.html)
+- Auto-generated GUMBOX Unit Test Harness [link](hamr/slang/src/test/bridge/isolette/Monitor/Manage_Monitor_Mode_impl_thermostat_monitor_temperature_manage_monitor_mode_GumboX_UnitTests.scala)
+- Auto-generated component coverage report using the configurations below [link](https://people.cs.ksu.edu/~santos_jenkins/pub/gumbox-journal/custom_configs/isolette/Manage_Monitor_Mode_impl_thermostat_monitor_temperature_manage_monitor_mode_DSC_UnitTests/report.html)
 
     - Configurations for the Initialize Entrypoint
       <table>
@@ -273,8 +273,8 @@ likely would be excluded in a release build
 
 #### <!--start__isolette_gumbox-unit-testing-setup_configurations_mhs_configurations-title-->MHS<!--end____isolette_gumbox-unit-testing-setup_configurations_mhs_configurations-title-->
 <!--start__isolette_gumbox-unit-testing-setup_configurations_mhs_configurations-description-->
-- GUMBOX Unit Test Harness [link](hamr/slang/src/test/bridge/isolette/Regulate/Manage_Heat_Source_impl_thermostat_regulate_temperature_manage_heat_source_GumboX_UnitTests.scala)
-- Component coverage report using the configurations below [link](https://people.cs.ksu.edu/~santos_jenkins/pub/gumbox-journal/custom_configs/isolette/Manage_Heat_Source_impl_thermostat_regulate_temperature_manage_heat_source_DSC_UnitTests/report.html)
+- Auto-generated GUMBOX Unit Test Harness [link](hamr/slang/src/test/bridge/isolette/Regulate/Manage_Heat_Source_impl_thermostat_regulate_temperature_manage_heat_source_GumboX_UnitTests.scala)
+- Auto-generated component coverage report using the configurations below [link](https://people.cs.ksu.edu/~santos_jenkins/pub/gumbox-journal/custom_configs/isolette/Manage_Heat_Source_impl_thermostat_regulate_temperature_manage_heat_source_DSC_UnitTests/report.html)
 
     - Configurations for the Initialize Entrypoint
       <table>
@@ -291,8 +291,8 @@ likely would be excluded in a release build
 
 #### <!--start__isolette_gumbox-unit-testing-setup_configurations_mri_configurations-title-->MRI<!--end____isolette_gumbox-unit-testing-setup_configurations_mri_configurations-title-->
 <!--start__isolette_gumbox-unit-testing-setup_configurations_mri_configurations-description-->
-- GUMBOX Unit Test Harness [link](hamr/slang/src/test/bridge/isolette/Regulate/Manage_Regulator_Interface_impl_thermostat_regulate_temperature_manage_regulator_interface_GumboX_UnitTests.scala)
-- Component coverage report using the configurations below [link](https://people.cs.ksu.edu/~santos_jenkins/pub/gumbox-journal/custom_configs/isolette/Manage_Regulator_Interface_impl_thermostat_regulate_temperature_manage_regulator_interface_DSC_UnitTests/report.html)
+- Auto-generated GUMBOX Unit Test Harness [link](hamr/slang/src/test/bridge/isolette/Regulate/Manage_Regulator_Interface_impl_thermostat_regulate_temperature_manage_regulator_interface_GumboX_UnitTests.scala)
+- Auto-generated component coverage report using the configurations below [link](https://people.cs.ksu.edu/~santos_jenkins/pub/gumbox-journal/custom_configs/isolette/Manage_Regulator_Interface_impl_thermostat_regulate_temperature_manage_regulator_interface_DSC_UnitTests/report.html)
 
     - Configurations for the Initialize Entrypoint
       <table>
@@ -308,8 +308,8 @@ likely would be excluded in a release build
 
 #### <!--start__isolette_gumbox-unit-testing-setup_configurations_mrm_configurations-title-->MRM<!--end____isolette_gumbox-unit-testing-setup_configurations_mrm_configurations-title-->
 <!--start__isolette_gumbox-unit-testing-setup_configurations_mrm_configurations-description-->
-- GUMBOX Unit Test Harness [link](hamr/slang/src/test/bridge/isolette/Regulate/Manage_Regulator_Mode_impl_thermostat_regulate_temperature_manage_regulator_mode_GumboX_UnitTests.scala)
-- Component coverage report using the configurations below [link](https://people.cs.ksu.edu/~santos_jenkins/pub/gumbox-journal/custom_configs/isolette/Manage_Regulator_Mode_impl_thermostat_regulate_temperature_manage_regulator_mode_DSC_UnitTests/report.html)
+- Auto-generated GUMBOX Unit Test Harness [link](hamr/slang/src/test/bridge/isolette/Regulate/Manage_Regulator_Mode_impl_thermostat_regulate_temperature_manage_regulator_mode_GumboX_UnitTests.scala)
+- Auto-generated component coverage report using the configurations below [link](https://people.cs.ksu.edu/~santos_jenkins/pub/gumbox-journal/custom_configs/isolette/Manage_Regulator_Mode_impl_thermostat_regulate_temperature_manage_regulator_mode_DSC_UnitTests/report.html)
 
     - Configurations for the Initialize Entrypoint
       <table>

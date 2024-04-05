@@ -142,8 +142,8 @@ likely would be excluded in a release build
 <!--end____temperature-control-sporadic_gumbox-unit-testing-setup_configurations-description-->
 #### <!--start__temperature-control-sporadic_gumbox-unit-testing-setup_configurations_fan_configurations-title-->Fan<!--end____temperature-control-sporadic_gumbox-unit-testing-setup_configurations_fan_configurations-title-->
 <!--start__temperature-control-sporadic_gumbox-unit-testing-setup_configurations_fan_configurations-description-->
-- GUMBOX Unit Test Harness [link](hamr/slang/src/test/bridge/tc/CoolingFan/FanPeriodic_p_tcproc_fan_GumboX_UnitTests.scala)
-- Component coverage report using the configurations below [link](https://people.cs.ksu.edu/~santos_jenkins/pub/gumbox-journal/custom_configs/tc/FanPeriodic_p_tcproc_fan_DSC_UnitTests/report.html)
+- Auto-generated GUMBOX Unit Test Harness [link](hamr/slang/src/test/bridge/tc/CoolingFan/FanPeriodic_p_tcproc_fan_GumboX_UnitTests.scala)
+- Auto-generated component coverage report using the configurations below [link](https://people.cs.ksu.edu/~santos_jenkins/pub/gumbox-journal/custom_configs/tc/FanPeriodic_p_tcproc_fan_DSC_UnitTests/report.html)
 
     - Configurations for the Compute Entrypoint
       <table>
@@ -154,8 +154,8 @@ likely would be excluded in a release build
 
 #### <!--start__temperature-control-sporadic_gumbox-unit-testing-setup_configurations_opinterface_configurations-title-->OpInterface<!--end____temperature-control-sporadic_gumbox-unit-testing-setup_configurations_opinterface_configurations-title-->
 <!--start__temperature-control-sporadic_gumbox-unit-testing-setup_configurations_opinterface_configurations-description-->
-- GUMBOX Unit Test Harness [link](hamr/slang/src/test/bridge/tc/TempControlSoftwareSystem/OperatorInterfacePeriodic_p_tcproc_operatorInterface_GumboX_UnitTests.scala)
-- Component coverage report using the configurations below [link](https://people.cs.ksu.edu/~santos_jenkins/pub/gumbox-journal/custom_configs/tc/OperatorInterfacePeriodic_p_tcproc_operatorInterface_DSC_UnitTests/report.html)
+- Auto-generated GUMBOX Unit Test Harness [link](hamr/slang/src/test/bridge/tc/TempControlSoftwareSystem/OperatorInterfacePeriodic_p_tcproc_operatorInterface_GumboX_UnitTests.scala)
+- Auto-generated component coverage report using the configurations below [link](https://people.cs.ksu.edu/~santos_jenkins/pub/gumbox-journal/custom_configs/tc/OperatorInterfacePeriodic_p_tcproc_operatorInterface_DSC_UnitTests/report.html)
 
     - Configurations for the Initialize Entrypoint
       <table>
@@ -171,9 +171,9 @@ likely would be excluded in a release build
 
 #### <!--start__temperature-control-sporadic_gumbox-unit-testing-setup_configurations_tempcontrol_configurations-title-->TempControl<!--end____temperature-control-sporadic_gumbox-unit-testing-setup_configurations_tempcontrol_configurations-title-->
 <!--start__temperature-control-sporadic_gumbox-unit-testing-setup_configurations_tempcontrol_configurations-description-->
-- GUMBOX Unit Test Harness [link](hamr/slang/src/test/bridge/tc/TempControlSoftwareSystem/TempControlPeriodic_p_tcproc_tempControl_GumboX_UnitTests.scala)
-- Component coverage report using the configurations below [link](https://people.cs.ksu.edu/~santos_jenkins/pub/gumbox-journal/custom_configs/tc/TempControlPeriodic_p_tcproc_tempControl_DSC_UnitTests/report.html)<br>
-*(Custom configurations were used for this component. Click [here](https://people.cs.ksu.edu/~santos_jenkins/pub/gumbox-journal/default_configs/tc/TempControlPeriodic_p_tcproc_tempControl_DSC_UnitTests/report.html) for the coverage report obtained when only the default configurations are used)*
+- Auto-generated GUMBOX Unit Test Harness [link](hamr/slang/src/test/bridge/tc/TempControlSoftwareSystem/TempControlPeriodic_p_tcproc_tempControl_GumboX_UnitTests.scala), that was subsequently modified to provide custom configurations
+- Auto-generated component coverage report using the configurations below [link](https://people.cs.ksu.edu/~santos_jenkins/pub/gumbox-journal/custom_configs/tc/TempControlPeriodic_p_tcproc_tempControl_DSC_UnitTests/report.html).  Custom configurations were used for this component. Click [here](https://people.cs.ksu.edu/~santos_jenkins/pub/gumbox-journal/default_configs/tc/TempControlPeriodic_p_tcproc_tempControl_DSC_UnitTests/report.html)
+for the coverage report obtained when only the default configurations are used
 
     - Configurations for the Initialize Entrypoint
       <table>
@@ -189,8 +189,8 @@ likely would be excluded in a release build
 
 #### <!--start__temperature-control-sporadic_gumbox-unit-testing-setup_configurations_tempsensor_configurations-title-->TempSensor<!--end____temperature-control-sporadic_gumbox-unit-testing-setup_configurations_tempsensor_configurations-title-->
 <!--start__temperature-control-sporadic_gumbox-unit-testing-setup_configurations_tempsensor_configurations-description-->
-- GUMBOX Unit Test Harness [link](hamr/slang/src/test/bridge/tc/TempSensor/TempSensorPeriodic_p_tcproc_tempSensor_GumboX_UnitTests.scala)
-- Component coverage report using the configurations below [link](https://people.cs.ksu.edu/~santos_jenkins/pub/gumbox-journal/custom_configs/tc/TempSensorPeriodic_p_tcproc_tempSensor_DSC_UnitTests/report.html)
+- Auto-generated GUMBOX Unit Test Harness [link](hamr/slang/src/test/bridge/tc/TempSensor/TempSensorPeriodic_p_tcproc_tempSensor_GumboX_UnitTests.scala)
+- Auto-generated component coverage report using the configurations below [link](https://people.cs.ksu.edu/~santos_jenkins/pub/gumbox-journal/custom_configs/tc/TempSensorPeriodic_p_tcproc_tempSensor_DSC_UnitTests/report.html)
 
     - Configurations for the Initialize Entrypoint
       <table>

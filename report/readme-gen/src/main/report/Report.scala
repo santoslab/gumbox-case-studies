@@ -437,12 +437,12 @@ object Report {
           ret = ret :+ content
         }
 
-        val optLink: Option[ST] =
+        val optText: (Option[ST], Option[ST]) =
           if (componentArtifact.componentNickName == "MA" ||componentArtifact.componentNickName == "TempControl")
-            Some(
-              st"""<br>
-                  |*(Custom configurations were used for this component. Click [here](${ReadmeGen.rootDefaultConfigCoverageLink}/${project.coverageRootName}/${componentArtifact.simpleDscHarnessName}/report.html) for the coverage report obtained when only the default configurations are used)*""")
-          else None()
+            (Some(st", that was subsequently modified to provide custom configurations"),
+             Some(st""".  Custom configurations were used for this component. Click [here](${ReadmeGen.rootDefaultConfigCoverageLink}/${project.coverageRootName}/${componentArtifact.simpleDscHarnessName}/report.html)
+                      |for the coverage report obtained when only the default configurations are used"""))
+          else (None(), None())
 
         val coverageLink: String = s"[link](${ReadmeGen.rootCustomConfigCoverageLink}/${project.coverageRootName}/${componentArtifact.simpleDscHarnessName}/report.html)"
         val relly = project.projectRootDir.relativize(componentArtifact.manualTestingFilename)
@@ -451,8 +451,8 @@ object Report {
             tag = createTag(s"${componentArtifact.componentFullName}_configurations"),
             title = Some(st"${componentArtifact.componentNickName}"),
             description = Some(
-              st"""- GUMBOX Unit Test Harness [link](${relly})
-                  |- Component coverage report using the configurations below ${coverageLink}$optLink
+              st"""- Auto-generated GUMBOX Unit Test Harness [link](${relly})${optText._1}
+                  |- Auto-generated component coverage report using the configurations below ${coverageLink}${optText._2}
                   |    
                   |    ${(ret, "\n")}"""),
             content = ISZ(),
