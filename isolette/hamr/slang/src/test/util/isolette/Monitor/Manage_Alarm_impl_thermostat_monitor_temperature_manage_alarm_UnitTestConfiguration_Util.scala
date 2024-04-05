@@ -55,7 +55,6 @@ object Manage_Alarm_impl_thermostat_monitor_temperature_manage_alarm_UnitTestCon
     )
   }
 
-  type DefaultComputewLProfile = Manage_Alarm_impl_thermostat_monitor_temperature_manage_alarm_Profile_PS
   def defaultComputewLConfig: Manage_Alarm_impl_thermostat_monitor_temperature_manage_alarm_ComputewL_UnitTestConfiguration = {
     return (Manage_Alarm_impl_thermostat_monitor_temperature_manage_alarm_ComputewL_UnitTestConfiguration (
       verbose = F,
@@ -88,7 +87,7 @@ object Manage_Alarm_impl_thermostat_monitor_temperature_manage_alarm_UnitTestCon
   var numTests: Z,
   var numTestVectorGenRetries: Z,
   var failOnUnsatPreconditions: B,
-  var profile: Manage_Alarm_impl_thermostat_monitor_temperature_manage_alarm_Profile,
+  var profile: Manage_Alarm_impl_thermostat_monitor_temperature_manage_alarm_Profile_Trait,
   var genReplay: (Container, GumboXResult.Type) => Option[String])
   extends UnitTestConfigurationBatch with Manage_Alarm_impl_thermostat_monitor_temperature_manage_alarm_GumboX_TestHarness {
 
@@ -104,7 +103,7 @@ object Manage_Alarm_impl_thermostat_monitor_temperature_manage_alarm_UnitTestCon
   var numTests: Z,
   var numTestVectorGenRetries: Z,
   var failOnUnsatPreconditions: B,
-  var profile: Manage_Alarm_impl_thermostat_monitor_temperature_manage_alarm_Profile_P,
+  var profile: Manage_Alarm_impl_thermostat_monitor_temperature_manage_alarm_Profile_P_Trait,
   var genReplay: (Container, GumboXResult.Type) => Option[String])
   extends UnitTestConfigurationBatch with Manage_Alarm_impl_thermostat_monitor_temperature_manage_alarm_GumboX_TestHarness {
 

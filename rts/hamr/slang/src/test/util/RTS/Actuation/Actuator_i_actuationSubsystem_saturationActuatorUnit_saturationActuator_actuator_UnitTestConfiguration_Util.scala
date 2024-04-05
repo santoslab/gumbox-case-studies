@@ -61,7 +61,7 @@ object Actuator_i_actuationSubsystem_saturationActuatorUnit_saturationActuator_a
   var numTests: Z,
   var numTestVectorGenRetries: Z,
   var failOnUnsatPreconditions: B,
-  var profile: Actuator_i_actuationSubsystem_saturationActuatorUnit_saturationActuator_actuator_Profile,
+  var profile: Actuator_i_actuationSubsystem_saturationActuatorUnit_saturationActuator_actuator_Profile_Trait,
   var genReplay: (Container, GumboXResult.Type) => Option[String])
   extends UnitTestConfigurationBatch with Actuator_i_actuationSubsystem_saturationActuatorUnit_saturationActuator_actuator_GumboX_TestHarness {
 
@@ -77,7 +77,7 @@ object Actuator_i_actuationSubsystem_saturationActuatorUnit_saturationActuator_a
   var numTests: Z,
   var numTestVectorGenRetries: Z,
   var failOnUnsatPreconditions: B,
-  var profile: Actuator_i_actuationSubsystem_saturationActuatorUnit_saturationActuator_actuator_Profile_P,
+  var profile: Actuator_i_actuationSubsystem_saturationActuatorUnit_saturationActuator_actuator_Profile_P_Trait,
   var genReplay: (Container, GumboXResult.Type) => Option[String])
   extends UnitTestConfigurationBatch with Actuator_i_actuationSubsystem_saturationActuatorUnit_saturationActuator_actuator_GumboX_TestHarness {
 

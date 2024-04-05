@@ -47,7 +47,7 @@ object CoincidenceLogic_i_actuationSubsystem_actuationUnit2_temperatureLogic_coi
   var numTests: Z,
   var numTestVectorGenRetries: Z,
   var failOnUnsatPreconditions: B,
-  var profile: CoincidenceLogic_i_actuationSubsystem_actuationUnit2_temperatureLogic_coincidenceLogic_Profile_P,
+  var profile: CoincidenceLogic_i_actuationSubsystem_actuationUnit2_temperatureLogic_coincidenceLogic_Profile_P_Trait,
   var genReplay: (Container, GumboXResult.Type) => Option[String])
   extends UnitTestConfigurationBatch with CoincidenceLogic_i_actuationSubsystem_actuationUnit2_temperatureLogic_coincidenceLogic_GumboX_TestHarness {
 

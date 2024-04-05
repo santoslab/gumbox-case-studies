@@ -45,7 +45,7 @@ object OrLogic_i_actuationSubsystem_actuationUnit2_tempPressureTripOut_orLogic_U
   var numTests: Z,
   var numTestVectorGenRetries: Z,
   var failOnUnsatPreconditions: B,
-  var profile: OrLogic_i_actuationSubsystem_actuationUnit2_tempPressureTripOut_orLogic_Profile_P,
+  var profile: OrLogic_i_actuationSubsystem_actuationUnit2_tempPressureTripOut_orLogic_Profile_P_Trait,
   var genReplay: (Container, GumboXResult.Type) => Option[String])
   extends UnitTestConfigurationBatch with OrLogic_i_actuationSubsystem_actuationUnit2_tempPressureTripOut_orLogic_GumboX_TestHarness {
 

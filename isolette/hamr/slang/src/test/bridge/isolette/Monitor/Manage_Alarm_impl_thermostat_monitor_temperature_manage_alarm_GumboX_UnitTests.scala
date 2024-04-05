@@ -151,7 +151,7 @@ class Manage_Alarm_impl_thermostat_monitor_temperature_manage_alarm_GumboX_UnitT
       }
     }
   }
-
+  type DefaultComputewLProfile = Manage_Alarm_impl_thermostat_monitor_temperature_manage_alarm_Profile_PS
   def configsToJson: String = {
     return st"[ ${(for (c <- configs) yield s"\"${c.name}|${c.description}\"", ", ")} ]".render
   }

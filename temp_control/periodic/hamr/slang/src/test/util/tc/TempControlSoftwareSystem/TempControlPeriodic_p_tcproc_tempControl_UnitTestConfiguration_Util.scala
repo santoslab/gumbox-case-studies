@@ -54,7 +54,6 @@ object TempControlPeriodic_p_tcproc_tempControl_UnitTestConfiguration_Util {
     )
   }
 
-  type DefaultComputewLConfig = TempControlPeriodic_p_tcproc_tempControl_Profile_PS
   def defaultComputewLConfig: TempControlPeriodic_p_tcproc_tempControl_ComputewL_UnitTestConfiguration = {
     return (TempControlPeriodic_p_tcproc_tempControl_ComputewL_UnitTestConfiguration (
       verbose = F,
@@ -86,7 +85,7 @@ object TempControlPeriodic_p_tcproc_tempControl_UnitTestConfiguration_Util {
   var numTests: Z,
   var numTestVectorGenRetries: Z,
   var failOnUnsatPreconditions: B,
-  var profile: TempControlPeriodic_p_tcproc_tempControl_Profile,
+  var profile: TempControlPeriodic_p_tcproc_tempControl_Profile_Trait,
   var genReplay: (Container, GumboXResult.Type) => Option[String])
   extends UnitTestConfigurationBatch with TempControlPeriodic_p_tcproc_tempControl_GumboX_TestHarness {
 
@@ -102,7 +101,7 @@ object TempControlPeriodic_p_tcproc_tempControl_UnitTestConfiguration_Util {
   var numTests: Z,
   var numTestVectorGenRetries: Z,
   var failOnUnsatPreconditions: B,
-  var profile: TempControlPeriodic_p_tcproc_tempControl_Profile_P,
+  var profile: TempControlPeriodic_p_tcproc_tempControl_Profile_P_Trait,
   var genReplay: (Container, GumboXResult.Type) => Option[String])
   extends UnitTestConfigurationBatch with TempControlPeriodic_p_tcproc_tempControl_GumboX_TestHarness {
 

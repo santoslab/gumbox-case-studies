@@ -102,7 +102,7 @@ class TempControlPeriodic_p_tcproc_tempControl_GumboX_UnitTests extends TempCont
       }
     }
   }
-
+  type DefaultComputewLConfig = TempControlPeriodic_p_tcproc_tempControl_Profile_PS
   def configsToJson: String = {
     return st"[ ${(for (c <- configs) yield s"\"${c.name}|${c.description}\"", ", ")} ]".render
   }

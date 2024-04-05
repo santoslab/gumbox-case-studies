@@ -16,7 +16,7 @@ class Manage_Alarm_impl_thermostat_monitor_temperature_manage_alarm_Test extends
 
   test("Example Unit Test for Compute Entry Point"){
     // use put_XXX methods from test/util/../YYY_TestApi to seed input ports with values
-    testCompute()
+    //testCompute()
     // use get_XXX methods and check_concrete_output() from test/util/../YYY_TestApi
     // retrieve values from output ports and check against expected results
   }

@@ -44,7 +44,7 @@ object FanPeriodic_p_tcproc_fan_UnitTestConfiguration_Util {
   var numTests: Z,
   var numTestVectorGenRetries: Z,
   var failOnUnsatPreconditions: B,
-  var profile: FanPeriodic_p_tcproc_fan_Profile_P,
+  var profile: FanPeriodic_p_tcproc_fan_Profile_P_Trait,
   var genReplay: (Container, GumboXResult.Type) => Option[String])
   extends UnitTestConfigurationBatch with FanPeriodic_p_tcproc_fan_GumboX_TestHarness {
 
