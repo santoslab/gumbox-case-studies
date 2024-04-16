@@ -2,14 +2,20 @@ package tc.CoolingFan
 
 import org.sireum._
 import tc.GumboXUtil.GumboXResult
-import tc.util.{Container, Profile, UnitTestConfigurationBatch}
+import tc.util.{Container, UnitTestConfigurationBatch}
 import tc.CoolingFan.FanPeriodic_p_tcproc_fan_UnitTestConfiguration_Util._
 
 // This file will not be overwritten so is safe to edit
 
 class FanPeriodic_p_tcproc_fan_GumboX_UnitTests extends FanPeriodic_p_tcproc_fan_GumboX_TestHarness_ScalaTest {
 
+  // set verbose to T to see pre/post state values and generated unit tests
+  // that can be copied/pasted to replay a test
   val verbose: B = F
+
+  // set failOnUnsatPreconditions to T if the unit tests should fail when either
+  // SlangCheck is never able to satisfy a datatype's filter or the generated
+  // test vectors are never able to satisfy an entry point's assume pre-condition
   val failOnUnsatPreconditions: B = F
 
   def configs: MSZ[UnitTestConfigurationBatch] = {
@@ -47,15 +53,8 @@ class FanPeriodic_p_tcproc_fan_GumboX_UnitTests extends FanPeriodic_p_tcproc_fan
               val results = c.test(o)
 
               if (verbose) {
-                c.genReplay(o, results) match {
-                  case Some(s) =>
-                    val tq = "\"\"\""
-                    println(st"""Replay Unit Test:
-                                |  test("Replay: $testName") {
-                                |    val results = tc.GumboXUtil.GumboXResult.$results
-                                |    val json = st${tq}${tc.JSON.fromutilContainer(o, T)}${tq}.render
-                                |    $s
-                                |  }""".render)
+                c.genReplay(o, testName, results) match {
+                  case Some(s) => println(s)
                   case _ =>
                 }
               }

@@ -3,7 +3,7 @@ package tc.TempControlSoftwareSystem
 import org.sireum._
 import tc.GumboXUtil.GumboXResult
 import tc.RandomLib
-import tc.util.{Container, Profile, UnitTestConfigurationBatch}
+import tc.util.{Container, UnitTestConfigurationBatch}
 import tc.TempControlSoftwareSystem.TempControlPeriodic_p_tcproc_tempControl_UnitTestConfiguration_Util._
 
 // This file will not be overwritten so is safe to edit
@@ -18,7 +18,7 @@ class TempControlPeriodic_p_tcproc_tempControl_GumboX_UnitTests extends TempCont
       return r.set_Config_F32(r.get_Config_F32(low = Some(lb), high = Some(ub)))
     }
     var c = defaultComputewLConfig(verbose = verbose, failOnUnsatPreconditions = failOnUnsatPreconditions)
-    val p = c.profile.asInstanceOf[DefaultComputewLConfig]
+    val p = c.profile.asInstanceOf[DefaultComputewLProfile]
     c = c(
       name = "Custom_ComputewL_Config",
       description = "Set ranges based on requirements - i.e. 50 <= SetPoint.Low and SetPoint.High <= 110 and -128 <= current_temp <= 134",
@@ -32,7 +32,6 @@ class TempControlPeriodic_p_tcproc_tempControl_GumboX_UnitTests extends TempCont
       c
     )
   }
-
 
   for (c <- configs) {
     def next: Option[Container] = {
@@ -62,15 +61,8 @@ class TempControlPeriodic_p_tcproc_tempControl_GumboX_UnitTests extends TempCont
               val results = c.test(o)
 
               if (verbose) {
-                c.genReplay(o, results) match {
-                  case Some(s) =>
-                    val tq = "\"\"\""
-                    println(st"""Replay Unit Test:
-                                |  test("Replay: $testName") {
-                                |    val results = tc.GumboXUtil.GumboXResult.$results
-                                |    val json = st${tq}${tc.JSON.fromutilContainer(o, T)}${tq}.render
-                                |    $s
-                                |  }""".render)
+                c.genReplay(o, testName, results) match {
+                  case Some(s) => println(s)
                   case _ =>
                 }
               }
@@ -102,7 +94,7 @@ class TempControlPeriodic_p_tcproc_tempControl_GumboX_UnitTests extends TempCont
       }
     }
   }
-  type DefaultComputewLConfig = TempControlPeriodic_p_tcproc_tempControl_Profile_PS
+
   def configsToJson: String = {
     return st"[ ${(for (c <- configs) yield s"\"${c.name}|${c.description}\"", ", ")} ]".render
   }

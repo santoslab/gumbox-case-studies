@@ -2,7 +2,7 @@ package tc.TempSensor
 
 import org.sireum._
 import tc.GumboXUtil.GumboXResult
-import tc.util.{Container, Profile, UnitTestConfigurationBatch}
+import tc.util.{Container, UnitTestConfigurationBatch}
 import tc.TempSensor.TempSensorPeriodic_p_tcproc_tempSensor_UnitTestConfiguration_Util._
 
 // This file will not be overwritten so is safe to edit
@@ -48,15 +48,8 @@ class TempSensorPeriodic_p_tcproc_tempSensor_GumboX_UnitTests extends TempSensor
               val results = c.test(o)
 
               if (verbose) {
-                c.genReplay(o, results) match {
-                  case Some(s) =>
-                    val tq = "\"\"\""
-                    println(st"""Replay Unit Test:
-                                |  test("Replay: $testName") {
-                                |    val results = tc.GumboXUtil.GumboXResult.$results
-                                |    val json = st${tq}${tc.JSON.fromutilContainer(o, T)}${tq}.render
-                                |    $s
-                                |  }""".render)
+                c.genReplay(o, testName, results) match {
+                  case Some(s) => println(s)
                   case _ =>
                 }
               }
