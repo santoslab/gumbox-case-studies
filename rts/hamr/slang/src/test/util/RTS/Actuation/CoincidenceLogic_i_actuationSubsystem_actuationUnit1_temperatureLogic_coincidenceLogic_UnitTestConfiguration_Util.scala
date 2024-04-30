@@ -59,6 +59,6 @@ object CoincidenceLogic_i_actuationSubsystem_actuationUnit1_temperatureLogic_coi
   extends UnitTestConfigurationBatch with CoincidenceLogic_i_actuationSubsystem_actuationUnit1_temperatureLogic_coincidenceLogic_GumboX_TestHarness {
 
   override def test(c: Container): GumboXResult.Type = {
-    return testComputeCBV(c.asInstanceOf[CoincidenceLogic_i_actuationSubsystem_actuationUnit1_temperatureLogic_coincidenceLogic_PreState_Container_P])
+    return testComputeCBV(c.asInstanceOf[CoincidenceLogic_i_actuationSubsystem_actuationUnit1_temperatureLogic_coincidenceLogic_PreState_Container])
   }
 }

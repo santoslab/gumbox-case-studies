@@ -47,7 +47,7 @@ import RTS.RandomLib
 }
 
 // Profile with generators for state variables and incoming ports
-@msig trait CoincidenceLogic_i_actuationSubsystem_actuationUnit1_saturationLogic_coincidenceLogic_Profile_PS_Trait extends Profile {
+@msig trait CoincidenceLogic_i_actuationSubsystem_actuationUnit1_saturationLogic_coincidenceLogic_Profile_PS_Trait extends CoincidenceLogic_i_actuationSubsystem_actuationUnit1_saturationLogic_coincidenceLogic_Profile_P_Trait {
   def api_channel1: RandomLib // random lib for generating Base_Types.Boolean
   def api_channel2: RandomLib // random lib for generating Base_Types.Boolean
   def api_channel3: RandomLib // random lib for generating Base_Types.Boolean

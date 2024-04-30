@@ -90,6 +90,6 @@ object Actuator_i_actuationSubsystem_saturationActuatorUnit_saturationActuator_a
   extends UnitTestConfigurationBatch with Actuator_i_actuationSubsystem_saturationActuatorUnit_saturationActuator_actuator_GumboX_TestHarness {
 
   override def test(c: Container): GumboXResult.Type = {
-    return testComputeCBV(c.asInstanceOf[Actuator_i_actuationSubsystem_saturationActuatorUnit_saturationActuator_actuator_PreState_Container_P])
+    return testComputeCBV(c.asInstanceOf[Actuator_i_actuationSubsystem_saturationActuatorUnit_saturationActuator_actuator_PreState_Container])
   }
 }

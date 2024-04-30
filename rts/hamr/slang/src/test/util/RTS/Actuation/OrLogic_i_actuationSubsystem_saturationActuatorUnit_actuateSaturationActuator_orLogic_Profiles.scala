@@ -41,7 +41,7 @@ import RTS.RandomLib
 }
 
 // Profile with generators for state variables and incoming ports
-@msig trait OrLogic_i_actuationSubsystem_saturationActuatorUnit_actuateSaturationActuator_orLogic_Profile_PS_Trait extends Profile {
+@msig trait OrLogic_i_actuationSubsystem_saturationActuatorUnit_actuateSaturationActuator_orLogic_Profile_PS_Trait extends OrLogic_i_actuationSubsystem_saturationActuatorUnit_actuateSaturationActuator_orLogic_Profile_P_Trait {
   def api_channel1: RandomLib // random lib for generating Base_Types.Boolean
   def api_channel2: RandomLib // random lib for generating Base_Types.Boolean
 }

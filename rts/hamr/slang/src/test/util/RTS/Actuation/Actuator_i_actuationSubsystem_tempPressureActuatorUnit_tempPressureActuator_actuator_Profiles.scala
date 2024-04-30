@@ -41,7 +41,7 @@ import RTS.RandomLib
 }
 
 // Profile with generators for state variables and incoming ports
-@msig trait Actuator_i_actuationSubsystem_tempPressureActuatorUnit_tempPressureActuator_actuator_Profile_PS_Trait extends Profile {
+@msig trait Actuator_i_actuationSubsystem_tempPressureActuatorUnit_tempPressureActuator_actuator_Profile_PS_Trait extends Actuator_i_actuationSubsystem_tempPressureActuatorUnit_tempPressureActuator_actuator_Profile_P_Trait {
   def api_input: RandomLib // random lib for generating Base_Types.Boolean
   def api_manualActuatorInput: RandomLib // random lib for generating Base_Types.Boolean
 }

@@ -57,6 +57,6 @@ object OrLogic_i_actuationSubsystem_tempPressureActuatorUnit_actuateTempPressure
   extends UnitTestConfigurationBatch with OrLogic_i_actuationSubsystem_tempPressureActuatorUnit_actuateTempPressureActuator_orLogic_GumboX_TestHarness {
 
   override def test(c: Container): GumboXResult.Type = {
-    return testComputeCBV(c.asInstanceOf[OrLogic_i_actuationSubsystem_tempPressureActuatorUnit_actuateTempPressureActuator_orLogic_PreState_Container_P])
+    return testComputeCBV(c.asInstanceOf[OrLogic_i_actuationSubsystem_tempPressureActuatorUnit_actuateTempPressureActuator_orLogic_PreState_Container])
   }
 }

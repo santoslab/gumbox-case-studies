@@ -9,7 +9,7 @@ import isolette.Regulate.Manage_Heat_Source_impl_thermostat_regulate_temperature
 
 class Manage_Heat_Source_impl_thermostat_regulate_temperature_manage_heat_source_GumboX_UnitTests extends Manage_Heat_Source_impl_thermostat_regulate_temperature_manage_heat_source_GumboX_TestHarness_ScalaTest {
 
-  val verbose: B = T
+  val verbose: B = F
   val failOnUnsatPreconditions: B = F
 
   def configs: MSZ[UnitTestConfigurationBatch] = {

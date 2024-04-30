@@ -10,7 +10,7 @@ import isolette.Monitor.Manage_Alarm_impl_thermostat_monitor_temperature_manage_
 
 class Manage_Alarm_impl_thermostat_monitor_temperature_manage_alarm_GumboX_UnitTests extends Manage_Alarm_impl_thermostat_monitor_temperature_manage_alarm_GumboX_TestHarness_ScalaTest {
 
-  val verbose: B = T
+  val verbose: B = F
   val failOnUnsatPreconditions: B = F
 
   val leftPartitionConfig = defaultComputewLConfig(verbose = verbose, failOnUnsatPreconditions = failOnUnsatPreconditions,
